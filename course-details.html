@@ -58,7 +58,7 @@
 
         .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
         .card { background-color: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 25px; }
-        .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+        .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; justify-content: space-between; }
 
         .lecture-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; background: #fffaf5; }
         .lecture-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
@@ -75,15 +75,51 @@
             border: 1px solid var(--border); padding: 18px; border-radius: 14px; margin-bottom: 20px;
         }
 
+        /* نماذج لوحة التحكم الإدارية الخاصة بـ محمود */
+        .admin-panel-box {
+            background: #fef3c7; border: 2px dashed #f59e0b; padding: 20px; border-radius: 16px; margin-bottom: 20px;
+        }
+        .admin-panel-box h4 { color: #d97706; font-size: 1rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .form-control-admin {
+            width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; margin-bottom: 10px; outline: none; background: #fff;
+        }
+        .btn-admin-submit {
+            background: #d97706; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer;
+        }
+        .btn-admin-submit:hover { background: #b45309; }
+
+        .btn-delete-item { background: #fee2e2; color: #dc2626; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
+        .btn-delete-item:hover { background: #dc2626; color: white; }
+
         .footer-copyright {
             margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted);
             font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg);
         }
 
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px); z-index: 99999; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 15px; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        }
+        #loading-overlay.active { opacity: 1; pointer-events: auto; }
+        .spinner {
+            width: 50px; height: 50px; border: 4px solid rgba(249, 115, 22, 0.2); border-top-color: #f97316;
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #ffffff; font-size: 1rem; font-weight: 700; }
+
+        .hidden-element { display: none !important; }
+
         @media (max-width: 1024px) { .content-grid { grid-template-columns: 1fr; } aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
     </style>
 </head>
 <body>
+
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-msg">جاري معالجة طلبك...</div>
+    </div>
 
     <aside>
         <div class="sidebar-brand">
@@ -101,7 +137,32 @@
                 <h1 id="course-title-display">جاري تحميل المقرر...</h1>
                 <p id="course-instructor-display"><i class="fa-solid fa-chalkboard-user"></i> الأستاذ المحاضر: --</p>
             </div>
-            <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
+            <a href="dashboard.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للوحة التحكم</a>
+        </div>
+
+        <!-- لوحة التحكم الإدارية الخاصة بـ محمود (تظهر فقط عند تفعيل وضع الإدارة) -->
+        <div id="admin-controls-section" class="hidden-element">
+            <div class="admin-panel-box">
+                <h4><i class="fa-solid fa-user-shield"></i> لوحة الإدارة (مخصص لـ محمود عبدالله)</h4>
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                    <!-- إضافة محاضرة فيديو -->
+                    <div style="background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #fcd34d;">
+                        <strong style="display: block; margin-bottom: 8px; font-size: 0.9rem;">إضافة محاضرة فيديو جديدة:</strong>
+                        <input type="text" id="new-lec-title" class="form-control-admin" placeholder="عنوان المحاضرة (مثلا: المحاضرة الرابعة)">
+                        <input type="text" id="new-lec-duration" class="form-control-admin" placeholder="المدة (مثلا: 45 دقيقة)">
+                        <button class="btn-admin-submit" onclick="addLectureItem()">إضافة المحاضرة</button>
+                    </div>
+
+                    <!-- إضافة ملف PDF -->
+                    <div style="background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #fcd34d;">
+                        <strong style="display: block; margin-bottom: 8px; font-size: 0.9rem;">إضافة ملف PDF أو مرجع جديد:</strong>
+                        <input type="text" id="new-pdf-title" class="form-control-admin" placeholder="اسم الملف (مثلا: مذكرة الشرح.pdf)">
+                        <input type="text" id="new-pdf-size" class="form-control-admin" placeholder="الحجم (مثلا: 3.5 ميجابايت)">
+                        <button class="btn-admin-submit" onclick="addPdfItem()">إضافة الملف</button>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="content-grid">
@@ -138,15 +199,14 @@
     </footer>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            const loggedUser = localStorage.getItem('it_logged_user');
-            if (!loggedUser) {
-                alert('عذراً، يرجى تسجيل الدخول أولاً للوصول إلى تفاصيل المقرر.');
-                window.location.href = 'login.html';
-            }
-        });
+        function showLoading(msg, callback) {
+            const overlay = document.getElementById('loading-overlay');
+            document.getElementById('loading-msg').textContent = msg;
+            overlay.classList.add('active');
+            setTimeout(callback, 700);
+        }
 
-        const coursesData = {
+        const defaultCoursesData = {
             "sudanese-studies": {
                 title: "مادة الدراسات السودانية",
                 instructor: "د. مرتضى يونس بشير محمد",
@@ -235,41 +295,117 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const courseKey = urlParams.get('course');
-        const currentCourse = coursesData[courseKey];
+        
+        let storageKey = `it_course_${courseKey}`;
+        let currentCourse = JSON.parse(localStorage.getItem(storageKey)) || defaultCoursesData[courseKey];
 
-        if (currentCourse) {
-            document.getElementById('course-title-display').textContent = currentCourse.title;
-            document.getElementById('course-instructor-display').innerHTML = `<i class="fa-solid fa-chalkboard-user"></i> الأستاذ المحاضر: ${currentCourse.instructor}`;
-            document.getElementById('course-overview-display').textContent = currentCourse.overview;
-            
-            const lecturesList = document.getElementById('lectures-list');
-            lecturesList.innerHTML = '';
-            currentCourse.lectures.forEach(lec => {
-                lecturesList.innerHTML += `
-                    <div class="lecture-item">
-                        <div class="lecture-title"><i class="fa-solid fa-play-circle" style="color: var(--primary);"></i> ${lec.title}</div>
-                        <div style="display: flex; gap: 10px; align-items: center;">
-                            <span style="font-size: 0.8rem; color: var(--text-muted);">${lec.duration}</span>
-                            <button class="btn-action btn-watch" onclick="alert('جاري تشغيل فيديو الشرح: ${lec.title}')"><i class="fa-solid fa-play"></i> مشاهدة</button>
+        const isAdmin = localStorage.getItem('it_logged_id') === '24-11086250' && localStorage.getItem('it_admin_mode') === 'true';
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const loggedUser = localStorage.getItem('it_logged_user');
+            if (!loggedUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            if (isAdmin) {
+                document.getElementById('admin-controls-section').classList.remove('hidden-element');
+            }
+
+            renderCoursePage();
+        });
+
+        function renderCoursePage() {
+            if (currentCourse) {
+                document.getElementById('course-title-display').textContent = currentCourse.title;
+                document.getElementById('course-instructor-display').innerHTML = `<i class="fa-solid fa-chalkboard-user"></i> الأستاذ المحاضر: ${currentCourse.instructor}`;
+                document.getElementById('course-overview-display').textContent = currentCourse.overview;
+                
+                const lecturesList = document.getElementById('lectures-list');
+                lecturesList.innerHTML = '';
+                currentCourse.lectures.forEach((lec, index) => {
+                    let deleteBtn = isAdmin ? `<button class="btn-delete-item" onclick="deleteLecture(${index})"><i class="fa-solid fa-trash"></i> حذف</button>` : '';
+                    lecturesList.innerHTML += `
+                        <div class="lecture-item">
+                            <div class="lecture-title"><i class="fa-solid fa-play-circle" style="color: var(--primary);"></i> ${lec.title}</div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <span style="font-size: 0.8rem; color: var(--text-muted);">${lec.duration}</span>
+                                <button class="btn-action btn-watch" onclick="showLoading('جاري تشغيل الفيديو...', () => { alert('تشغيل محاضرة: ${lec.title}'); })"><i class="fa-solid fa-play"></i> مشاهدة</button>
+                                ${deleteBtn}
+                            </div>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
 
-            const pdfList = document.getElementById('pdf-list');
-            pdfList.innerHTML = '';
-            currentCourse.pdfs.forEach(pdf => {
-                pdfList.innerHTML += `
-                    <a href="#" class="resource-link" onclick="alert('جاري تحميل الملف: ${pdf.title}'); return false;">
-                        <span><i class="fa-solid fa-file-pdf" style="color: #dc2626; margin-left: 8px;"></i> ${pdf.title}</span>
-                        <span style="font-size: 0.75rem; color: var(--text-muted);">${pdf.size}</span>
-                    </a>
-                `;
+                const pdfList = document.getElementById('pdf-list');
+                pdfList.innerHTML = '';
+                currentCourse.pdfs.forEach((pdf, index) => {
+                    let deleteBtn = isAdmin ? `<button class="btn-delete-item" onclick="deletePdf(${index})"><i class="fa-solid fa-trash"></i></button>` : '';
+                    pdfList.innerHTML += `
+                        <div class="resource-link">
+                            <a href="#" style="text-decoration: none; color: inherit; display:flex; align-items:center; gap:8px;" onclick="showLoading('جاري تحميل الملف...', () => { alert('تحميل ملف: ${pdf.title}'); }); return false;">
+                                <i class="fa-solid fa-file-pdf" style="color: #dc2626;"></i> <span>${pdf.title}</span>
+                                <span style="font-size: 0.75rem; color: var(--text-muted); margin-right: 10px;">(${pdf.size})</span>
+                            </a>
+                            ${deleteBtn}
+                        </div>
+                    `;
+                });
+            } else {
+                document.getElementById('course-title-display').textContent = 'عذراً، المقرر غير موجود';
+            }
+        }
+
+        function addLectureItem() {
+            const title = document.getElementById('new-lec-title').value.trim();
+            const duration = document.getElementById('new-lec-duration').value.trim();
+            if (!title || !duration) {
+                alert('الرجاء إدخال عنوان المحاضرة والمدة!');
+                return;
+            }
+            showLoading('جاري حفظ المحاضرة الجديدة...', () => {
+                currentCourse.lectures.push({ title, duration });
+                localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+                document.getElementById('new-lec-title').value = '';
+                document.getElementById('new-lec-duration').value = '';
+                renderCoursePage();
             });
-        } else {
-            document.getElementById('course-title-display').textContent = 'عذراً، المقرر غير موجود';
-            document.getElementById('course-instructor-display').textContent = 'يرجى العودة للرئيسية واختيار مقرر صحيح.';
-            document.getElementById('course-overview-display').textContent = 'لا توجد بيانات متاحة لهذا المقرر.';
+        }
+
+        function addPdfItem() {
+            const title = document.getElementById('new-pdf-title').value.trim();
+            const size = document.getElementById('new-pdf-size').value.trim();
+            if (!title || !size) {
+                alert('الرجاء إدخال اسم الملف والحجم!');
+                return;
+            }
+            showLoading('جاري رفع وحفظ ملف الـ PDF...', () => {
+                currentCourse.pdfs.push({ title, size });
+                localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+                document.getElementById('new-pdf-title').value = '';
+                document.getElementById('new-pdf-size').value = '';
+                renderCoursePage();
+            });
+        }
+
+        function deleteLecture(index) {
+            if (confirm('هل أنت متأكد من حذف هذه المحاضرة؟')) {
+                showLoading('جاري الحذف...', () => {
+                    currentCourse.lectures.splice(index, 1);
+                    localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+                    renderCoursePage();
+                });
+            }
+        }
+
+        function deletePdf(index) {
+            if (confirm('هل أنت متأكد من حذف هذا الملف؟')) {
+                showLoading('جاري الحذف...', () => {
+                    currentCourse.pdfs.splice(index, 1);
+                    localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+                    renderCoursePage();
+                });
+            }
         }
     </script>
 </body>
