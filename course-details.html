@@ -60,18 +60,37 @@
         .card { background-color: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 25px; }
         .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; justify-content: space-between; }
 
-        .lecture-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; background: #fffaf5; }
-        .lecture-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
+        /* تصميم كارت المحاضرة مطابق تماماً للصورة مع الغلاف */
+        .lecture-item {
+            display: flex; justify-content: space-between; align-items: center; padding: 18px; border: 1px solid var(--border);
+            border-radius: 18px; margin-bottom: 15px; background: #fff; box-shadow: 0 4px 15px rgba(249,115,22,0.03); flex-wrap: wrap; gap: 15px;
+        }
+        .lecture-left-side { display: flex; align-items: center; gap: 15px; }
+        .video-thumbnail-box {
+            width: 100px; height: 65px; border-radius: 12px; background: #1e293b; overflow: hidden; position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+        }
+        .video-thumbnail-box video { width: 100%; height: 100%; object-fit: cover; }
+        .video-thumbnail-box .play-overlay {
+            position: absolute; color: white; font-size: 1.2rem; background: rgba(0,0,0,0.4); width: 100%; height: 100%; display: flex; align-items: center; justify-content: center;
+        }
+        .lecture-title { font-weight: 800; font-size: 0.95rem; color: var(--text); line-height: 1.5; }
         
-        .btn-action { padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none; }
-        .btn-watch { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25); }
+        .lecture-right-side { display: flex; gap: 12px; align-items: center; }
+        .duration-badge { font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-align: center; }
+        
+        .btn-watch-custom {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; padding: 8px 18px; border-radius: 10px; font-size: 0.88rem; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
+        }
+        .btn-watch-custom:hover { opacity: 0.9; }
+        .btn-delete-lecture { background: #fee2e2; color: #dc2626; border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer; font-size: 0.85rem; font-weight: 800; }
+        .btn-delete-lecture:hover { background: #dc2626; color: white; }
 
-        .resource-link { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; text-decoration: none; color: var(--text); font-weight: 600; font-size: 0.9rem; background: #fffaf5; }
+        .resource-link { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; text-decoration: none; color: var(--text); font-weight: 600; font-size: 0.9rem; background: #fffaf5; }
         .resource-link:hover { border-color: var(--primary); background-color: var(--primary-light); color: var(--primary); }
 
         .btn-download-direct {
-            background: #10b981; color: white; padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 5px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
+            background: #10b981; color: white; padding: 6px 14px; border-radius: 10px; font-size: 0.82rem; font-weight: 700;
+            text-decoration: none; display: inline-flex; align-items: center; gap: 6px; box-shadow: 0 2px 6px rgba(16, 185, 129, 0.25);
         }
         .btn-download-direct:hover { background: #059669; }
 
@@ -84,8 +103,6 @@
         .file-upload-label { display: block; background: #fff; border: 1.5px dashed #f59e0b; padding: 10px; border-radius: 12px; text-align: center; font-size: 0.85rem; color: #b45309; font-weight: 700; cursor: pointer; margin-bottom: 12px; }
         .btn-admin-submit { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; }
 
-        .btn-delete-item { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700; }
-
         /* شريط التحميل (Progress Bar) */
         #progress-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         #progress-modal.active { opacity: 1; pointer-events: auto; }
@@ -93,7 +110,7 @@
         .progress-bar-container { width: 100%; height: 14px; background: #e2e8f0; border-radius: 7px; overflow: hidden; margin-bottom: 12px; }
         .progress-bar-fill { width: 0%; height: 100%; background: #10b981; border-radius: 7px; transition: width 0.1s linear; }
 
-        /* نافذة التنبيه الأنيقة بديلة لـ alert */
+        /* نافذة رسائل النظام الأنيقة */
         #custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         #custom-modal.active { opacity: 1; pointer-events: auto; }
 
@@ -147,7 +164,7 @@
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div style="background: #fff; padding: 18px; border-radius: 16px; border: 1px solid #fcd34d;">
-                        <strong style="display: block; margin-bottom: 10px; color: #b45309;"><i class="fa-solid fa-video"></i> إضافة فيديو:</strong>
+                        <strong style="display: block; margin-bottom: 10px; color: #b45309;"><i class="fa-solid fa-video"></i> إضافة فيديو مع الغلاف:</strong>
                         <input type="text" id="new-lec-title" class="form-control-admin" placeholder="عنوان المحاضرة">
                         <input type="text" id="new-lec-duration" class="form-control-admin" placeholder="المدة (مثلا: 45 دقيقة)">
                         <label class="file-upload-label" for="video-file-input"><i class="fa-solid fa-cloud-arrow-up"></i> اختر ملف الفيديو</label>
@@ -240,42 +257,42 @@
                 title: "مادة الدراسات السودانية",
                 instructor: "د. مرتضى يونس بشير محمد",
                 overview: "تهدف هذه المادة إلى تعريج شامل على تاريخ السودان الحضاري والسياسي والاجتماعي ودراسة مقومات الهوية السودانية.",
-                lectures: [{ title: "المحاضرة الأولى: المدخل التاريخي", duration: "45 دقيقة", url: "#" }],
+                lectures: [{ title: "المحاضرة الأولى: المدخل التاريخي والحضاري", duration: "45 دقيقة", url: "#" }],
                 pdfs: [{ title: "مذكرة الدراسات السودانية.pdf", size: "4.2 ميجابايت", url: "#" }]
             },
             "databases": {
                 title: "مفاهيم قواعد البيانات ب/تقانة ثالث",
                 instructor: "أ. غفار عوض الله محمد احمد",
                 overview: "تتناول هذه المادة المفاهيم الأساسية والمتقدمة لنظم إدارة قواعد البيانات (RDBMS).",
-                lectures: [{ title: "المحاضرة الأولى: مقدمة RDBMS", duration: "55 دقيقة", url: "#" }],
+                lectures: [{ title: "المحاضرة الأولى: مقدمة في نظم إدارة قواعد البيانات RDBMS", duration: "55 دقيقة", url: "#" }],
                 pdfs: [{ title: "كتاب قواعد البيانات.pdf", size: "8.5 ميجابايت", url: "#" }]
             },
             "algebra-geometry": {
                 title: "جبر ومهندسة تحليلية",
                 instructor: "د. بشارة عيسى حمد عبدالله",
                 overview: "تركز المادة على دراسة المصفوفات، المحددات، وطرق حل المعادلات الخطية.",
-                lectures: [{ title: "المحاضرة الأولى: المصفوفات", duration: "50 دقيقة", url: "#" }],
+                lectures: [{ title: "المحاضرة الأولى: المصفوفات والمحددات ونظرياتها", duration: "50 دقيقة", url: "#" }],
                 pdfs: [{ title: "محاضرات الجبر والهندسة.pdf", size: "5.0 ميجابايت", url: "#" }]
             },
             "pc-tech": {
                 title: "تقانة الحاسب الشخصي",
                 instructor: "أ. ساجدة احمد ادم",
                 overview: "تغطي المادة مكونات العتاد الصلب للحاسب الشخصي وصيانتها.",
-                lectures: [{ title: "المحاضرة الأولى: عتاد الحاسوب", duration: "40 دقيقة", url: "#" }],
+                lectures: [{ title: "المحاضرة الأولى: مكونات العتاد الصلب وصيانتها", duration: "40 دقيقة", url: "#" }],
                 pdfs: [{ title: "دليل الصيانة.pdf", size: "6.3 ميجابايت", url: "#" }]
             },
             "networks-1": {
                 title: "شبكات الحاسوب والاتصال (1)",
                 instructor: "د. محمد الطيب حمادي",
                 overview: "مقرر أساسي في شبكات الاتصال ونموذج الاتصال المعياري OSI.",
-                lectures: [{ title: "المحاضرة الأولى: نموذج OSI", duration: "60 دقيقة", url: "#" }],
+                lectures: [{ title: "المحاضرة الأولى: أساسيات شبكات الحاسوب ونموذج OSI", duration: "60 دقيقة", url: "#" }],
                 pdfs: [{ title: "مرجع الشبكات.pdf", size: "7.8 ميجابايت", url: "#" }]
             },
             "software-eng": {
                 title: "هندسة برمجيات",
                 instructor: "د. سيف الدين حميدة",
                 overview: "تتناول المادة المبادئ الهندسية لبناء وتطوير البرمجيات ودورة حياة النظام.",
-                lectures: [{ title: "المحاضرة الأولى: مقدمة SDLC", duration: "50 دقيقة", url: "#" }],
+                lectures: [{ title: "المحاضرة الأولى: مفاهيم هندسة البرمجيات ودورة حياة النظام", duration: "50 دقيقة", url: "#" }],
                 pdfs: [{ title: "كتاب هندسة البرمجيات.pdf", size: "9.1 ميجابايت", url: "#" }]
             }
         };
@@ -316,15 +333,19 @@
                 const lecturesList = document.getElementById('lectures-list');
                 lecturesList.innerHTML = '';
                 currentCourse.lectures.forEach((lec, index) => {
-                    let deleteBtn = isAdmin ? `<button class="btn-delete-item" onclick="deleteLecture(${index})">حذف</button>` : '';
+                    let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="deleteLecture(${index})">حذف</button>` : '';
                     let watchAction = lec.url && lec.url !== '#' ? `window.open('${lec.url}', '_blank')` : `showModal('تنبيه', 'جاري تشغيل الفيديو: ${lec.title}')`;
+                    let thumbHtml = lec.url && lec.url !== '#' ? `<video src="${lec.url}" preload="metadata"></video><div class="play-overlay"><i class="fa-solid fa-play"></i></div>` : `<div class="play-overlay"><i class="fa-solid fa-video" style="color:#f97316;"></i></div>`;
                     
                     lecturesList.innerHTML += `
                         <div class="lecture-item">
-                            <div class="lecture-title"><i class="fa-solid fa-play-circle" style="color: var(--primary);"></i> ${lec.title}</div>
-                            <div style="display: flex; gap: 10px; align-items: center;">
-                                <span style="font-size: 0.8rem; color: var(--text-muted);">${lec.duration}</span>
-                                <button class="btn-action btn-watch" onclick="simulateProgress('جاري تشغيل الفيديو...', () => { ${watchAction}; })">مشاهدة</button>
+                            <div class="lecture-left-side">
+                                <div class="video-thumbnail-box">${thumbHtml}</div>
+                                <div class="lecture-title">${lec.title}</div>
+                            </div>
+                            <div class="lecture-right-side">
+                                <div class="duration-badge">${lec.duration}<br><span style="font-size:0.7rem; color:var(--text-muted);">دقيقة</span></div>
+                                <button class="btn-watch-custom" onclick="simulateProgress('جاري تشغيل الفيديو...', () => { ${watchAction}; })"><i class="fa-solid fa-play"></i> مشاهدة</button>
                                 ${deleteBtn}
                             </div>
                         </div>
@@ -334,7 +355,7 @@
                 const pdfList = document.getElementById('pdf-list');
                 pdfList.innerHTML = '';
                 currentCourse.pdfs.forEach((pdf, index) => {
-                    let deleteBtn = isAdmin ? `<button class="btn-delete-item" onclick="deletePdf(${index})">حذف</button>` : '';
+                    let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="deletePdf(${index})">حذف</button>` : '';
                     let fileUrl = pdf.url || '#';
 
                     pdfList.innerHTML += `
@@ -366,7 +387,7 @@
             const file = fileInput.files[0];
             const reader = new FileReader();
 
-            simulateProgress('جاري رفع ومعالجة الفيديو...', () => {
+            simulateProgress('جاري رفع ومعالجة الفيديو والغلاف...', () => {
                 reader.onload = function(e) {
                     currentCourse.lectures.push({ title, duration, url: e.target.result });
                     localStorage.setItem(storageKey, JSON.stringify(currentCourse));
@@ -375,7 +396,7 @@
                     fileInput.value = '';
                     document.getElementById('video-file-name').textContent = 'لم يتم اختيار فيديو';
                     renderCoursePage();
-                    showModal('نجاح', 'تمت إضافة محاضرة الفيديو بنجاح!');
+                    showModal('نجاح', 'تمت إضافة المحاضرة والفيديو مع الغلاف بنجاح!');
                 };
                 reader.readAsDataURL(file);
             });
