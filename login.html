@@ -110,7 +110,6 @@
 
         .name-indicator { font-size: 0.78rem; margin-top: 5px; font-weight: 700; display: block; }
 
-        /* تذكير كلمة المرور الثابتة الجميل */
         .password-notice-box {
             background: #fff7ed;
             border: 1.5px dashed #fdba74;
@@ -245,7 +244,8 @@
                     </div>
                 </div>
 
-                <div class="form-group">
+                <!-- حقل كلمة المرور يظهر فقط في وضع تسجيل الدخول -->
+                <div class="form-group" id="login-pass-group">
                     <label>كلمة المرور</label>
                     <div class="input-wrapper">
                         <input type="password" id="pass-input" placeholder="********">
@@ -253,7 +253,7 @@
                     </div>
                 </div>
 
-                <!-- توضيح كلمة المرور الثابتة للطلاب -->
+                <!-- توضيح كلمة المرور الثابتة يظهر فقط في وضع إنشاء الحساب -->
                 <div class="password-notice-box signup-field hidden-view" id="password-notice-info">
                     <i class="fa-solid fa-circle-info"></i>
                     <div>كلمة المرور الافتتاحية الموحدة لجميع الطلاب عند التسجيل هي: <strong style="font-size: 0.95rem; color: #ea580c;">2025</strong></div>
@@ -379,6 +379,7 @@
         function toggleMode() {
             isSignupMode = !isSignupMode;
             const signupFields = document.querySelectorAll('.signup-field');
+            const loginPassGroup = document.getElementById('login-pass-group');
             const formTitle = document.getElementById('form-title');
             const formSubtitle = document.getElementById('form-subtitle');
             const submitBtn = document.getElementById('submit-btn');
@@ -388,6 +389,7 @@
 
             if (isSignupMode) {
                 signupFields.forEach(el => el.classList.remove('hidden-view'));
+                loginPassGroup.classList.add('hidden-view'); // إخفاء خانة كلمة المرور عند التسجيل
                 formTitle.textContent = "إنشاء حساب جامعي جديد";
                 formSubtitle.textContent = "قم بتعبئة بياناتك الرباعية للانضمام للمنصة.";
                 submitBtn.textContent = "إنشاء الحساب والتسجيل";
@@ -396,6 +398,7 @@
                 loginExtras.classList.add('hidden-view');
             } else {
                 signupFields.forEach(el => el.classList.add('hidden-view'));
+                loginPassGroup.classList.remove('hidden-view'); // إظهار خانة كلمة المرور عند تسجيل الدخول
                 formTitle.textContent = "بوابة تقانة المعلومات";
                 formSubtitle.textContent = "تسجيل الدخول بالرقم الجامعي.";
                 submitBtn.textContent = "تسجيل الدخول";
@@ -407,10 +410,9 @@
 
         async function handleAuthAction() {
             const studentid = document.getElementById('studentid').value.trim();
-            const pass = document.getElementById('pass-input').value.trim();
 
-            if (!studentid || !pass) {
-                showLuxuryError("تنبيه هام", "الرجاء إدخال الرقم الجامعي وكلمة المرور!");
+            if (!studentid) {
+                showLuxuryError("تنبيه هام", "الرجاء إدخال الرقم الجامعي!");
                 return;
             }
 
@@ -418,7 +420,7 @@
                 const fullname = document.getElementById('fullname').value.trim();
 
                 if (!fullname) {
-                    showLuxuryError("تنبيه هام", "الرجاء إدخال اسمك الكامل!");
+                    showLuxuryError("تنبيه هام", "الرجاء إدخال الاسم الكامل!");
                     return;
                 }
 
@@ -439,16 +441,11 @@
                         return;
                     }
 
-                    // حفظ بيانات الطالب (كلمة السر الافتراضية 2025 للجميع ما عدا المالك)
-                    let userPassword = pass;
-                    if (studentid !== "24-11086250") {
-                        userPassword = "2025";
-                    }
-
+                    // كلمة السر الافتتاحية الموحدة للطلاب 2025
                     await docRef.set({
                         fullname: fullname,
                         studentid: studentid,
-                        password: userPassword,
+                        password: "2025",
                         createdAt: new Date().toISOString()
                     });
 
@@ -465,7 +462,13 @@
                 }
 
             } else {
-                // وضع تسجيل الدخول بالرقم الجامعي فقط
+                // وضع تسجيل الدخول بالرقم الجامعي وكلمة المرور (2025 للطلاب)
+                const pass = document.getElementById('pass-input').value.trim();
+                if (!pass) {
+                    showLuxuryError("تنبيه هام", "الرجاء إدخال كلمة المرور!");
+                    return;
+                }
+
                 showLuxuryLoader("جاري التحقق...", "يتم مطابقة بياناتك مع قاعدة البيانات السحابية.");
 
                 try {
@@ -495,8 +498,8 @@
                         validPass = "2025";
                     }
 
-                    if (pass !== validPass && pass !== "2025") {
-                        showLuxuryError("خطأ في كلمة المرور", "كلمة المرور غير صحيحة. كلمة المرور العامة للطلاب هي 2025.");
+                    if (pass !== validPass) {
+                        showLuxuryError("خطأ في كلمة المرور", "كلمة المرور غير صحيحة. كلمة المرور الافتتاحية للطلاب هي 2025.");
                         return;
                     }
 
