@@ -78,12 +78,6 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
-        .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-        .stat-card { background: var(--card-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; align-items: center; gap: 15px; }
-        .stat-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
-        .stat-data h4 { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 3px; }
-        .stat-data span { font-size: 1.15rem; font-weight: 800; }
-
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
         .card { background-color: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); }
         .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
@@ -95,13 +89,12 @@
         .course-info-box { display: flex; flex-direction: column; gap: 4px; }
         .course-name { font-weight: 700; font-size: 0.95rem; }
         .course-instructor-name { font-size: 0.8rem; color: var(--text-muted); }
-        .course-code-badge { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; padding: 5px 12px; border-radius: 8px; font-size: 0.75rem; font-weight: bold; white-space: nowrap; }
 
         .btn-enter-course-dash {
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 700;
             text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
         }
-        .btn-enter-course-dash:hover { opacity: 0.9; transform: translateY(-1px); }
+        .btn-enter-course-dash:hover { opacity: 0.9; }
 
         .whatsapp-action-btn {
             display: flex; align-items: center; justify-content: center; gap: 10px; background-color: #25d366; color: white;
@@ -114,6 +107,7 @@
             font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg);
         }
 
+        /* نافذة رسائل النظام الأنيقة البديلة لـ alert */
         #custom-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center;
@@ -121,12 +115,12 @@
         }
         #custom-modal.active { opacity: 1; pointer-events: auto; }
         .modal-box {
-            background: var(--card-bg); width: 90%; max-width: 400px; padding: 30px; border-radius: 20px;
-            border: 1px solid var(--border); box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2); text-align: center;
+            background: var(--card-bg); width: 90%; max-width: 380px; padding: 30px; border-radius: 20px;
+            border: 1px solid var(--border); box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2); text-align: center;
         }
-        .modal-box h3 { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 12px; }
-        .modal-box p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6; }
-        .modal-btn { padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; }
+        .modal-box h3 { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
+        .modal-box p { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
+        .modal-btn { padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; width: 100%; }
 
         .hidden-element { display: none !important; }
         @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
@@ -137,8 +131,8 @@
     <div id="custom-modal">
         <div class="modal-box">
             <h3 id="modal-title">تنبيه النظام</h3>
-            <p id="modal-desc">رسالة التنبيه هنا...</p>
-            <button class="modal-btn" onclick="document.getElementById('custom-modal').classList.remove('active')">حسناً</button>
+            <p id="modal-desc">رسالة...</p>
+            <button class="modal-btn" onclick="closeModal()">حسناً</button>
         </div>
     </div>
 
@@ -179,48 +173,12 @@
             <div class="card">
                 <div class="card-title"><i class="fa-solid fa-list-check"></i> المقررات الـ 6 الحالية</div>
                 
-                <div class="course-row">
-                    <div class="course-info-box">
-                        <span class="course-name">الدراسات السودانية</span>
-                        <span class="course-instructor-name">د. مرتضى يونس بشير محمد</span>
-                    </div>
-                    <a href="course-details.html?course=sudanese-studies" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                </div>
-                <div class="course-row">
-                    <div class="course-info-box">
-                        <span class="course-name">مفاهيم قواعد البيانات ب/تقانة ثالث</span>
-                        <span class="course-instructor-name">أ. غفار عوض الله محمد احمد</span>
-                    </div>
-                    <a href="course-details.html?course=databases" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                </div>
-                <div class="course-row">
-                    <div class="course-info-box">
-                        <span class="course-name">جبر ومهندسة تحليلية</span>
-                        <span class="course-instructor-name">د. بشارة عيسى حمد عبدالله</span>
-                    </div>
-                    <a href="course-details.html?course=algebra-geometry" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                </div>
-                <div class="course-row">
-                    <div class="course-info-box">
-                        <span class="course-name">تقانة الحاسب الشخصي</span>
-                        <span class="course-instructor-name">أ. ساجدة احمد ادم</span>
-                    </div>
-                    <a href="course-details.html?course=pc-tech" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                </div>
-                <div class="course-row">
-                    <div class="course-info-box">
-                        <span class="course-name">شبكات الحاسوب والاتصال (1)</span>
-                        <span class="course-instructor-name">د. محمد الطيب حمادي</span>
-                    </div>
-                    <a href="course-details.html?course=networks-1" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                </div>
-                <div class="course-row">
-                    <div class="course-info-box">
-                        <span class="course-name">هندسة برمجيات</span>
-                        <span class="course-instructor-name">د. سيف الدين حميدة</span>
-                    </div>
-                    <a href="course-details.html?course=software-eng" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                </div>
+                <div class="course-row"><div class="course-info-box"><span class="course-name">الدراسات السودانية</span><span class="course-instructor-name">د. مرتضى يونس بشير محمد</span></div><a href="course-details.html?course=sudanese-studies" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
+                <div class="course-row"><div class="course-info-box"><span class="course-name">مفاهيم قواعد البيانات</span><span class="course-instructor-name">أ. غفار عوض الله محمد احمد</span></div><a href="course-details.html?course=databases" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
+                <div class="course-row"><div class="course-info-box"><span class="course-name">جبر ومهندسة تحليلية</span><span class="course-instructor-name">د. بشارة عيسى حمد عبدالله</span></div><a href="course-details.html?course=algebra-geometry" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
+                <div class="course-row"><div class="course-info-box"><span class="course-name">تقانة الحاسب الشخصي</span><span class="course-instructor-name">أ. ساجدة احمد ادم</span></div><a href="course-details.html?course=pc-tech" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
+                <div class="course-row"><div class="course-info-box"><span class="course-name">شبكات الحاسوب والاتصال (1)</span><span class="course-instructor-name">د. محمد الطيب حمادي</span></div><a href="course-details.html?course=networks-1" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
+                <div class="course-row"><div class="course-info-box"><span class="course-name">هندسة برمجيات</span><span class="course-instructor-name">د. سيف الدين حميدة</span></div><a href="course-details.html?course=software-eng" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
             </div>
 
             <div class="card">
@@ -237,6 +195,15 @@
     </footer>
 
     <script>
+        function showModal(title, desc) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-desc').textContent = desc;
+            document.getElementById('custom-modal').classList.add('active');
+        }
+        function closeModal() {
+            document.getElementById('custom-modal').classList.remove('active');
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const loggedUser = localStorage.getItem('it_logged_user');
             const loggedId = localStorage.getItem('it_logged_id');
@@ -263,21 +230,19 @@
             const currentStatus = localStorage.getItem('it_admin_mode') === 'true';
             if (currentStatus) {
                 localStorage.setItem('it_admin_mode', 'false');
-                alert('تم إيقاف وضع الإدارة بنجاح.');
+                showModal('وضع الإدارة', 'تم إيقاف وضع الإدارة بنجاح.');
             } else {
                 localStorage.setItem('it_admin_mode', 'true');
-                alert('تم تفعيل وضع الإدارة بنجاح!');
+                showModal('وضع الإدارة', 'تم تفعيل وضع الإدارة بنجاح! يمكنك الآن إضافة وتعديل الملفات.');
             }
-            location.reload();
+            setTimeout(() => location.reload(), 1200);
         }
 
         document.getElementById('logout-btn').addEventListener('click', () => {
-            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
-                localStorage.removeItem('it_logged_user');
-                localStorage.removeItem('it_logged_id');
-                localStorage.removeItem('it_admin_mode');
-                window.location.href = 'login.html';
-            }
+            localStorage.removeItem('it_logged_user');
+            localStorage.removeItem('it_logged_id');
+            localStorage.removeItem('it_admin_mode');
+            window.location.href = 'login.html';
         });
     </script>
 </body>
