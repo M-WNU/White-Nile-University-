@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الرئيسية - بوابة تقانة المعلومات | متجر كوستي الإلكتروني</title>
+    <title>الرئيسية - بوابة تقانة المعلومات | جامعة النيل الأبيض</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -64,11 +64,24 @@
         .btn-danger-custom { background-color: #fee2e2; color: #dc2626; border-color: #fca5a5; }
         .dark-mode .btn-danger-custom { background-color: rgba(220, 38, 38, 0.15); color: #fca5a5; border-color: #7f1d1d; }
 
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; }
+        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 25px; }
         .card { background-color: var(--card-bg); border-radius: 16px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
         .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary-color); margin-bottom: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; }
         .announcement-item { padding: 14px; background: rgba(0,0,0,0.01); border: 1px solid var(--border-color); border-radius: 10px; margin-bottom: 12px; font-size: 0.9rem; line-height: 1.6; }
         .dark-mode .announcement-item { background: rgba(255,255,255,0.01); }
+        
+        /* Courses Grid Styling */
+        .courses-section { margin-top: 30px; }
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
+        .course-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 14px; padding: 20px; box-shadow: var(--shadow); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
+        .course-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--primary-gradient); }
+        .course-title { font-size: 1.05rem; font-weight: 800; color: var(--text-color); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+        .course-instructor { font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+        .course-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 10px; }
+        .course-badge { background: rgba(20, 184, 166, 0.1); color: var(--primary-color); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
+        .btn-enter-course { background: var(--primary-gradient); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-enter-course:hover { opacity: 0.9; transform: scale(1.03); }
+
         .hidden-element { display: none !important; }
 
         @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; } }
@@ -78,7 +91,7 @@
 
     <aside>
         <div class="sidebar-brand">
-            <i class="fa-solid fa-graduation-cap fa-lg"></i> متجر كوستي التقني
+            <i class="fa-solid fa-graduation-cap fa-lg"></i> جامعة النيل الأبيض
         </div>
         <ul class="sidebar-menu">
             <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
@@ -132,6 +145,95 @@
                 </a>
             </div>
         </div>
+
+        <!-- قسم المقررات والكورسات الدراسية الـ 6 الأساسية -->
+        <div class="courses-section">
+            <div class="card">
+                <div class="card-title"><i class="fa-solid fa-book-open"></i> المقررات والكورسات الدراسية (المواد الـ 6)</div>
+                <div class="courses-grid" id="courses-container">
+                    
+                    <!-- 1. الدراسات السودانية -->
+                    <div class="course-card">
+                        <div>
+                            <div class="course-badge">مادة عامة</div>
+                            <div class="course-title" style="margin-top: 10px;"><i class="fa-solid fa-landmark"></i> الدراسات السودانية</div>
+                            <div class="course-instructor"><i class="fa-solid fa-chalkboard-user"></i> د. مرتضى يونس بشير محمد</div>
+                        </div>
+                        <div class="course-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
+                            <a href="course-details.html?course=sudanese-studies" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- 2. مفاهيم قواعد البيانات ب/تقانة ثالث -->
+                    <div class="course-card">
+                        <div>
+                            <div class="course-badge">تقانة المعلومات</div>
+                            <div class="course-title" style="margin-top: 10px;"><i class="fa-solid fa-database"></i> مفاهيم قواعد البيانات ب/تقانة ثالث</div>
+                            <div class="course-instructor"><i class="fa-solid fa-chalkboard-user"></i> أ. غفار عوض الله محمد احمد</div>
+                        </div>
+                        <div class="course-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
+                            <a href="course-details.html?course=databases" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- 3. جبر ومهندسة تحليلية -->
+                    <div class="course-card">
+                        <div>
+                            <div class="course-badge">رياضيات وأسس</div>
+                            <div class="course-title" style="margin-top: 10px;"><i class="fa-solid fa-square-root-variable"></i> جبر ومهندسة تحليلية</div>
+                            <div class="course-instructor"><i class="fa-solid fa-chalkboard-user"></i> د. بشارة عيسى حمد عبدالله</div>
+                        </div>
+                        <div class="course-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
+                            <a href="course-details.html?course=algebra-geometry" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- 4. تقانة الحاسب الشخصي -->
+                    <div class="course-card">
+                        <div>
+                            <div class="course-badge">عتاد حاسوبي</div>
+                            <div class="course-title" style="margin-top: 10px;"><i class="fa-solid fa-laptop"></i> تقانة الحاسب الشخصي</div>
+                            <div class="course-instructor"><i class="fa-solid fa-chalkboard-user"></i> أ. ساجدة احمد ادم</div>
+                        </div>
+                        <div class="course-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
+                            <a href="course-details.html?course=pc-tech" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- 5. شبكات الحاسوب والاتصال (1) -->
+                    <div class="course-card">
+                        <div>
+                            <div class="course-badge">اتصالات وشبكات</div>
+                            <div class="course-title" style="margin-top: 10px;"><i class="fa-solid fa-network-wired"></i> شبكات الحاسوب والاتصال (1)</div>
+                            <div class="course-instructor"><i class="fa-solid fa-chalkboard-user"></i> د. محمد الطيب حمادي</div>
+                        </div>
+                        <div class="course-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
+                            <a href="course-details.html?course=networks-1" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- 6. هندسة برمجيات -->
+                    <div class="course-card">
+                        <div>
+                            <div class="course-badge">هندسة برمجيات</div>
+                            <div class="course-title" style="margin-top: 10px;"><i class="fa-solid fa-code"></i> هندسة برمجيات</div>
+                            <div class="course-instructor"><i class="fa-solid fa-chalkboard-user"></i> د. سيف الدين حميدة</div>
+                        </div>
+                        <div class="course-footer">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
+                            <a href="course-details.html?course=software-eng" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </main>
 
     <script>
