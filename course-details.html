@@ -6,12 +6,6 @@
     <title>محتوى المقرر - بوابة تقانة المعلومات</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- ربط مكتبات Firebase الأساسية -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
-
     <style>
         :root {
             --primary: #f97316;
@@ -107,7 +101,6 @@
         .file-upload-label { display: block; background: #fff; border: 1.5px dashed #f59e0b; padding: 10px; border-radius: 12px; text-align: center; font-size: 0.85rem; color: #b45309; font-weight: 700; cursor: pointer; margin-bottom: 12px; }
         .btn-admin-submit { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; }
 
-        /* شريط التحميل الحقيقي الواقعي لـ Firebase */
         #progress-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(5px); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
         #progress-modal.active { opacity: 1; pointer-events: auto; }
         .progress-box { background: #ffffff; width: 90%; max-width: 400px; padding: 30px; border-radius: 20px; text-align: center; box-shadow: 0 20px 25px rgba(0,0,0,0.3); }
@@ -126,7 +119,7 @@
 
     <div id="progress-modal">
         <div class="progress-box">
-            <h3 id="progress-title" style="margin-bottom: 15px; font-weight: 800;">جاري الرفع إلى سحابة Firebase...</h3>
+            <h3 id="progress-title" style="margin-bottom: 15px; font-weight: 800;">جاري الرفع والمعالجة...</h3>
             <div class="progress-bar-container">
                 <div class="progress-bar-fill" id="progress-fill"></div>
             </div>
@@ -163,26 +156,26 @@
 
         <div id="admin-controls-section" class="hidden-element">
             <div class="admin-panel-box">
-                <h4><i class="fa-solid fa-user-shield"></i> لوحة الإدارة (سحابة Firebase)</h4>
+                <h4><i class="fa-solid fa-user-shield"></i> لوحة الإدارة (إضافة المحاضرات والملفات)</h4>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
                     <div style="background: #fff; padding: 18px; border-radius: 16px; border: 1px solid #fcd34d;">
-                        <strong style="display: block; margin-bottom: 10px; color: #b45309;"><i class="fa-solid fa-video"></i> رفع فيديو جديد:</strong>
+                        <strong style="display: block; margin-bottom: 10px; color: #b45309;"><i class="fa-solid fa-video"></i> إضافة فيديو مع الغلاف:</strong>
                         <input type="text" id="new-lec-title" class="form-control-admin" placeholder="عنوان المحاضرة">
                         <input type="text" id="new-lec-duration" class="form-control-admin" placeholder="المدة (مثلا: 45 دقيقة)">
                         <label class="file-upload-label" for="video-file-input"><i class="fa-solid fa-cloud-arrow-up"></i> اختر ملف الفيديو</label>
                         <input type="file" id="video-file-input" accept="video/*" style="display: none;" onchange="updateFileName(this, 'video-file-name')">
                         <span id="video-file-name" style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 10px;">لم يتم اختيار فيديو</span>
-                        <button class="btn-admin-submit" onclick="addVideoLectureFirebase()">رفع وحفظ بالفيربيز</button>
+                        <button class="btn-admin-submit" onclick="addVideoLecture()">إضافة المحاضرة</button>
                     </div>
 
                     <div style="background: #fff; padding: 18px; border-radius: 16px; border: 1px solid #fcd34d;">
-                        <strong style="display: block; margin-bottom: 10px; color: #b45309;"><i class="fa-solid fa-file-pdf"></i> رفع ملف PDF:</strong>
+                        <strong style="display: block; margin-bottom: 10px; color: #b45309;"><i class="fa-solid fa-file-pdf"></i> إضافة ملف PDF:</strong>
                         <input type="text" id="new-pdf-title" class="form-control-admin" placeholder="اسم الملف (اختياري)">
                         <label class="file-upload-label" for="pdf-file-input"><i class="fa-solid fa-cloud-arrow-up"></i> اختر ملف PDF</label>
                         <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;" onchange="updateFileName(this, 'pdf-file-name')">
                         <span id="pdf-file-name" style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 10px; margin-top: 25px;">لم يتم اختيار ملف PDF</span>
-                        <button class="btn-admin-submit" onclick="addPdfFileFirebase()">رفع ملف الـ PDF بالفيربيز</button>
+                        <button class="btn-admin-submit" onclick="addPdfFile()">إضافة ملف الـ PDF</button>
                     </div>
                 </div>
             </div>
@@ -215,22 +208,6 @@
     </footer>
 
     <script>
-        // إعدادات Firebase الخاصة بك (استبدل القيم أدناه ببيانات مشروعك الفعلي على فايبربيز إن لم تكن مضافة مسبقاً)
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
-        const storage = firebase.storage();
-
         function showModal(title, desc) {
             document.getElementById('modal-title').textContent = title;
             document.getElementById('modal-desc').textContent = desc;
@@ -287,7 +264,10 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const courseKey = urlParams.get('course');
-        let currentCourse = defaultCoursesData[courseKey];
+        let storageKey = `it_course_${courseKey}`;
+        
+        // جلب البيانات فورياً وبدون تعليق
+        let currentCourse = JSON.parse(localStorage.getItem(storageKey)) || defaultCoursesData[courseKey];
 
         const isAdmin = localStorage.getItem('it_logged_id') === '24-11086250' && localStorage.getItem('it_admin_mode') === 'true';
 
@@ -300,7 +280,7 @@
             if (isAdmin) {
                 document.getElementById('admin-controls-section').classList.remove('hidden-element');
             }
-            loadCourseFromFirebase();
+            renderCoursePage();
         });
 
         function updateFileName(input, spanId) {
@@ -309,29 +289,6 @@
                 span.textContent = `تم اختيار: ${input.files[0].name}`;
                 span.style.color = '#10b981';
             }
-        }
-
-        // جلب البيانات مباشرة من سحابة Firebase Firestore
-        function loadCourseFromFirebase() {
-            db.collection("courses").doc(courseKey).get().then((doc) => {
-                if (doc.exists) {
-                    currentCourse = doc.data();
-                }
-                renderCoursePage();
-            }).catch((error) => {
-                console.error("خطأ في جلب البيانات:", error);
-                renderCoursePage();
-            });
-        }
-
-        // حفظ التحديثات في Firebase
-        function saveCourseToFirebase(onSuccessMsg) {
-            db.collection("courses").doc(courseKey).set(currentCourse).then(() => {
-                renderCoursePage();
-                showModal("نجاح", onSuccessMsg);
-            }).catch((error) => {
-                showModal("خطأ", "فشل الحفظ في السحابة: " + error.message);
-            });
         }
 
         function renderCoursePage() {
@@ -378,7 +335,7 @@
                                     <span style="font-size: 0.75rem; color: var(--text-muted); margin-right: 10px;">(${pdf.size})</span>
                                 </div>
                                 <div style="display: flex; gap: 8px; align-items: center;">
-                                    <a href="${fileUrl}" download="${pdf.title}" class="btn-download-direct" target="_blank"><i class="fa-solid fa-download"></i> تنزيل</a>
+                                    <a href="${fileUrl}" download="${pdf.title}" class="btn-download-direct"><i class="fa-solid fa-download"></i> تنزيل</a>
                                     ${deleteBtn}
                                 </div>
                             </div>
@@ -388,8 +345,7 @@
             }
         }
 
-        // رفع الفيديو الحقيقي إلى Firebase Storage مع شريط تقدم حقيقي
-        function addVideoLectureFirebase() {
+        function addVideoLecture() {
             const title = document.getElementById('new-lec-title').value.trim();
             const duration = document.getElementById('new-lec-duration').value.trim();
             const fileInput = document.getElementById('video-file-input');
@@ -399,4 +355,104 @@
                 return;
             }
 
-            const file = fileInput
+            const file = fileInput.files[0];
+            const modal = document.getElementById('progress-modal');
+            const fillEl = document.getElementById('progress-fill');
+            const statusEl = document.getElementById('progress-status');
+            fillEl.style.width = '0%';
+            statusEl.textContent = '0%';
+            modal.classList.add('active');
+
+            const reader = new FileReader();
+            reader.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    let percent = Math.round((e.loaded / e.total) * 100);
+                    fillEl.style.width = percent + '%';
+                    statusEl.textContent = percent + '%';
+                }
+            };
+
+            reader.onload = function(e) {
+                fillEl.style.width = '100%';
+                statusEl.textContent = '100% - تم الرفع بنجاح!';
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    currentCourse.lectures.push({ title, duration, url: e.target.result });
+                    try {
+                        localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+                    } catch (err) {
+                        showModal('تنبيه', 'حجم الفيديو كبير جداً، يفضل اختيار فيديو بحجم أصغر.');
+                        return;
+                    }
+
+                    document.getElementById('new-lec-title').value = '';
+                    document.getElementById('new-lec-duration').value = '';
+                    fileInput.value = '';
+                    document.getElementById('video-file-name').textContent = 'لم يتم اختيار فيديو';
+                    renderCoursePage();
+                    showModal('نجاح', 'تمت إضافة المحاضرة والفيديو مع الغلاف بنجاح!');
+                }, 400);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function addPdfFile() {
+            const fileInput = document.getElementById('pdf-file-input');
+            let customTitle = document.getElementById('new-pdf-title').value.trim();
+
+            if (fileInput.files.length === 0) {
+                showModal('خطأ', 'الرجاء اختيار ملف PDF أولاً!');
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const title = customTitle || file.name;
+            const size = (file.size / (1024 * 1024)).toFixed(2) + ' ميجابايت';
+            
+            const modal = document.getElementById('progress-modal');
+            const fillEl = document.getElementById('progress-fill');
+            const statusEl = document.getElementById('progress-status');
+            fillEl.style.width = '0%';
+            statusEl.textContent = '0%';
+            modal.classList.add('active');
+
+            const reader = new FileReader();
+            reader.onprogress = function(e) {
+                if (e.lengthComputable) {
+                    let percent = Math.round((e.loaded / e.total) * 100);
+                    fillEl.style.width = percent + '%';
+                    statusEl.textContent = percent + '%';
+                }
+            };
+
+            reader.onload = function(e) {
+                fillEl.style.width = '100%';
+                statusEl.textContent = '100% - تم بنجاح!';
+                setTimeout(() => {
+                    modal.classList.remove('active');
+                    currentCourse.pdfs.push({ title, size, url: e.target.result });
+                    localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+                    document.getElementById('new-pdf-title').value = '';
+                    fileInput.value = '';
+                    document.getElementById('pdf-file-name').textContent = 'لم يتم اختيار ملف PDF';
+                    renderCoursePage();
+                    showModal('نجاح', 'تمت إضافة ملف الـ PDF بنجاح!');
+                }, 400);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function deleteLecture(index) {
+            currentCourse.lectures.splice(index, 1);
+            localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+            renderCoursePage();
+        }
+
+        function deletePdf(index) {
+            currentCourse.pdfs.splice(index, 1);
+            localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+            renderCoursePage();
+        }
+    </script>
+</body>
+</html>
