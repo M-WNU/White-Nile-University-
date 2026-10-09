@@ -20,9 +20,8 @@
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; transition: 0.25s ease; }
-        body { background-color: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+        body { background-color: var(--bg); color: var(--text); display: flex; min-height: 100vh; flex-direction: column; }
 
-        /* القائمة الجانبية الأنيقة المطابقة للهوية */
         aside {
             width: 280px; background-color: var(--card-bg); border-left: 1px solid var(--border);
             display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;
@@ -41,9 +40,8 @@
         }
         .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--primary-light); color: var(--primary); }
 
-        main { flex-grow: 1; margin-right: 280px; padding: 35px; max-width: 1300px; }
+        main { flex-grow: 1; margin-right: 280px; padding: 35px; max-width: 1300px; width: calc(100% - 280px); }
 
-        /* بطاقة الهوية والترحيب الاحترافية */
         .hero-card-3d {
             background: var(--card-bg); border-radius: 24px; padding: 35px; box-shadow: var(--shadow);
             border: 1px solid var(--border); margin-bottom: 30px; position: relative; overflow: hidden;
@@ -90,7 +88,6 @@
         .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
         .announcement-item { padding: 15px; background: #fffaf5; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; font-size: 0.92rem; line-height: 1.7; }
         
-        /* شبكة الكورسات */
         .courses-section { margin-top: 30px; }
         .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
         .course-card {
@@ -110,7 +107,12 @@
         }
         .btn-enter-course:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* شاشة التحميل الاحترافية */
+        /* تذييل حقوق النشر المتعارف عليها عالمياً */
+        .footer-copyright {
+            margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted);
+            font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg);
+        }
+
         #loading-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75);
             backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center;
@@ -125,7 +127,7 @@
         .loading-text { color: #ffffff; font-size: 1rem; font-weight: 700; font-family: 'Cairo', sans-serif; }
 
         .hidden-element { display: none !important; }
-        @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; } }
+        @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
     </style>
 </head>
 <body>
@@ -193,13 +195,11 @@
             </div>
         </div>
 
-        <!-- المقررات والـ 6 كورسات -->
         <div class="courses-section">
             <div class="card">
                 <div class="card-title"><i class="fa-solid fa-book-open"></i> المقررات والكورسات الدراسية (المواد الـ 6)</div>
                 <div class="courses-grid">
                     
-                    <!-- 1. الدراسات السودانية -->
                     <div class="course-card">
                         <div>
                             <div class="course-badge">مادة عامة</div>
@@ -212,7 +212,6 @@
                         </div>
                     </div>
 
-                    <!-- 2. مفاهيم قواعد البيانات -->
                     <div class="course-card">
                         <div>
                             <div class="course-badge">تقانة المعلومات</div>
@@ -225,7 +224,6 @@
                         </div>
                     </div>
 
-                    <!-- 3. جبر ومهندسة تحليلية -->
                     <div class="course-card">
                         <div>
                             <div class="course-badge">رياضيات وأسس</div>
@@ -238,7 +236,6 @@
                         </div>
                     </div>
 
-                    <!-- 4. تقانة الحاسب الشخصي -->
                     <div class="course-card">
                         <div>
                             <div class="course-badge">عتاد حاسوبي</div>
@@ -251,7 +248,6 @@
                         </div>
                     </div>
 
-                    <!-- 5. شبكات الحاسوب والاتصال (1) -->
                     <div class="course-card">
                         <div>
                             <div class="course-badge">اتصالات وشبكات</div>
@@ -264,7 +260,6 @@
                         </div>
                     </div>
 
-                    <!-- 6. هندسة برمجيات -->
                     <div class="course-card">
                         <div>
                             <div class="course-badge">هندسة برمجيات</div>
@@ -281,6 +276,11 @@
             </div>
         </div>
     </main>
+
+    <!-- حقوق النشر العالمية -->
+    <footer class="footer-copyright">
+        © 2026 جميع الحقوق محفوظة لدى محمود عبدالله
+    </footer>
 
     <script>
         function showLoading(message, callback) {
