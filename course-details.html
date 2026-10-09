@@ -75,20 +75,25 @@
             border: 1px solid var(--border); padding: 18px; border-radius: 14px; margin-bottom: 20px;
         }
 
-        /* نماذج لوحة التحكم الإدارية الخاصة بـ محمود */
+        /* لوحة الإدارة بالتصميم المطلوب */
         .admin-panel-box {
-            background: #fef3c7; border: 2px dashed #f59e0b; padding: 20px; border-radius: 16px; margin-bottom: 20px;
+            background: #fef3c7; border: 2px dashed #f59e0b; padding: 25px; border-radius: 20px; margin-bottom: 25px;
         }
-        .admin-panel-box h4 { color: #d97706; font-size: 1rem; font-weight: 800; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+        .admin-panel-box h4 { color: #d97706; font-size: 1.1rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .form-control-admin {
-            width: 100%; padding: 10px 14px; border: 1px solid #cbd5e1; border-radius: 10px; font-size: 0.9rem; margin-bottom: 10px; outline: none; background: #fff;
+            width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 0.9rem; margin-bottom: 12px; outline: none; background: #fff;
         }
+        .file-upload-label {
+            display: block; background: #fff; border: 1.5px dashed #f59e0b; padding: 10px; border-radius: 12px; text-align: center;
+            font-size: 0.85rem; color: #b45309; font-weight: 700; cursor: pointer; margin-bottom: 12px;
+        }
+        .file-upload-label:hover { background: #fffbeb; }
         .btn-admin-submit {
-            background: #d97706; color: white; border: none; padding: 10px 20px; border-radius: 10px; font-weight: 700; cursor: pointer;
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; box-shadow: 0 4px 10px rgba(217, 119, 6, 0.25);
         }
-        .btn-admin-submit:hover { background: #b45309; }
+        .btn-admin-submit:hover { opacity: 0.9; }
 
-        .btn-delete-item { background: #fee2e2; color: #dc2626; border: none; padding: 6px 10px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; }
+        .btn-delete-item { background: #fee2e2; color: #dc2626; border: none; padding: 6px 12px; border-radius: 8px; cursor: pointer; font-size: 0.8rem; font-weight: 700; }
         .btn-delete-item:hover { background: #dc2626; color: white; }
 
         .footer-copyright {
@@ -137,30 +142,43 @@
                 <h1 id="course-title-display">جاري تحميل المقرر...</h1>
                 <p id="course-instructor-display"><i class="fa-solid fa-chalkboard-user"></i> الأستاذ المحاضر: --</p>
             </div>
-            <a href="dashboard.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للوحة التحكم</a>
+            <a href="dashboard.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة لوحة التحكم</a>
         </div>
 
-        <!-- لوحة التحكم الإدارية الخاصة بـ محمود (تظهر فقط عند تفعيل وضع الإدارة) -->
+        <!-- لوحة الإدارة لرفع الملفات والفيديوهات الحقيقية من المعرض والملفات -->
         <div id="admin-controls-section" class="hidden-element">
             <div class="admin-panel-box">
-                <h4><i class="fa-solid fa-user-shield"></i> لوحة الإدارة (مخصص لـ محمود عبدالله)</h4>
+                <h4><i class="fa-solid fa-user-shield"></i> لوحة الإدارة (رفع الملفات والفيديوهات مباشرة)</h4>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-                    <!-- إضافة محاضرة فيديو -->
-                    <div style="background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #fcd34d;">
-                        <strong style="display: block; margin-bottom: 8px; font-size: 0.9rem;">إضافة محاضرة فيديو جديدة:</strong>
-                        <input type="text" id="new-lec-title" class="form-control-admin" placeholder="عنوان المحاضرة (مثلا: المحاضرة الرابعة)">
-                        <input type="text" id="new-lec-duration" class="form-control-admin" placeholder="المدة (مثلا: 45 دقيقة)">
-                        <button class="btn-admin-submit" onclick="addLectureItem()">إضافة المحاضرة</button>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                    
+                    <!-- قسم رفع الفيديو -->
+                    <div style="background: #fff; padding: 18px; border-radius: 16px; border: 1px solid #fcd34d;">
+                        <strong style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: #b45309;"><i class="fa-solid fa-video"></i> إضافة محاضرة فيديو:</strong>
+                        <input type="text" id="new-lec-title" class="form-control-admin" placeholder="عنوان المحاضرة (مثلا: المحاضرة الخامسة)">
+                        <input type="text" id="new-lec-duration" class="form-control-admin" placeholder="المدة (مثلا: 50 دقيقة)">
+                        <label class="file-upload-label" for="video-file-input">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> اختر فيديو من جهازك / المعرض
+                        </label>
+                        <input type="file" id="video-file-input" accept="video/*" style="display: none;" onchange="updateFileName(this, 'video-file-name')">
+                        <span id="video-file-name" style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 10px;">لم يتم اختيار ملف فيديو</span>
+                        
+                        <button class="btn-admin-submit" onclick="addVideoLecture()">إضافة المحاضرة</button>
                     </div>
 
-                    <!-- إضافة ملف PDF -->
-                    <div style="background: #fff; padding: 15px; border-radius: 12px; border: 1px solid #fcd34d;">
-                        <strong style="display: block; margin-bottom: 8px; font-size: 0.9rem;">إضافة ملف PDF أو مرجع جديد:</strong>
-                        <input type="text" id="new-pdf-title" class="form-control-admin" placeholder="اسم الملف (مثلا: مذكرة الشرح.pdf)">
-                        <input type="text" id="new-pdf-size" class="form-control-admin" placeholder="الحجم (مثلا: 3.5 ميجابايت)">
-                        <button class="btn-admin-submit" onclick="addPdfItem()">إضافة الملف</button>
+                    <!-- قسم رفع ملف PDF -->
+                    <div style="background: #fff; padding: 18px; border-radius: 16px; border: 1px solid #fcd34d;">
+                        <strong style="display: block; margin-bottom: 10px; font-size: 0.95rem; color: #b45309;"><i class="fa-solid fa-file-pdf"></i> إضافة ملف PDF أو مرجع:</strong>
+                        <input type="text" id="new-pdf-title" class="form-control-admin" placeholder="اسم الملف الاختياري">
+                        <label class="file-upload-label" for="pdf-file-input">
+                            <i class="fa-solid fa-cloud-arrow-up"></i> اختر ملف PDF من الملفات
+                        </label>
+                        <input type="file" id="pdf-file-input" accept=".pdf" style="display: none;" onchange="updateFileName(this, 'pdf-file-name')">
+                        <span id="pdf-file-name" style="font-size: 0.78rem; color: var(--text-muted); display: block; margin-bottom: 10px; margin-top: 25px;">لم يتم اختيار ملف PDF</span>
+                        
+                        <button class="btn-admin-submit" onclick="addPdfFile()">إضافة ملف الـ PDF</button>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -212,13 +230,13 @@
                 instructor: "د. مرتضى يونس بشير محمد",
                 overview: "تهدف هذه المادة إلى تعريج شامل على تاريخ السودان الحضاري والسياسي والاجتماعي، ودراسة مقومات الهوية السودانية، التنوع الثقافي، والتطورات التاريخية والحديثة التي شكلت الدولة السودانية.",
                 lectures: [
-                    { title: "المحاضرة الأولى: المدخل التاريخي والحضاري", duration: "45 دقيقة" },
-                    { title: "المحاضرة الثانية: التركيبة السكانية والثقافية في السودان", duration: "50 دقيقة" },
-                    { title: "المحاضرة الثالثة: التطورات السياسية الحديثة", duration: "40 دقيقة" }
+                    { title: "المحاضرة الأولى: المدخل التاريخي والحضاري", duration: "45 دقيقة", url: "#" },
+                    { title: "المحاضرة الثانية: التركيبة السكانية والثقافية في السودان", duration: "50 دقيقة", url: "#" },
+                    { title: "المحاضرة الثالثة: التطورات السياسية الحديثة", duration: "40 دقيقة", url: "#" }
                 ],
                 pdfs: [
-                    { title: "مذكرة الدراسات السودانية الشاملة.pdf", size: "4.2 ميجابايت" },
-                    { title: "ملخص تاريخ السودان الحديث.pdf", size: "2.1 ميجابايت" }
+                    { title: "مذكرة الدراسات السودانية الشاملة.pdf", size: "4.2 ميجابايت", url: "#" },
+                    { title: "ملخص تاريخ السودان الحديث.pdf", size: "2.1 ميجابايت", url: "#" }
                 ]
             },
             "databases": {
@@ -226,13 +244,13 @@
                 instructor: "أ. غفار عوض الله محمد احمد",
                 overview: "تتناول هذه المادة المفاهيم الأساسية والمتقدمة لنظم إدارة قواعد البيانات (RDBMS)، تصميم جداول العلاقات باستخدام مخططات الكيان والارتباط (ERD)، وكتابة أوامر لغة الاستعلام المهيكلة (SQL) بكفاءة عالية.",
                 lectures: [
-                    { title: "المحاضرة الأولى: مقدمة في نظم إدارة قواعد البيانات RDBMS", duration: "55 دقيقة" },
-                    { title: "المحاضرة الثانية: تصميم العلاقات ونظام ERD", duration: "60 دقيقة" },
-                    { title: "المحاضرة الثالثة: لغة الاستعلام المهيكلة SQL الأساسية", duration: "50 دقيقة" }
+                    { title: "المحاضرة الأولى: مقدمة في نظم إدارة قواعد البيانات RDBMS", duration: "55 دقيقة", url: "#" },
+                    { title: "المحاضرة الثانية: تصميم العلاقات ونظام ERD", duration: "60 دقيقة", url: "#" },
+                    { title: "المحاضرة الثالثة: لغة الاستعلام المهيكلة SQL الأساسية", duration: "50 دقيقة", url: "#" }
                 ],
                 pdfs: [
-                    { title: "كتاب مفاهيم قواعد البيانات مرجع أساسي.pdf", size: "8.5 ميجابايت" },
-                    { title: "أمثلة وتمارين SQL عملية.pdf", size: "1.8 ميجابايت" }
+                    { title: "كتاب مفاهيم قواعد البيانات مرجع أساسي.pdf", size: "8.5 ميجابايت", url: "#" },
+                    { title: "أمثلة وتمارين SQL عملية.pdf", size: "1.8 ميجابايت", url: "#" }
                 ]
             },
             "algebra-geometry": {
@@ -240,13 +258,13 @@
                 instructor: "د. بشارة عيسى حمد عبدالله",
                 overview: "تركز المادة على دراسة المصفوفات، المحددات، الطرق الجبرية لحل المعادلات الخطية، بالإضافة إلى مفاهيم الهندسة التحليلية في الفضاء الثنائي والثلاثي الأبعاد وتطبيقاتها الهندسية والرياضية.",
                 lectures: [
-                    { title: "المحاضرة الأولى: المصفوفات والمحددات ونظرياتها", duration: "50 دقيقة" },
-                    { title: "المحاضرة الثانية: المعادلات الخطية وطرق حلها", duration: "45 دقيقة" },
-                    { title: "المحاضرة الثالثة: الهندسة التحليلية في الفضاء", duration: "55 دقيقة" }
+                    { title: "المحاضرة الأولى: المصفوفات والمحددات ونظرياتها", duration: "50 دقيقة", url: "#" },
+                    { title: "المحاضرة الثانية: المعادلات الخطية وطرق حلها", duration: "45 دقيقة", url: "#" },
+                    { title: "المحاضرة الثالثة: الهندسة التحليلية في الفضاء", duration: "55 دقيقة", url: "#" }
                 ],
                 pdfs: [
-                    { title: "محاضرات الجبر والهندسة التحليلية.pdf", size: "5.0 ميجابايت" },
-                    { title: "تمارين ومسائل محلولة في الجبر.pdf", size: "3.2 ميجابايت" }
+                    { title: "محاضرات الجبر والهندسة التحليلية.pdf", size: "5.0 ميجابايت", url: "#" },
+                    { title: "تمارين ومسائل محلولة في الجبر.pdf", size: "3.2 ميجابايت", url: "#" }
                 ]
             },
             "pc-tech": {
@@ -254,13 +272,13 @@
                 instructor: "أ. ساجدة احمد ادم",
                 overview: "تغطي المادة مكونات العتاد الصلب (Hardware) للحاسب الشخصي، آلية عمل اللوحات الأم والمعالجات الحديثة، صيانة الأعطال المادية، وإدارة أنظمة التشغيل وحل مشاكل الإقلاع بكفاءة.",
                 lectures: [
-                    { title: "المحاضرة الأولى: مكونات العتاد الصلب Hardware وصيانتها", duration: "40 دقيقة" },
-                    { title: "المحاضرة الثانية: اللوحات الأم والمعالجات الحديثة", duration: "45 دقيقة" },
-                    { title: "المحاضرة الثالثة: أنظمة التشغيل وحل مشاكل الإقلاع", duration: "50 دقيقة" }
+                    { title: "المحاضرة الأولى: مكونات العتاد الصلب Hardware وصيانتها", duration: "40 دقيقة", url: "#" },
+                    { title: "المحاضرة الثانية: اللوحات الأم والمعالجات الحديثة", duration: "45 دقيقة", url: "#" },
+                    { title: "المحاضرة الثالثة: أنظمة التشغيل وحل مشاكل الإقلاع", duration: "50 دقيقة", url: "#" }
                 ],
                 pdfs: [
-                    { title: "دليل صيانة الحاسب الشخصي.pdf", size: "6.3 ميجابايت" },
-                    { title: "ملخص معمارية الحاسوب.pdf", size: "2.5 ميجابايت" }
+                    { title: "دليل صيانة الحاسب الشخصي.pdf", size: "6.3 ميجابايت", url: "#" },
+                    { title: "ملخص معمارية الحاسوب.pdf", size: "2.5 ميجابايت", url: "#" }
                 ]
             },
             "networks-1": {
@@ -268,27 +286,27 @@
                 instructor: "د. محمد الطيب حمادي",
                 overview: "مقرر أساسي في شبكات الاتصال، يستعرض نموذج الاتصال المعياري (OSI Model)، طبقات الشبكة المختلفة، آليات عناوين بروتوكول الإنترنت (IP Addressing)، وبروتوكولات نقل البيانات.",
                 lectures: [
-                    { title: "المحاضرة الأولى: أساسيات شبكات الحاسوب ونموذج OSI", duration: "60 دقيقة" },
-                    { title: "المحاضرة الثانية: طبقات الشبكة وعنونة IP Addressing", duration: "55 دقيقة" },
-                    { title: "المحاضرة الثالثة: وسائط النقل والاتصال وبروتوكولاتها", duration: "50 دقيقة" }
+                    { title: "المحاضرة الأولى: أساسيات شبكات الحاسوب ونموذج OSI", duration: "60 دقيقة", url: "#" },
+                    { title: "المحاضرة الثانية: طبقات الشبكة وعنونة IP Addressing", duration: "55 دقيقة", url: "#" },
+                    { title: "المحاضرة الثالثة: وسائط النقل والاتصال وبروتوكولاتها", duration: "50 دقيقة", url: "#" }
                 ],
                 pdfs: [
-                    { title: "مرجع شبكات الحاسوب الجزء الأول.pdf", size: "7.8 ميجابايت" },
-                    { title: "دليل عناوين شبكات IP.pdf", size: "3.0 ميجابايت" }
+                    { title: "مرجع شبكات الحاسوب الجزء الأول.pdf", size: "7.8 ميجابايت", url: "#" },
+                    { title: "دليل عناوين شبكات IP.pdf", size: "3.0 ميجابايت", url: "#" }
                 ]
             },
             "software-eng": {
                 title: "هندسة برمجيات",
                 instructor: "د. سيف الدين حميدة",
-                overview: "تتناول المادة المبادئ الهندسية لبناء وتطوير البرمجيات، دورة حياة تطوير النظام (SDLC)، النماذج المختلفة مثل Agile وWaterfall، وأساليب تحليل المتطلبات وتوثيق المشاريع.",
+                overview: "تتناول المادة المبادئ الهندسية لبناء وتطوير البرمجيات، دورة حياة تطوير النظام (SDLC), النماذج المختلفة مثل Agile وWaterfall، وأساليب تحليل المتطلبات وتوثيق المشاريع.",
                 lectures: [
-                    { title: "المحاضرة الأولى: مفاهيم هندسة البرمجيات ودورة حياة النظام SDLC", duration: "50 دقيقة" },
-                    { title: "المحاضرة الثانية: نماذج تطوير البرمجيات Agile & Waterfall", duration: "55 دقيقة" },
-                    { title: "المحاضرة الثالثة: هندسة المتطلبات وتحليل النظام", duration: "45 دقيقة" }
+                    { title: "المحاضرة الأولى: مفاهيم هندسة البرمجيات ودورة حياة النظام SDLC", duration: "50 دقيقة", url: "#" },
+                    { title: "المحاضرة الثانية: نماذج تطوير البرمجيات Agile & Waterfall", duration: "55 دقيقة", url: "#" },
+                    { title: "المحاضرة الثالثة: هندسة المتطلبات وتحليل النظام", duration: "45 دقيقة", url: "#" }
                 ],
                 pdfs: [
-                    { title: "كتاب هندسة البرمجيات الأساسي.pdf", size: "9.1 ميجابايت" },
-                    { title: "دليل توثيق المشاريع البرمجية.pdf", size: "2.2 ميجابايت" }
+                    { title: "كتاب هندسة البرمجيات الأساسي.pdf", size: "9.1 ميجابايت", url: "#" },
+                    { title: "دليل توثيق المشاريع البرمجية.pdf", size: "2.2 ميجابايت", url: "#" }
                 ]
             }
         };
@@ -315,35 +333,49 @@
             renderCoursePage();
         });
 
+        function updateFileName(input, spanId) {
+            const span = document.getElementById(spanId);
+            if (input.files && input.files[0]) {
+                span.textContent = `تم اختيار: ${input.files[0].name}`;
+                span.style.color = '#10b981';
+            }
+        }
+
         function renderCoursePage() {
             if (currentCourse) {
                 document.getElementById('course-title-display').textContent = currentCourse.title;
                 document.getElementById('course-instructor-display').innerHTML = `<i class="fa-solid fa-chalkboard-user"></i> الأستاذ المحاضر: ${currentCourse.instructor}`;
                 document.getElementById('course-overview-display').textContent = currentCourse.overview;
                 
+                // عرض المحاضرات (فيديو)
                 const lecturesList = document.getElementById('lectures-list');
                 lecturesList.innerHTML = '';
                 currentCourse.lectures.forEach((lec, index) => {
                     let deleteBtn = isAdmin ? `<button class="btn-delete-item" onclick="deleteLecture(${index})"><i class="fa-solid fa-trash"></i> حذف</button>` : '';
+                    let watchAction = lec.url && lec.url !== '#' ? `window.open('${lec.url}', '_blank')` : `alert('تشغيل محاضرة الفيديو: ${lec.title}')`;
+                    
                     lecturesList.innerHTML += `
                         <div class="lecture-item">
                             <div class="lecture-title"><i class="fa-solid fa-play-circle" style="color: var(--primary);"></i> ${lec.title}</div>
                             <div style="display: flex; gap: 10px; align-items: center;">
                                 <span style="font-size: 0.8rem; color: var(--text-muted);">${lec.duration}</span>
-                                <button class="btn-action btn-watch" onclick="showLoading('جاري تشغيل الفيديو...', () => { alert('تشغيل محاضرة: ${lec.title}'); })"><i class="fa-solid fa-play"></i> مشاهدة</button>
+                                <button class="btn-action btn-watch" onclick="showLoading('جاري فتح الفيديو...', () => { ${watchAction}; })"><i class="fa-solid fa-play"></i> مشاهدة</button>
                                 ${deleteBtn}
                             </div>
                         </div>
                     `;
                 });
 
+                // عرض ملفات الـ PDF
                 const pdfList = document.getElementById('pdf-list');
                 pdfList.innerHTML = '';
                 currentCourse.pdfs.forEach((pdf, index) => {
                     let deleteBtn = isAdmin ? `<button class="btn-delete-item" onclick="deletePdf(${index})"><i class="fa-solid fa-trash"></i></button>` : '';
+                    let pdfAction = pdf.url && pdf.url !== '#' ? `window.open('${pdf.url}', '_blank')` : `alert('تحميل ملف المرجع: ${pdf.title}')`;
+
                     pdfList.innerHTML += `
                         <div class="resource-link">
-                            <a href="#" style="text-decoration: none; color: inherit; display:flex; align-items:center; gap:8px;" onclick="showLoading('جاري تحميل الملف...', () => { alert('تحميل ملف: ${pdf.title}'); }); return false;">
+                            <a href="#" style="text-decoration: none; color: inherit; display:flex; align-items:center; gap:8px;" onclick="showLoading('جاري تحميل الملف...', () => { ${pdfAction}; }); return false;">
                                 <i class="fa-solid fa-file-pdf" style="color: #dc2626;"></i> <span>${pdf.title}</span>
                                 <span style="font-size: 0.75rem; color: var(--text-muted); margin-right: 10px;">(${pdf.size})</span>
                             </a>
@@ -356,35 +388,67 @@
             }
         }
 
-        function addLectureItem() {
+        function addVideoLecture() {
             const title = document.getElementById('new-lec-title').value.trim();
             const duration = document.getElementById('new-lec-duration').value.trim();
-            if (!title || !duration) {
-                alert('الرجاء إدخال عنوان المحاضرة والمدة!');
+            const fileInput = document.getElementById('video-file-input');
+
+            if (!title || !duration || fileInput.files.length === 0) {
+                alert('الرجاء كتابة عنوان المحاضرة، المدة، واختيار ملف الفيديو من الجهاز!');
                 return;
             }
-            showLoading('جاري حفظ المحاضرة الجديدة...', () => {
-                currentCourse.lectures.push({ title, duration });
-                localStorage.setItem(storageKey, JSON.stringify(currentCourse));
-                document.getElementById('new-lec-title').value = '';
-                document.getElementById('new-lec-duration').value = '';
-                renderCoursePage();
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            showLoading('جاري رفع ومعالجة فيديو المحاضرة...', () => {
+                reader.onload = function(e) {
+                    const videoUrl = e.target.result;
+                    currentCourse.lectures.push({ title, duration, url: videoUrl });
+                    localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+                    
+                    document.getElementById('new-lec-title').value = '';
+                    document.getElementById('new-lec-duration').value = '';
+                    fileInput.value = '';
+                    document.getElementById('video-file-name').textContent = 'لم يتم اختيار ملف فيديو';
+                    document.getElementById('video-file-name').style.color = 'var(--text-muted)';
+                    
+                    renderCoursePage();
+                    alert('تم إضافة ورَفْع الفيديو بنجاح!');
+                };
+                reader.readAsDataURL(file);
             });
         }
 
-        function addPdfItem() {
-            const title = document.getElementById('new-pdf-title').value.trim();
-            const size = document.getElementById('new-pdf-size').value.trim();
-            if (!title || !size) {
-                alert('الرجاء إدخال اسم الملف والحجم!');
+        function addPdfFile() {
+            const fileInput = document.getElementById('pdf-file-input');
+            let customTitle = document.getElementById('new-pdf-title').value.trim();
+
+            if (fileInput.files.length === 0) {
+                alert('الرجاء اختيار ملف PDF أولاً!');
                 return;
             }
+
+            const file = fileInput.files[0];
+            const title = customTitle || file.name;
+            const size = (file.size / (1024 * 1024)).toFixed(2) + ' ميجابايت';
+            const reader = new FileReader();
+
             showLoading('جاري رفع وحفظ ملف الـ PDF...', () => {
-                currentCourse.pdfs.push({ title, size });
-                localStorage.setItem(storageKey, JSON.stringify(currentCourse));
-                document.getElementById('new-pdf-title').value = '';
-                document.getElementById('new-pdf-size').value = '';
-                renderCoursePage();
+                reader.onload = function(e) {
+                    const pdfUrl = e.target.result;
+                    currentCourse.pdfs.push({ title, size, url: pdfUrl });
+                    localStorage.setItem(storageKey, JSON.stringify(currentCourse));
+
+                    document.getElementById('new-pdf-title').value = '';
+                    fileInput.value = '';
+                    document.getElementById('pdf-file-name').textContent = 'لم يتم اختيار ملف PDF';
+                    document.getElementById('pdf-file-name').style.color = 'var(--text-muted)';
+
+                    renderCoursePage();
+                    alert('تم إضافة ملف الـ PDF بنجاح إلى المراجع!');
+                };
+                reader.readAsDataURL(file);
             });
         }
 
