@@ -75,51 +75,8 @@
         }
         .btn-course-link:hover { opacity: 0.9; }
 
-        /* ===== تصميم الإشعارات والـ Loading الفاخر المحدث (للتحكم) ===== */
-        .luxury-modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); z-index: 99999;
-            display: flex; align-items: center; justify-content: center; padding: 16px;
-            opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-        .luxury-modal-overlay.active { opacity: 1; pointer-events: auto; }
-        
-        .luxury-modal-card {
-            background: #ffffff; width: 100%; max-width: 380px; padding: 32px 24px; border-radius: 26px;
-            text-align: center; box-shadow: 0 25px 60px -15px rgba(249, 115, 22, 0.3);
-            border: 1px solid rgba(254, 215, 170, 0.8); transform: scale(0.8) translateY(20px);
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden;
-        }
-        .luxury-modal-overlay.active .luxury-modal-card { transform: scale(1) translateY(0); }
-        
-        .luxury-modal-card::before {
-            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
-            background: linear-gradient(90deg, #f97316, #ea580c, #f59e0b);
-        }
-
-        .loader-orbit {
-            width: 65px; height: 65px; border: 4px solid #ffedd5; border-top: 4px solid var(--primary);
-            border-radius: 50%; animation: orbitSpin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin: 0 auto 18px auto; box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
-        }
-        @keyframes orbitSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        .modal-icon-container {
-            width: 70px; height: 70px; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-            margin: 0 auto 16px auto; font-size: 2rem; color: var(--primary); box-shadow: 0 10px 20px rgba(249, 115, 22, 0.15);
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        }
-        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
-
-        .modal-title-text { font-size: 1.2rem; font-weight: 900; color: var(--text); margin-bottom: 8px; }
-        .modal-desc-text { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
-        
-        .luxury-btn {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; border: none;
-            padding: 12px 28px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; cursor: pointer;
-            width: 100%; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); transition: 0.2s;
-        }
-        .luxury-btn:hover { opacity: 0.92; transform: translateY(-2px); }
+        #custom-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+        #custom-modal.active { opacity: 1; pointer-events: auto; }
 
         .footer-copyright { margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg); }
         .hidden-element { display: none !important; }
@@ -134,18 +91,11 @@
 </head>
 <body>
 
-    <!-- نافذة الإشعارات الفاخرة المحدثة -->
-    <div id="luxury-loader-modal" class="luxury-modal-overlay">
-        <div class="luxury-modal-card">
-            <div id="loader-spinner-elem" class="loader-orbit" style="display: none;"></div>
-            <div id="loader-icon-container" class="modal-icon-container">
-                <i id="loader-icon-elem" class="fa-solid fa-circle-check"></i>
-            </div>
-            
-            <h3 id="loader-title-text" class="modal-title-text">تنبيه النظام</h3>
-            <p id="loader-desc-text" class="modal-desc-text">رسالة النظام...</p>
-            
-            <button id="loader-action-btn" class="luxury-btn" onclick="closeLuxuryModal()">حسناً</button>
+    <div id="custom-modal">
+        <div class="modal-box" style="background:#fff; width:90%; max-width:380px; padding:30px; border-radius:20px; text-align:center;">
+            <h3 id="modal-title" style="margin-bottom: 10px; font-weight: 800;">تنبيه النظام</h3>
+            <p id="modal-desc" style="margin-bottom: 20px; color: var(--text-muted);">رسالة...</p>
+            <button onclick="closeModal()" style="padding:10px 20px; border-radius:10px; font-weight:700; border:none; background:var(--primary); color:white; width:100%; cursor:pointer;">حسناً</button>
         </div>
     </div>
 
@@ -237,34 +187,14 @@
 
     <script>
         const studentId = "24-11086250";
-        const studentName = "محمود عبدالله آدم محمد";
 
-        // دوال الإشعارات والـ Loading الفاخرة في لوحة التحكم
-        function showLuxuryAlert(title, desc, isSuccess = true) {
-            const modal = document.getElementById('luxury-loader-modal');
-            document.getElementById('loader-spinner-elem').style.display = 'none';
-            const iconContainer = document.getElementById('loader-icon-container');
-            const iconElem = document.getElementById('loader-icon-elem');
-            
-            iconContainer.style.display = 'flex';
-            if(isSuccess) {
-                iconContainer.style.background = '#fff7ed';
-                iconContainer.style.color = '#10b981';
-                iconElem.className = "fa-solid fa-circle-check";
-            } else {
-                iconContainer.style.background = '#fef2f2';
-                iconContainer.style.color = '#dc2626';
-                iconElem.className = "fa-solid fa-circle-xmark";
-            }
-
-            document.getElementById('loader-title-text').textContent = title;
-            document.getElementById('loader-desc-text').textContent = desc;
-            modal.classList.add('active');
+        function showModal(title, desc) {
+            document.getElementById('modal-title').textContent = title;
+            document.getElementById('modal-desc').textContent = desc;
+            document.getElementById('custom-modal').classList.add('active');
         }
-
-        function closeLuxuryModal() {
-            document.getElementById('luxury-loader-modal').classList.remove('active');
-            location.reload();
+        function closeModal() {
+            document.getElementById('custom-modal').classList.remove('active');
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -297,7 +227,7 @@
         function toggleAdminMode() {
             const loggedId = localStorage.getItem('it_logged_id');
             if (loggedId !== studentId) {
-                showLuxuryAlert("عذراً", "هذا الحساب ليس لديه صلاحيات المشرف.", false);
+                showModal("عذراً", "هذا الحساب ليس لديه صلاحيات المشرف.");
                 return;
             }
 
@@ -306,10 +236,11 @@
             localStorage.setItem('it_admin_mode', newMode);
 
             if (newMode) {
-                showLuxuryAlert("وضع الإدارة", "تم تفعيل وضع الإدارة بنجاح! يمكنك الآن إضافة وتعديل وحذف المحاضرات.");
+                showModal("وضع الإدارة", "تم تفعيل وضع الإدارة بنجاح! يمكنك الآن إضافة وتعديل وحذف المحاضرات.");
             } else {
-                showLuxuryAlert("وضع الإدارة", "تم تعطيل وضع الإدارة بنجاح.", false);
+                showModal("وضع الإدارة", "تم تعطيل وضع الإدارة بنجاح.");
             }
+            updateAdminUI();
         }
     </script>
 </body>
