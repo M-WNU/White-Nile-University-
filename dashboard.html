@@ -69,6 +69,16 @@
         .btn-danger-custom { background-color: #fee2e2; color: #dc2626; border-color: #fca5a5; }
         .btn-danger-custom:hover { background-color: #dc2626; color: white !important; }
 
+        /* زر وضع الإدارة المميز */
+        .btn-admin-mode {
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+            color: white !important; border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        }
+        .btn-admin-mode.active-admin {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
         .stats-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
         .stat-card { background: var(--card-bg); padding: 20px; border-radius: 20px; border: 1px solid var(--border); box-shadow: var(--shadow); display: flex; align-items: center; gap: 15px; }
         .stat-icon { width: 50px; height: 50px; border-radius: 14px; background: var(--primary-light); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; }
@@ -141,6 +151,7 @@
         @keyframes spin { to { transform: rotate(360deg); } }
         .loading-text { color: #ffffff; font-size: 1rem; font-weight: 700; }
 
+        .hidden-element { display: none !important; }
         @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
     </style>
 </head>
@@ -170,7 +181,6 @@
             <li><a href="dashboard.html" class="active" data-page="schedule"><i class="fa-solid fa-calendar-days"></i> الجدول الدراسي</a></li>
             <li><a href="dashboard.html" data-page="courses"><i class="fa-solid fa-book-open"></i> المقررات الحالية</a></li>
             <li><a href="#" onclick="showCustomModal('إشعارات النظام', 'لا توجد إشعارات أكاديمية جديدة في الوقت الحالي.')"><i class="fa-solid fa-bell"></i> الإشعارات والتعاميم</a></li>
-            <li><a href="#" onclick="showCustomModal('إعدادات الحساب', 'يمكنك تعديل بياناتك الشخصية عبر مراجعة مسجل الكلية.')"><i class="fa-solid fa-user-gear"></i> إعدادات الحساب</a></li>
         </ul>
     </aside>
 
@@ -189,6 +199,10 @@
             </div>
 
             <div class="action-buttons-group">
+                <!-- زر وضع الإدارة يظهر فقط للرقم 24-11086250 -->
+                <button class="btn-custom btn-admin-mode hidden-element" id="admin-mode-btn" onclick="toggleAdminMode()">
+                    <i class="fa-solid fa-user-shield"></i> <span id="admin-btn-text">وضع الإدارة</span>
+                </button>
                 <a href="index.html" class="btn-custom">
                     <i class="fa-solid fa-house"></i> الرئيسية
                 </a>
@@ -323,7 +337,6 @@
         </div>
     </main>
 
-    <!-- حقوق النشر العالمية -->
     <footer class="footer-copyright">
         © 2026 جميع الحقوق محفوظة لدى محمود عبدالله
     </footer>
@@ -376,11 +389,34 @@
                 const academicYearSpan = document.getElementById('academic-year-display');
                 if (loggedId.startsWith('24') || loggedId.includes('-24')) {
                     academicYearSpan.textContent = '2023 - 2024';
-                } else if (loggedId.startsWith('25') || loggedId.includes('-25')) {
-                    academicYearSpan.textContent = '2025 - 2026';
+                }
+
+                // التحقق التلقائي إذا كان المستخدم هو محمود (الرقم 24-11086250)
+                if (loggedId === '24-11086250') {
+                    const adminBtn = document.getElementById('admin-mode-btn');
+                    adminBtn.classList.remove('hidden-element');
+                    
+                    if (localStorage.getItem('it_admin_mode') === 'true') {
+                        adminBtn.classList.add('active-admin');
+                        document.getElementById('admin-btn-text').textContent = 'إيقاف وضع الإدارة';
+                    }
                 }
             }
         });
+
+        function toggleAdminMode() {
+            showLoading('جاري تبديل وضع الإدارة...', () => {
+                const currentStatus = localStorage.getItem('it_admin_mode') === 'true';
+                if (currentStatus) {
+                    localStorage.setItem('it_admin_mode', 'false');
+                    showCustomModal('وضع الإدارة', 'تم الخروج من وضع الإدارة بنجاح.');
+                } else {
+                    localStorage.setItem('it_admin_mode', 'true');
+                    showCustomModal('وضع الإدارة', 'تم تفعيل وضع الإدارة بنجاح! يمكنك الآن إضافة وتعديل المحتوى والفيديوهات داخل الكورسات.');
+                }
+                location.reload();
+            });
+        }
 
         document.getElementById('logout-btn').addEventListener('click', () => {
             showCustomModal('تسجيل الخروج', 'هل أنت متأكد من رغبتك في تسجيل الخروج من النظام؟', () => {
@@ -388,6 +424,7 @@
                     localStorage.removeItem('it_logged_user');
                     localStorage.removeItem('it_logged_id');
                     localStorage.removeItem('it_logged_semester');
+                    localStorage.removeItem('it_admin_mode');
                     window.location.href = 'login.html';
                 });
             });
