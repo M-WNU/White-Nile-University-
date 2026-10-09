@@ -117,78 +117,97 @@
 
         .course-overview-box { font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; background: #fffaf5; border: 1px solid var(--border); padding: 18px; border-radius: 14px; margin-bottom: 20px; }
 
-        .admin-panel-box { background: #fef3c7; border: 2px dashed #f59e0b; padding: 25px; border-radius: 20px; margin-bottom: 25px; }
+        .admin-panel-box {
+            background: #fef3c7; border: 2px dashed #f59e0b; padding: 25px; border-radius: 20px; margin-bottom: 25px;
+            opacity: 0; transform: translateY(-10px); pointer-events: none; transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); display: none;
+        }
+        .admin-panel-box.active { opacity: 1; transform: translateY(0); pointer-events: auto; display: block; }
         .admin-panel-box h4 { color: #d97706; font-size: 1.1rem; font-weight: 900; margin-bottom: 15px; display: flex; align-items: center; gap: 8px; }
         .form-control-admin { width: 100%; padding: 12px 14px; border: 1px solid #cbd5e1; border-radius: 12px; font-size: 0.9rem; margin-bottom: 12px; outline: none; background: #fff; }
         .btn-admin-submit { background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: white; border: none; padding: 12px 20px; border-radius: 12px; font-weight: 800; cursor: pointer; width: 100%; }
 
-        /* ===== تصميم شاشة التحميل والتنبيهات (الستايل الخرافي الاحترافي الحصري) ===== */
-        #luxury-loader-modal {
+        /* ===== النوافذ المنبثقة المتجاوبة (موبايل وحاسوب) والستايل الخرافي ===== */
+        .luxury-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(10px); z-index: 99999;
-            display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 99999;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+            opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        #luxury-loader-modal.active { opacity: 1; pointer-events: auto; }
+        .luxury-modal-overlay.active { opacity: 1; pointer-events: auto; }
         
-        .loader-card {
-            background: #ffffff; width: 90%; max-width: 360px; padding: 35px 25px; border-radius: 28px;
+        .luxury-modal-card {
+            background: #ffffff; width: 100%; max-width: 400px; padding: 30px 22px; border-radius: 24px;
             text-align: center; box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.25);
-            border: 1px solid rgba(254, 215, 170, 0.6); transform: scale(0.85) translateY(20px);
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden;
+            border: 1px solid rgba(254, 215, 170, 0.6); transform: scale(0.85) translateY(15px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden;
         }
-        #luxury-loader-modal.active .loader-card { transform: scale(1) translateY(0); }
+        .luxury-modal-overlay.active .luxury-modal-card { transform: scale(1) translateY(0); }
         
-        .loader-card::before {
+        .luxury-modal-card::before {
             content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 5px;
             background: linear-gradient(90deg, #f97316, #ea580c, #f59e0b);
         }
 
         .spinner-ring {
-            width: 65px; height: 65px; border: 4px solid #ffedd5; border-top: 4px solid var(--primary);
+            width: 55px; height: 55px; border: 4px solid #ffedd5; border-top: 4px solid var(--primary);
             border-radius: 50%; animation: spin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin: 0 auto 20px auto; box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+            margin: 0 auto 15px auto; box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        .loader-icon-success {
-            font-size: 3.5rem; color: #10b981; margin-bottom: 15px; display: none;
-            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        }
-        .loader-icon-error {
-            font-size: 3.5rem; color: #dc2626; margin-bottom: 15px; display: none;
-            animation: bounceIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
-        }
+        .modal-icon-display { font-size: 3.2rem; margin-bottom: 12px; display: inline-block; animation: bounceIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both; }
         @keyframes bounceIn { 0% { transform: scale(0); } 70% { transform: scale(1.1); } 100% { transform: scale(1); } }
 
-        .loader-title { font-size: 1.2rem; font-weight: 900; color: var(--text); margin-bottom: 8px; }
-        .loader-desc { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.5; }
+        .modal-title-text { font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+        .modal-desc-text { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
         
-        .loader-btn {
+        .modal-btn-group { display: flex; gap: 10px; justify-content: center; }
+        .luxury-btn {
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; border: none;
-            padding: 12px 25px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; cursor: pointer;
-            width: 100%; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); display: none;
+            padding: 10px 20px; border-radius: 12px; font-weight: 800; font-size: 0.9rem; cursor: pointer;
+            flex: 1; box-shadow: 0 6px 15px rgba(249, 115, 22, 0.25);
         }
-        .loader-btn:hover { opacity: 0.95; transform: translateY(-1px); }
+        .luxury-btn:hover { opacity: 0.95; transform: translateY(-1px); }
+        .luxury-btn-secondary { background: #e2e8f0; color: #475569; box-shadow: none; }
+        .luxury-btn-secondary:hover { background: #cbd5e1; }
+        .luxury-btn-danger { background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); box-shadow: 0 6px 15px rgba(220, 38, 38, 0.25); }
 
         .footer-copyright { margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg); }
         .hidden-element { display: none !important; }
-        @media (max-width: 1024px) { .content-grid { grid-template-columns: 1fr; } aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
+
+        @media (max-width: 1024px) {
+            .content-grid { grid-template-columns: 1fr; }
+            aside { display: none; }
+            main { margin-right: 0; padding: 15px; width: 100%; }
+            .footer-copyright { margin-right: 0; }
+        }
     </style>
 </head>
 <body>
 
     <!-- نافذة التحميل والرسائل الحصرية الاحترافية -->
-    <div id="luxury-loader-modal">
-        <div class="loader-card">
+    <div id="luxury-loader-modal" class="luxury-modal-overlay">
+        <div class="luxury-modal-card">
             <div id="loader-spinner-elem" class="spinner-ring"></div>
-            <div id="loader-success-elem" class="loader-icon-success"><i class="fa-solid fa-circle-check"></i></div>
-            <div id="loader-error-elem" class="loader-icon-error"><i class="fa-solid fa-circle-xmark"></i></div>
+            <div id="loader-icon-container" style="display: none;"><i id="loader-icon-elem" class="modal-icon-display"></i></div>
             
-            <h3 id="loader-title-text" class="loader-title">جاري معالجة الطلب...</h3>
-            <p id="loader-desc-text" class="loader-desc">يرجى الانتظار قليلاً بينما يتم تحديث السحابة بنجاح.</p>
+            <h3 id="loader-title-text" class="modal-title-text">جاري معالجة الطلب...</h3>
+            <p id="loader-desc-text" class="modal-desc-text">يرجى الانتظار قليلاً بينما يتم تحديث السحابة بنجاح.</p>
             
-            <button id="loader-action-btn" class="loader-btn" onclick="closeLuxuryModal()">حسناً</button>
+            <button id="loader-action-btn" class="luxury-btn hidden-element" onclick="closeLuxuryModal()">حسناً</button>
+        </div>
+    </div>
+
+    <!-- نافذة تأكيد الحذف الجديدة -->
+    <div id="confirm-modal" class="luxury-modal-overlay">
+        <div class="luxury-modal-card">
+            <div class="modal-icon-display" style="color: #f59e0b;"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <h3 class="modal-title-text">تأكيد عملية الحذف</h3>
+            <p id="confirm-desc-text" class="modal-desc-text">هل أنت متأكد من رغبتك في حذف هذا المحتوى؟ لا يمكن التراجع عن هذا الإجراء.</p>
+            <div class="modal-btn-group">
+                <button class="luxury-btn luxury-btn-secondary" onclick="closeConfirmModal()">تراجع</button>
+                <button id="confirm-yes-btn" class="luxury-btn luxury-btn-danger">نعم، احذف</button>
+            </div>
         </div>
     </div>
 
@@ -216,7 +235,7 @@
         </div>
 
         <div id="admin-controls-section" class="hidden-element">
-            <div class="admin-panel-box">
+            <div id="admin-panel-container" class="admin-panel-box">
                 <h4><i class="fa-solid fa-user-shield"></i> لوحة الإدارة (إدارة المحتوى السحابي)</h4>
                 
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
@@ -242,7 +261,9 @@
         <div class="content-grid">
             <div>
                 <div class="card">
-                    <div class="card-title"><i class="fa-solid fa-circle-info"></i> نبذة تعريفية عن المادة</div>
+                    <div class="card-title">
+                        <span><i class="fa-solid fa-circle-info"></i> نبذة تعريفية عن المادة</span>
+                    </div>
                     <div class="course-overview-box" id="course-overview-display">جاري التحميل...</div>
                 </div>
 
@@ -281,13 +302,12 @@
         }
         const db = firebase.firestore();
 
-        // دوال التحكم بشاشة التحميل الفاخرة الجديدة
+        // دوال التحكم بشاشة التحميل الفاخرة
         function showLuxuryLoader(title, desc) {
             const modal = document.getElementById('luxury-loader-modal');
             document.getElementById('loader-spinner-elem').style.display = 'block';
-            document.getElementById('loader-success-elem').style.display = 'none';
-            document.getElementById('loader-error-elem').style.display = 'none';
-            document.getElementById('loader-action-btn').style.display = 'none';
+            document.getElementById('loader-icon-container').style.display = 'none';
+            document.getElementById('loader-action-btn').classList.add('hidden-element');
             document.getElementById('loader-title-text').textContent = title;
             document.getElementById('loader-desc-text').textContent = desc;
             modal.classList.add('active');
@@ -295,24 +315,53 @@
 
         function showLuxurySuccess(title, desc) {
             document.getElementById('loader-spinner-elem').style.display = 'none';
-            document.getElementById('loader-success-elem').style.display = 'block';
-            document.getElementById('loader-error-elem').style.display = 'none';
+            const iconContainer = document.getElementById('loader-icon-container');
+            const iconElem = document.getElementById('loader-icon-elem');
+            iconContainer.style.display = 'block';
+            iconElem.className = "modal-icon-display fa-solid fa-circle-check";
+            iconElem.style.color = "#10b981";
+            
             document.getElementById('loader-title-text').textContent = title;
             document.getElementById('loader-desc-text').textContent = desc;
-            document.getElementById('loader-action-btn').style.display = 'block';
+            document.getElementById('loader-action-btn').classList.remove('hidden-element');
         }
 
         function showLuxuryError(title, desc) {
             document.getElementById('loader-spinner-elem').style.display = 'none';
-            document.getElementById('loader-success-elem').style.display = 'none';
-            document.getElementById('loader-error-elem').style.display = 'block';
+            const iconContainer = document.getElementById('loader-icon-container');
+            const iconElem = document.getElementById('loader-icon-elem');
+            iconContainer.style.display = 'block';
+            iconElem.className = "modal-icon-display fa-solid fa-circle-xmark";
+            iconElem.style.color = "#dc2626";
+            
             document.getElementById('loader-title-text').textContent = title;
             document.getElementById('loader-desc-text').textContent = desc;
-            document.getElementById('loader-action-btn').style.display = 'block';
+            document.getElementById('loader-action-btn').classList.remove('hidden-element');
         }
 
         function closeLuxuryModal() {
             document.getElementById('luxury-loader-modal').classList.remove('active');
+        }
+
+        // دوال نافذة تأكيد الحذف
+        function showConfirmModal(descText, onConfirmCallback) {
+            document.getElementById('confirm-desc-text').textContent = descText;
+            const modal = document.getElementById('confirm-modal');
+            modal.classList.add('active');
+            
+            const yesBtn = document.getElementById('confirm-yes-btn');
+            // استبدال الزر لتجنب تراكم الأحداث القديمة
+            const newYesBtn = yesBtn.cloneNode(true);
+            yesBtn.parentNode.replaceChild(newYesBtn, yesBtn);
+            
+            newYesBtn.addEventListener('click', () => {
+                closeConfirmModal();
+                onConfirmCallback();
+            });
+        }
+
+        function closeConfirmModal() {
+            document.getElementById('confirm-modal').classList.remove('active');
         }
 
         const defaultCoursesData = {
@@ -373,7 +422,10 @@
                 return;
             }
             if (isAdmin) {
+                const panel = document.getElementById('admin-panel-container');
                 document.getElementById('admin-controls-section').classList.remove('hidden-element');
+                // تأثير انميشن سلس عند ظهور لوحة الإدارة
+                setTimeout(() => panel.classList.add('active'), 100);
             }
             fetchCourseFromFirebase();
         });
@@ -431,7 +483,7 @@
                 lecturesList.innerHTML = '';
                 if (currentCourse.lectures && currentCourse.lectures.length > 0) {
                     currentCourse.lectures.forEach((lec, index) => {
-                        let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="deleteLecture(${index})"><i class="fa-solid fa-trash-can"></i> حذف</button>` : '';
+                        let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="confirmDeleteLecture(${index})"><i class="fa-solid fa-trash-can"></i> حذف</button>` : '';
                         
                         let regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
                         let match = lec.url ? lec.url.match(regExp) : null;
@@ -466,7 +518,7 @@
                 pdfList.innerHTML = '';
                 if (currentCourse.pdfs && currentCourse.pdfs.length > 0) {
                     currentCourse.pdfs.forEach((pdf, index) => {
-                        let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="deletePdf(${index})"><i class="fa-solid fa-trash-can"></i> حذف</button>` : '';
+                        let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="confirmDeletePdf(${index})"><i class="fa-solid fa-trash-can"></i> حذف</button>` : '';
                         let fileUrl = pdf.url || '#';
 
                         pdfList.innerHTML += `
@@ -530,14 +582,18 @@
             saveCourseToFirebase('تم إضافة ملف المرجع أو الـ PDF بنجاح.');
         }
 
-        function deleteLecture(index) {
-            currentCourse.lectures.splice(index, 1);
-            saveCourseToFirebase('تم حذف المحاضرة وتحديث القائمة بنجاح.');
+        function confirmDeleteLecture(index) {
+            showConfirmModal("هل أنت متأكد من رغبتك في حذف محاضرة الفيديو هذه؟", () => {
+                currentCourse.lectures.splice(index, 1);
+                saveCourseToFirebase('تم حذف المحاضرة وتحديث القائمة بنجاح.');
+            });
         }
 
-        function deletePdf(index) {
-            currentCourse.pdfs.splice(index, 1);
-            saveCourseToFirebase('تم حذف الملف بنجاح.');
+        function confirmDeletePdf(index) {
+            showConfirmModal("هل أنت متأكد من رغبتك في حذف ملف الـ PDF هذا؟", () => {
+                currentCourse.pdfs.splice(index, 1);
+                saveCourseToFirebase('تم حذف الملف بنجاح.');
+            });
         }
     </script>
 </body>
