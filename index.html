@@ -8,128 +8,128 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --bg-color: #f8fafc;
-            --sidebar-bg: #ffffff;
+            --primary: #f97316;
+            --primary-dark: #ea580c;
+            --primary-light: #ffedd5;
+            --bg: #fdfbf7;
             --card-bg: #ffffff;
-            --text-color: #1e293b;
+            --text: #1e293b;
             --text-muted: #64748b;
-            --primary-color: #0f766e;
-            --primary-gradient: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
-            --sidebar-hover: #f0fdf4;
-            --border-color: #e2e8f0;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+            --border: #fed7aa;
+            --shadow: 0 15px 35px rgba(249, 115, 22, 0.08);
         }
-        .dark-mode {
-            --bg-color: #0b0f19;
-            --sidebar-bg: #111827;
-            --card-bg: #1f2937;
-            --text-color: #f9fafb;
-            --text-muted: #9ca3af;
-            --primary-color: #14b8a6;
-            --primary-gradient: linear-gradient(135deg, #0d9488 0%, #0f766e 100%);
-            --sidebar-hover: #374151;
-            --border-color: #374151;
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; transition: 0.25s ease; }
+        body { background-color: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+
+        /* القائمة الجانبية الأنيقة المطابقة للهوية */
+        aside {
+            width: 280px; background-color: var(--card-bg); border-left: 1px solid var(--border);
+            display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;
+            box-shadow: 5px 0 25px rgba(249, 115, 22, 0.03);
         }
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; transition: 0.3s; }
-        body { background-color: var(--bg-color); color: var(--text-color); display: flex; min-height: 100vh; }
-        
-        aside { width: 280px; background-color: var(--sidebar-bg); border-left: 1px solid var(--border-color); display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100; }
-        .sidebar-brand { padding: 25px 20px; font-size: 1.3rem; font-weight: 900; color: var(--primary-color); border-bottom: 1px solid var(--border-color); display: flex; align-items: center; gap: 12px; }
+        .sidebar-brand {
+            padding: 25px 20px; font-size: 1.25rem; font-weight: 900; color: var(--primary);
+            border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px;
+            background: linear-gradient(135deg, #ffedd5 0%, #ffffff 100%);
+        }
         .sidebar-menu { list-style: none; padding: 20px 15px; flex-grow: 1; }
         .sidebar-menu li { margin-bottom: 10px; }
-        .sidebar-menu a { display: flex; align-items: center; gap: 15px; padding: 12px 18px; color: var(--text-color); text-decoration: none; border-radius: 10px; font-weight: 600; font-size: 0.95rem; }
-        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--sidebar-hover); color: var(--primary-color); }
-        
-        main { flex-grow: 1; margin-right: 280px; padding: 30px; }
-        
-        /* Hero Section */
-        .hero-welcome-card {
-            background: var(--card-bg); border-radius: 20px; padding: 40px; box-shadow: var(--shadow); border: 1px solid var(--border-color);
-            margin-bottom: 30px; position: relative; overflow: hidden;
+        .sidebar-menu a {
+            display: flex; align-items: center; gap: 15px; padding: 12px 18px; color: var(--text);
+            text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem;
         }
-        .hero-welcome-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: var(--primary-gradient); }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--primary-light); color: var(--primary); }
+
+        main { flex-grow: 1; margin-right: 280px; padding: 35px; max-width: 1300px; }
+
+        /* بطاقة الهوية والترحيب الاحترافية */
+        .hero-card-3d {
+            background: var(--card-bg); border-radius: 24px; padding: 35px; box-shadow: var(--shadow);
+            border: 1px solid var(--border); margin-bottom: 30px; position: relative; overflow: hidden;
+        }
+        .hero-card-3d::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
         
-        .hero-top-bar {
+        .hero-top-row {
             display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;
-            margin-bottom: 25px; border-bottom: 1px solid var(--border-color); padding-bottom: 20px;
+            margin-bottom: 25px; border-bottom: 1px solid var(--border); padding-bottom: 20px;
         }
-        
-        .hero-text h1 { font-size: 1.8rem; font-weight: 900; color: var(--text-color); margin-bottom: 12px; line-height: 1.4; }
-        .hero-text p { color: var(--text-muted); font-size: 1.05rem; line-height: 1.8; max-width: 800px; margin-bottom: 20px; }
-        
-        .features-chips { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 15px; }
-        .chip { background: rgba(20, 184, 166, 0.1); color: var(--primary-color); padding: 8px 16px; border-radius: 10px; font-size: 0.9rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
+
+        .hero-text h1 { font-size: 1.75rem; font-weight: 900; color: var(--text); margin-bottom: 10px; }
+        .hero-text p { color: var(--text-muted); font-size: 1.02rem; line-height: 1.8; max-width: 750px; margin-bottom: 20px; }
+
+        .features-chips { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 15px; }
+        .chip { background: var(--primary-light); color: var(--primary); padding: 8px 16px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; }
 
         .action-buttons-group { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
         
-        /* توحيد استايل جميع الأزرار لتطابق لوحة التحكم */
-        .btn-control {
-            padding: 10px 18px; border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--border-color);
-            text-decoration: none; background: var(--card-bg); color: var(--text-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-            min-height: 42px;
+        .btn-custom {
+            padding: 11px 20px; border-radius: 12px; font-size: 0.92rem; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1.5px solid var(--border);
+            text-decoration: none; background: #fff; color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.02);
         }
-        .btn-control:hover { border-color: var(--primary-color); color: var(--primary-color); transform: translateY(-1px); }
+        .btn-custom:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
         
-        .btn-primary-custom { background: var(--primary-gradient); color: white !important; border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); }
-        .btn-primary-custom:hover { opacity: 0.9; color: white !important; }
-        
+        .btn-primary-gradient {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white !important; border: none;
+            box-shadow: 0 6px 18px rgba(249, 115, 22, 0.25);
+        }
+        .btn-primary-gradient:hover { opacity: 0.92; color: white !important; }
+
         .btn-dashboard-styled {
             background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white !important; border: none;
-            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
+            box-shadow: 0 6px 18px rgba(37, 99, 235, 0.25);
         }
-        .btn-dashboard-styled:hover { opacity: 0.9; color: white !important; }
+        .btn-dashboard-styled:hover { opacity: 0.92; color: white !important; }
 
         .btn-danger-custom { background-color: #fee2e2; color: #dc2626; border-color: #fca5a5; }
-        .dark-mode .btn-danger-custom { background-color: rgba(220, 38, 38, 0.15); color: #fca5a5; border-color: #7f1d1d; }
         .btn-danger-custom:hover { background-color: #dc2626; color: white !important; }
 
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 25px; }
-        .card { background-color: var(--card-bg); border-radius: 18px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
-        .card-title { font-size: 1.2rem; font-weight: 800; color: var(--primary-color); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border-color); padding-bottom: 12px; }
-        .announcement-item { padding: 16px; background: rgba(0,0,0,0.01); border: 1px solid var(--border-color); border-radius: 12px; margin-bottom: 12px; font-size: 0.95rem; line-height: 1.7; }
-        .dark-mode .announcement-item { background: rgba(255,255,255,0.01); }
+        .card { background-color: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); }
+        .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 18px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+        .announcement-item { padding: 15px; background: #fffaf5; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px; font-size: 0.92rem; line-height: 1.7; }
         
-        /* Courses Grid Styling */
+        /* شبكة الكورسات */
         .courses-section { margin-top: 30px; }
         .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; }
-        .course-card { background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 16px; padding: 22px; box-shadow: var(--shadow); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; }
-        .course-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: var(--primary-gradient); }
-        .course-title { font-size: 1.1rem; font-weight: 800; color: var(--text-color); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
-        .course-instructor { font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
-        .course-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 10px; }
-        .course-badge { background: rgba(20, 184, 166, 0.1); color: var(--primary-color); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; width: fit-content; }
+        .course-card {
+            background-color: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 22px;
+            box-shadow: var(--shadow); position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+        }
+        .course-card::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .course-title { font-size: 1.1rem; font-weight: 800; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+        .course-instructor { font-size: 0.88rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
+        .course-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 15px; margin-top: 10px; }
+        .course-badge { background: var(--primary-light); color: var(--primary); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; width: fit-content; }
         
         .btn-enter-course {
-            background: var(--primary-gradient); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 0.9rem;
-            text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
-            border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 0.88rem;
+            text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; border: none;
+            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
         }
         .btn-enter-course:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* تصميم شاشة التحميل الاحترافية (Loading Modal) */
+        /* شاشة التحميل الاحترافية */
         #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.8);
-            backdrop-filter: blur(5px); z-index: 9999; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; gap: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(4px); z-index: 9999; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 15px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
         }
         #loading-overlay.active { opacity: 1; pointer-events: auto; }
         .spinner {
-            width: 55px; height: 55px; border: 5px solid rgba(20, 184, 166, 0.2); border-top-color: var(--primary-color);
+            width: 50px; height: 50px; border: 4px solid rgba(249, 115, 22, 0.2); border-top-color: #f97316;
             border-radius: 50%; animation: spin 0.8s linear infinite;
         }
         @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: #f9fafb; font-size: 1.1rem; font-weight: 700; font-family: 'Cairo', sans-serif; letter-spacing: 0.5px; }
+        .loading-text { color: #ffffff; font-size: 1rem; font-weight: 700; font-family: 'Cairo', sans-serif; }
 
         .hidden-element { display: none !important; }
-
         @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; } }
     </style>
 </head>
 <body>
 
-    <!-- عنصر شاشة التحميل الاحترافية -->
     <div id="loading-overlay">
         <div class="spinner"></div>
         <div class="loading-text" id="loading-message">جاري التحويل، يرجى الانتظار...</div>
@@ -147,25 +147,19 @@
     </aside>
 
     <main>
-        <!-- رأس الهوية والترحيب -->
-        <div class="hero-welcome-card">
-            <div class="hero-top-bar">
-                <div style="font-weight: 800; color: var(--primary-color); font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
+        <div class="hero-card-3d">
+            <div class="hero-top-row">
+                <div style="font-weight: 800; color: var(--primary); font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-laptop-code"></i> قسم تقانة المعلومات - كوستي
                 </div>
                 <div class="action-buttons-group">
-                    <button class="btn-control" id="theme-toggle" title="تغيير المظهر">
-                        <i class="fa-solid fa-moon" id="theme-icon"></i> <span id="theme-text">الوضع الداكن</span>
-                    </button>
-                    <!-- زر لوحة التحكم -->
-                    <a href="dashboard.html" class="btn-control btn-dashboard-styled hidden-element" id="top-dashboard-btn">
+                    <a href="dashboard.html" class="btn-custom btn-dashboard-styled hidden-element" id="top-dashboard-btn">
                         <i class="fa-solid fa-gauge-high"></i> لوحة التحكم
                     </a>
-                    <!-- زر تسجيل الدخول -->
-                    <a href="login.html" class="btn-control btn-primary-custom" id="top-auth-btn">
+                    <a href="login.html" class="btn-custom btn-primary-gradient" id="top-auth-btn">
                         <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول
                     </a>
-                    <button class="btn-control btn-danger-custom hidden-element" id="global-logout-btn">
+                    <button class="btn-custom btn-danger-custom hidden-element" id="global-logout-btn">
                         <i class="fa-solid fa-right-from-bracket"></i> خروج
                     </button>
                 </div>
@@ -193,13 +187,13 @@
             <div class="card" id="quick-services-card">
                 <div class="card-title"><i class="fa-solid fa-circle-info"></i> الخدمات والوصول السريع</div>
                 <p style="font-size: 0.95rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.7;">سجل دخولك الآن للاستفادة من كافة الخدمات الأكاديمية، استعراض المحاضرات، وملفات المراجع بضغطة زر واحدة.</p>
-                <a href="login.html" class="btn-control btn-primary-custom" style="justify-content: center; width: 100%;">
+                <a href="login.html" class="btn-custom btn-primary-gradient" style="justify-content: center; width: 100%;">
                     تسجيل الدخول إلى حساب الطالب
                 </a>
             </div>
         </div>
 
-        <!-- قسم المقررات والكورسات الدراسية الـ 6 الأساسية -->
+        <!-- المقررات والـ 6 كورسات -->
         <div class="courses-section">
             <div class="card">
                 <div class="card-title"><i class="fa-solid fa-book-open"></i> المقررات والكورسات الدراسية (المواد الـ 6)</div>
@@ -218,7 +212,7 @@
                         </div>
                     </div>
 
-                    <!-- 2. مفاهيم قواعد البيانات ب/تقانة ثالث -->
+                    <!-- 2. مفاهيم قواعد البيانات -->
                     <div class="course-card">
                         <div>
                             <div class="course-badge">تقانة المعلومات</div>
@@ -286,19 +280,14 @@
                 </div>
             </div>
         </div>
-
     </main>
 
     <script>
-        // دالة عرض شاشة التحميل الاحترافية
         function showLoading(message, callback) {
             const overlay = document.getElementById('loading-overlay');
-            const msgEl = document.getElementById('loading-message');
-            msgEl.textContent = message;
+            document.getElementById('loading-message').textContent = message;
             overlay.classList.add('active');
-            setTimeout(() => {
-                callback();
-            }, 600); // مدة نصف ثانية لتجربة مستخدم سلسة واحترافية
+            setTimeout(callback, 600);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -330,7 +319,6 @@
                 if (globalLogoutBtn) globalLogoutBtn.classList.add('hidden-element');
             }
 
-            // التحقق من حالة تسجيل الدخول عند النقر على دخول الكورس مع شاشة الـ Loading
             const courseLinks = document.querySelectorAll('.course-link');
             courseLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
@@ -350,14 +338,12 @@
         });
 
         function performLogout() {
-            if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
-                showLoading('جاري تسجيل الخروج وإعادة التوجيه...', () => {
-                    localStorage.removeItem('it_logged_user');
-                    localStorage.removeItem('it_logged_id');
-                    localStorage.removeItem('it_logged_semester');
-                    window.location.href = 'login.html';
-                });
-            }
+            showLoading('جاري تسجيل الخروج وإعادة التوجيه...', () => {
+                localStorage.removeItem('it_logged_user');
+                localStorage.removeItem('it_logged_id');
+                localStorage.removeItem('it_logged_semester');
+                window.location.href = 'login.html';
+            });
         }
 
         const globalLogoutBtn = document.getElementById('global-logout-btn');
@@ -367,32 +353,6 @@
                 performLogout();
             });
         }
-
-        // إعدادات الوضع الداكن والفاتح
-        const themeToggle = document.getElementById('theme-toggle');
-        const themeIcon = document.getElementById('theme-icon');
-        const themeText = document.getElementById('theme-text');
-
-        if (localStorage.getItem('theme') === 'dark') {
-            document.body.classList.add('dark-mode');
-            themeIcon.className = 'fa-solid fa-sun';
-            themeText.textContent = 'الوضع الفاتح';
-        }
-
-        themeToggle.addEventListener('click', (e) => {
-            e.preventDefault();
-            document.body.classList.toggle('dark-mode');
-            const isDark = document.body.classList.contains('dark-mode');
-            if (isDark) {
-                themeIcon.className = 'fa-solid fa-sun';
-                themeText.textContent = 'الوضع الفاتح';
-                localStorage.setItem('theme', 'dark');
-            } else {
-                themeIcon.className = 'fa-solid fa-moon';
-                themeText.textContent = 'الوضع الداكن';
-                localStorage.setItem('theme', 'light');
-            }
-        });
     </script>
 </body>
 </html>
