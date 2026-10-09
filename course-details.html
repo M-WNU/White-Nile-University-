@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محتوى المقرر - بوابة تقانة المعلومات</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #f97316;
+            --primary-dark: #ea580c;
+            --primary-light: #ffedd5;
+            --bg: #fdfbf7;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-muted: #64748b;
+            --border: #fed7aa;
+            --shadow: 0 15px 35px rgba(249, 115, 22, 0.08);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; transition: 0.25s ease; }
+        body { background-color: var(--bg); color: var(--text); display: flex; min-height: 100vh; flex-direction: column; }
+
+        aside {
+            width: 280px; background-color: var(--card-bg); border-left: 1px solid var(--border);
+            display: flex; flex-direction: column; position: fixed; height: 100vh; z-index: 100;
+            box-shadow: 5px 0 25px rgba(249, 115, 22, 0.03);
+        }
+        .sidebar-brand {
+            padding: 25px 20px; font-size: 1.25rem; font-weight: 900; color: var(--primary);
+            border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px;
+            background: linear-gradient(135deg, #ffedd5 0%, #ffffff 100%);
+        }
+        .sidebar-menu { list-style: none; padding: 20px 15px; flex-grow: 1; }
+        .sidebar-menu li { margin-bottom: 10px; }
+        .sidebar-menu a {
+            display: flex; align-items: center; gap: 15px; padding: 12px 18px; color: var(--text);
+            text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem;
+        }
+        .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--primary-light); color: var(--primary); }
+
+        main { flex-grow: 1; margin-right: 280px; padding: 35px; max-width: 1300px; width: calc(100% - 280px); }
+
+        .course-header-card {
+            background: var(--card-bg); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border);
+            margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; position: relative; overflow: hidden;
+        }
+        .course-header-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .course-header-info h1 { font-size: 1.5rem; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+        .course-header-info p { color: var(--text-muted); font-size: 0.95rem; display: flex; align-items: center; gap: 8px; }
+        
+        .btn-back {
+            background: #fff; border: 1.5px solid var(--border); color: var(--text); padding: 10px 18px;
+            border-radius: 12px; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        }
+        .btn-back:hover { border-color: var(--primary); color: var(--primary); }
+
+        .content-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 25px; }
+        .card { background-color: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); margin-bottom: 25px; }
+        .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
+
+        .lecture-item { display: flex; justify-content: space-between; align-items: center; padding: 15px; border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; background: #fffaf5; }
+        .lecture-title { font-weight: 700; font-size: 0.95rem; display: flex; align-items: center; gap: 10px; }
+        
+        .btn-action { padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; text-decoration: none; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; border: none; }
+        .btn-watch { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.25); }
+        .btn-watch:hover { opacity: 0.9; }
+
+        .resource-link { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; border: 1px solid var(--border); border-radius: 12px; margin-bottom: 10px; text-decoration: none; color: var(--text); font-weight: 600; font-size: 0.9rem; background: #fffaf5; }
+        .resource-link:hover { border-color: var(--primary); background-color: var(--primary-light); color: var(--primary); }
+
+        .course-overview-box {
+            font-size: 0.95rem; color: var(--text-muted); line-height: 1.8; background: #fffaf5;
+            border: 1px solid var(--border); padding: 18px; border-radius: 14px; margin-bottom: 20px;
+        }
+
+        .footer-copyright {
+            margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted);
+            font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg);
+        }
+
+        @media (max-width: 1024px) { .content-grid { grid-template-columns: 1fr; } aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="sidebar-brand">
+            <i class="fa-solid fa-graduation-cap fa-lg"></i> جامعة النيل الأبيض
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="dashboard.html"><i class="fa-solid fa-gauge"></i> لوحة التحكم</a></li>
+        </ul>
+    </aside>
+
+    <main>
+        <div class="course-header-card">
+            <div class="course-header-info">
+                <h1 id="course-title-display">جاري تحميل المقرر...</h1>
+                <p id="course-instructor-display"><i class="fa-solid fa-chalkboard-user"></i> الأستاذ المحاضر: --</p>
+            </div>
+            <a href="index.html" class="btn-back"><i class="fa-solid fa-arrow-right"></i> العودة للرئيسية</a>
+        </div>
+
+        <div class="content-grid">
+            <div>
+                <div class="card">
+                    <div class="card-title"><i class="fa-solid fa-circle-info"></i> نبذة تعريفية عن المادة</div>
+                    <div class="course-overview-box" id="course-overview-display">
+                        جاري تحميل النبذة التعريفية للمقرر...
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fa-solid fa-video"></i> شروحات المحاضرات (فيديو)</div>
+                    <div id="lectures-list"></div>
+                </div>
+            </div>
+
+            <div>
+                <div class="card">
+                    <div class="card-title"><i class="fa-solid fa-file-pdf"></i> ملفات الـ PDF والمراجع</div>
+                    <div id="pdf-list"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title"><i class="fa-solid fa-circle-question"></i> مساعدة أكاديمية</div>
+                    <p style="font-size: 0.88rem; color: var(--text-muted); line-height: 1.6;">إذا واجهتك أي مشكلة في تحميل الملفات أو كنت بحاجة لاستفسار حول المحاضرة، يمكنك مراسلة أستاذ المادة عبر لوحة التحكم.</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer-copyright">
+        © 2026 جميع الحقوق محفوظة لدى محمود عبدالله
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loggedUser = localStorage.getItem('it_logged_user');
+            if (!loggedUser) {
+                alert('عذراً، يرجى تسجيل الدخول أولاً للوصول إلى تفاصيل المقرر.');
+                window.location.href = 'login.html';
+            }
+        });
+
+        const coursesData = {
+            "sudanese-studies": {
+                title: "مادة الدراسات السودانية",
+                instructor: "د. مرتضى يونس بشير محمد",
+                overview: "تهدف هذه المادة إلى تعريج شامل على تاريخ السودان الحضاري والسياسي والاجتماعي، ودراسة مقومات الهوية السودانية، التنوع الثقافي، والتطورات التاريخية والحديثة التي شكلت الدولة السودانية.",
+                lectures: [
+                    { title: "المحاضرة الأولى: المدخل التاريخي والحضاري", duration: "45 دقيقة" },
+                    { title: "المحاضرة الثانية: التركيبة السكانية والثقافية في السودان", duration: "50 دقيقة" },
+                    { title: "المحاضرة الثالثة: التطورات السياسية الحديثة", duration: "40 دقيقة" }
+                ],
+                pdfs: [
+                    { title: "مذكرة الدراسات السودانية الشاملة.pdf", size: "4.2 ميجابايت" },
+                    { title: "ملخص تاريخ السودان الحديث.pdf", size: "2.1 ميجابايت" }
+                ]
+            },
+            "databases": {
+                title: "مفاهيم قواعد البيانات ب/تقانة ثالث",
+                instructor: "أ. غفار عوض الله محمد احمد",
+                overview: "تتناول هذه المادة المفاهيم الأساسية والمتقدمة لنظم إدارة قواعد البيانات (RDBMS)، تصميم جداول العلاقات باستخدام مخططات الكيان والارتباط (ERD)، وكتابة أوامر لغة الاستعلام المهيكلة (SQL) بكفاءة عالية.",
+                lectures: [
+                    { title: "المحاضرة الأولى: مقدمة في نظم إدارة قواعد البيانات RDBMS", duration: "55 دقيقة" },
+                    { title: "المحاضرة الثانية: تصميم العلاقات ونظام ERD", duration: "60 دقيقة" },
+                    { title: "المحاضرة الثالثة: لغة الاستعلام المهيكلة SQL الأساسية", duration: "50 دقيقة" }
+                ],
+                pdfs: [
+                    { title: "كتاب مفاهيم قواعد البيانات مرجع أساسي.pdf", size: "8.5 ميجابايت" },
+                    { title: "أمثلة وتمارين SQL عملية.pdf", size: "1.8 ميجابايت" }
+                ]
+            },
+            "algebra-geometry": {
+                title: "جبر ومهندسة تحليلية",
+                instructor: "د. بشارة عيسى حمد عبدالله",
+                overview: "تركز المادة على دراسة المصفوفات، المحددات، الطرق الجبرية لحل المعادلات الخطية، بالإضافة إلى مفاهيم الهندسة التحليلية في الفضاء الثنائي والثلاثي الأبعاد وتطبيقاتها الهندسية والرياضية.",
+                lectures: [
+                    { title: "المحاضرة الأولى: المصفوفات والمحددات ونظرياتها", duration: "50 دقيقة" },
+                    { title: "المحاضرة الثانية: المعادلات الخطية وطرق حلها", duration: "45 دقيقة" },
+                    { title: "المحاضرة الثالثة: الهندسة التحليلية في الفضاء", duration: "55 دقيقة" }
+                ],
+                pdfs: [
+                    { title: "محاضرات الجبر والهندسة التحليلية.pdf", size: "5.0 ميجابايت" },
+                    { title: "تمارين ومسائل محلولة في الجبر.pdf", size: "3.2 ميجابايت" }
+                ]
+            },
+            "pc-tech": {
+                title: "تقانة الحاسب الشخصي",
+                instructor: "أ. ساجدة احمد ادم",
+                overview: "تغطي المادة مكونات العتاد الصلب (Hardware) للحاسب الشخصي، آلية عمل اللوحات الأم والمعالجات الحديثة، صيانة الأعطال المادية، وإدارة أنظمة التشغيل وحل مشاكل الإقلاع بكفاءة.",
+                lectures: [
+                    { title: "المحاضرة الأولى: مكونات العتاد الصلب Hardware وصيانتها", duration: "40 دقيقة" },
+                    { title: "المحاضرة الثانية: اللوحات الأم والمعالجات الحديثة", duration: "45 دقيقة" },
+                    { title: "المحاضرة الثالثة: أنظمة التشغيل وحل مشاكل الإقلاع", duration: "50 دقيقة" }
+                ],
+                pdfs: [
+                    { title: "دليل صيانة الحاسب الشخصي.pdf", size: "6.3 ميجابايت" },
+                    { title: "ملخص معمارية الحاسوب.pdf", size: "2.5 ميجابايت" }
+                ]
+            },
+            "networks-1": {
+                title: "شبكات الحاسوب والاتصال (1)",
+                instructor: "د. محمد الطيب حمادي",
+                overview: "مقرر أساسي في شبكات الاتصال، يستعرض نموذج الاتصال المعياري (OSI Model)، طبقات الشبكة المختلفة، آليات عناوين بروتوكول الإنترنت (IP Addressing)، وبروتوكولات نقل البيانات.",
+                lectures: [
+                    { title: "المحاضرة الأولى: أساسيات شبكات الحاسوب ونموذج OSI", duration: "60 دقيقة" },
+                    { title: "المحاضرة الثانية: طبقات الشبكة وعنونة IP Addressing", duration: "55 دقيقة" },
+                    { title: "المحاضرة الثالثة: وسائط النقل والاتصال وبروتوكولاتها", duration: "50 دقيقة" }
+                ],
+                pdfs: [
+                    { title: "مرجع شبكات الحاسوب الجزء الأول.pdf", size: "7.8 ميجابايت" },
+                    { title: "دليل عناوين شبكات IP.pdf", size: "3.0 ميجابايت" }
+                ]
+            },
+            "software-eng": {
+                title: "هندسة برمجيات",
+                instructor: "د. سيف الدين حميدة",
+                overview: "تتناول المادة المبادئ الهندسية لبناء وتطوير البرمجيات، دورة حياة تطوير النظام (SDLC)، النماذج المختلفة مثل Agile وWaterfall، وأساليب تحليل المتطلبات وتوثيق المشاريع.",
+                lectures: [
+                    { title: "المحاضرة الأولى: مفاهيم هندسة البرمجيات ودورة حياة النظام SDLC", duration: "50 دقيقة" },
+                    { title: "المحاضرة الثانية: نماذج تطوير البرمجيات Agile & Waterfall", duration: "55 دقيقة" },
+                    { title: "المحاضرة الثالثة: هندسة المتطلبات وتحليل النظام", duration: "45 دقيقة" }
+                ],
+                pdfs: [
+                    { title: "كتاب هندسة البرمجيات الأساسي.pdf", size: "9.1 ميجابايت" },
+                    { title: "دليل توثيق المشاريع البرمجية.pdf", size: "2.2 ميجابايت" }
+                ]
+            }
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const courseKey = urlParams.get('course');
+        const currentCourse = coursesData[courseKey];
+
+        if (currentCourse) {
+            document.getElementById('course-title-display').textContent = currentCourse.title;
+            document.getElementById('course-instructor-display').innerHTML = `<i class="fa-solid fa-chalkboard-user"></i> الأستاذ المحاضر: ${currentCourse.instructor}`;
+            document.getElementById('course-overview-display').textContent = currentCourse.overview;
+            
+            const lecturesList = document.getElementById('lectures-list');
+            lecturesList.innerHTML = '';
+            currentCourse.lectures.forEach(lec => {
+                lecturesList.innerHTML += `
+                    <div class="lecture-item">
+                        <div class="lecture-title"><i class="fa-solid fa-play-circle" style="color: var(--primary);"></i> ${lec.title}</div>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span style="font-size: 0.8rem; color: var(--text-muted);">${lec.duration}</span>
+                            <button class="btn-action btn-watch" onclick="alert('جاري تشغيل فيديو الشرح: ${lec.title}')"><i class="fa-solid fa-play"></i> مشاهدة</button>
+                        </div>
+                    </div>
+                `;
+            });
+
+            const pdfList = document.getElementById('pdf-list');
+            pdfList.innerHTML = '';
+            currentCourse.pdfs.forEach(pdf => {
+                pdfList.innerHTML += `
+                    <a href="#" class="resource-link" onclick="alert('جاري تحميل الملف: ${pdf.title}'); return false;">
+                        <span><i class="fa-solid fa-file-pdf" style="color: #dc2626; margin-left: 8px;"></i> ${pdf.title}</span>
+                        <span style="font-size: 0.75rem; color: var(--text-muted);">${pdf.size}</span>
+                    </a>
+                `;
+            });
+        } else {
+            document.getElementById('course-title-display').textContent = 'عذراً، المقرر غير موجود';
+            document.getElementById('course-instructor-display').textContent = 'يرجى العودة للرئيسية واختيار مقرر صحيح.';
+            document.getElementById('course-overview-display').textContent = 'لا توجد بيانات متاحة لهذا المقرر.';
+        }
+    </script>
+</body>
+</html>
