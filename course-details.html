@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- ربط مكتبات Firebase الأساسية (الإصدار الحديث المتوافق مع إعداداتك) -->
+    <!-- ربط مكتبات Firebase الأساسية المتوافقة مع الإصدار الحديث -->
     <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-storage-compat.js"></script>
@@ -223,7 +223,7 @@
             projectId: "kosti-university-it",
             storageBucket: "kosti-university-it.firebasestorage.app",
             messagingSenderId: "364361272352",
-            appId: "1:364361272352:web:914c81883b7d43b1a6c045"
+            appId: "1:364361272352:web:56953086b49cb2e0a6c045"
         };
 
         if (!firebase.apps.length) {
@@ -288,7 +288,7 @@
 
         const urlParams = new URLSearchParams(window.location.search);
         const courseKey = urlParams.get('course');
-        let currentCourse = defaultCoursesData[courseKey];
+        let currentCourse = defaultCoursesData[courseKey] || { title: "المقرر الدراسي", instructor: "غير متوفر", overview: "تفاصيل المقرر", lectures: [], pdfs: [] };
 
         const isAdmin = localStorage.getItem('it_logged_id') === '24-11086250' && localStorage.getItem('it_admin_mode') === 'true';
 
@@ -317,10 +317,12 @@
             db.collection("courses").doc(courseKey).get().then((doc) => {
                 if (doc.exists && doc.data()) {
                     currentCourse = doc.data();
+                } else {
+                    db.collection("courses").doc(courseKey).set(currentCourse);
                 }
                 renderCoursePage();
             }).catch((err) => {
-                console.log("استخدام البيانات الافتراضية:", err);
+                console.log("خطأ في الاتصال، استخدام البيانات الافتراضية:", err);
                 renderCoursePage();
             });
         }
@@ -342,7 +344,7 @@
                 
                 const lecturesList = document.getElementById('lectures-list');
                 lecturesList.innerHTML = '';
-                if (currentCourse.lectures) {
+                if (currentCourse.lectures && currentCourse.lectures.length > 0) {
                     currentCourse.lectures.forEach((lec, index) => {
                         let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="deleteLecture(${index})">حذف</button>` : '';
                         let watchAction = lec.url && lec.url !== '#' ? `window.open('${lec.url}', '_blank')` : `showModal('تنبيه', 'جاري تشغيل الفيديو: ${lec.title}')`;
@@ -362,11 +364,13 @@
                             </div>
                         `;
                     });
+                } else {
+                    lecturesList.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:15px;">لا توجد محاضرات مضافة بعد.</p>`;
                 }
 
                 const pdfList = document.getElementById('pdf-list');
                 pdfList.innerHTML = '';
-                if (currentCourse.pdfs) {
+                if (currentCourse.pdfs && currentCourse.pdfs.length > 0) {
                     currentCourse.pdfs.forEach((pdf, index) => {
                         let deleteBtn = isAdmin ? `<button class="btn-delete-lecture" onclick="deletePdf(${index})">حذف</button>` : '';
                         let fileUrl = pdf.url || '#';
@@ -384,6 +388,8 @@
                             </div>
                         `;
                     });
+                } else {
+                    pdfList.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:15px;">لا توجد ملفات PDF مضافة بعد.</p>`;
                 }
             }
         }
