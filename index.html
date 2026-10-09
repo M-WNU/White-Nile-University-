@@ -43,7 +43,7 @@
         
         main { flex-grow: 1; margin-right: 280px; padding: 30px; }
         
-        /* Hero Section محسنة ومنسقة */
+        /* Hero Section */
         .hero-welcome-card {
             background: var(--card-bg); border-radius: 20px; padding: 40px; box-shadow: var(--shadow); border: 1px solid var(--border-color);
             margin-bottom: 30px; position: relative; overflow: hidden;
@@ -63,24 +63,27 @@
 
         .action-buttons-group { display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
         
+        /* توحيد استايل جميع الأزرار لتطابق لوحة التحكم */
         .btn-control {
-            padding: 12px 20px; border-radius: 12px; font-size: 0.95rem; font-weight: 700; cursor: pointer;
-            display: inline-flex; align-items: center; justify-content: center; gap: 10px; border: 1px solid var(--border-color);
-            text-decoration: none; background: var(--card-bg); color: var(--text-color); box-shadow: var(--shadow); min-height: 46px;
+            padding: 10px 18px; border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer;
+            display: inline-flex; align-items: center; justify-content: center; gap: 8px; border: 1px solid var(--border-color);
+            text-decoration: none; background: var(--card-bg); color: var(--text-color); box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+            min-height: 42px;
         }
-        .btn-control:hover { border-color: var(--primary-color); color: var(--primary-color); transform: translateY(-2px); }
+        .btn-control:hover { border-color: var(--primary-color); color: var(--primary-color); transform: translateY(-1px); }
         
-        .btn-primary-custom { background: var(--primary-gradient); color: white !important; border: none; box-shadow: 0 4px 15px rgba(15, 118, 110, 0.3); }
-        .btn-primary-custom:hover { opacity: 0.95; color: white !important; }
+        .btn-primary-custom { background: var(--primary-gradient); color: white !important; border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); }
+        .btn-primary-custom:hover { opacity: 0.9; color: white !important; }
         
         .btn-dashboard-styled {
-            background: linear-gradient(135deg, #2563eb 1d6%, #1d4ed8 100%); color: white !important; border: none;
-            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white !important; border: none;
+            box-shadow: 0 4px 10px rgba(37, 99, 235, 0.2);
         }
-        .btn-dashboard-styled:hover { opacity: 0.95; color: white !important; }
+        .btn-dashboard-styled:hover { opacity: 0.9; color: white !important; }
 
         .btn-danger-custom { background-color: #fee2e2; color: #dc2626; border-color: #fca5a5; }
         .dark-mode .btn-danger-custom { background-color: rgba(220, 38, 38, 0.15); color: #fca5a5; border-color: #7f1d1d; }
+        .btn-danger-custom:hover { background-color: #dc2626; color: white !important; }
 
         .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-bottom: 25px; }
         .card { background-color: var(--card-bg); border-radius: 18px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border-color); }
@@ -97,8 +100,27 @@
         .course-instructor { font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
         .course-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 15px; margin-top: 10px; }
         .course-badge { background: rgba(20, 184, 166, 0.1); color: var(--primary-color); padding: 5px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 700; width: fit-content; }
-        .btn-enter-course { background: var(--primary-gradient); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 0.9rem; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; cursor: pointer; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2); }
-        .btn-enter-course:hover { opacity: 0.9; transform: scale(1.02); }
+        
+        .btn-enter-course {
+            background: var(--primary-gradient); color: #fff; padding: 8px 16px; border-radius: 10px; font-size: 0.9rem;
+            text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; cursor: pointer;
+            border: none; box-shadow: 0 4px 10px rgba(15, 118, 110, 0.2);
+        }
+        .btn-enter-course:hover { opacity: 0.9; transform: translateY(-1px); }
+
+        /* تصميم شاشة التحميل الاحترافية (Loading Modal) */
+        #loading-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(11, 15, 25, 0.8);
+            backdrop-filter: blur(5px); z-index: 9999; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 20px; opacity: 0; pointer-events: none; transition: opacity 0.3s ease;
+        }
+        #loading-overlay.active { opacity: 1; pointer-events: auto; }
+        .spinner {
+            width: 55px; height: 55px; border: 5px solid rgba(20, 184, 166, 0.2); border-top-color: var(--primary-color);
+            border-radius: 50%; animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        .loading-text { color: #f9fafb; font-size: 1.1rem; font-weight: 700; font-family: 'Cairo', sans-serif; letter-spacing: 0.5px; }
 
         .hidden-element { display: none !important; }
 
@@ -106,6 +128,12 @@
     </style>
 </head>
 <body>
+
+    <!-- عنصر شاشة التحميل الاحترافية -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text" id="loading-message">جاري التحويل، يرجى الانتظار...</div>
+    </div>
 
     <aside>
         <div class="sidebar-brand">
@@ -119,9 +147,8 @@
     </aside>
 
     <main>
-        <!-- رأس الهوية والترحيب مع رفع زر الدخول للأعلى -->
+        <!-- رأس الهوية والترحيب -->
         <div class="hero-welcome-card">
-            <!-- شريط الأزرار في الأعلى -->
             <div class="hero-top-bar">
                 <div style="font-weight: 800; color: var(--primary-color); font-size: 1.05rem; display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-laptop-code"></i> قسم تقانة المعلومات - كوستي
@@ -130,11 +157,11 @@
                     <button class="btn-control" id="theme-toggle" title="تغيير المظهر">
                         <i class="fa-solid fa-moon" id="theme-icon"></i> <span id="theme-text">الوضع الداكن</span>
                     </button>
-                    <!-- زر لوحة التحكم الجذاب -->
+                    <!-- زر لوحة التحكم -->
                     <a href="dashboard.html" class="btn-control btn-dashboard-styled hidden-element" id="top-dashboard-btn">
                         <i class="fa-solid fa-gauge-high"></i> لوحة التحكم
                     </a>
-                    <!-- زر تسجيل الدخول المرفوع للأعلى -->
+                    <!-- زر تسجيل الدخول -->
                     <a href="login.html" class="btn-control btn-primary-custom" id="top-auth-btn">
                         <i class="fa-solid fa-right-to-bracket"></i> تسجيل الدخول
                     </a>
@@ -187,7 +214,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=sudanese-studies">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <button class="btn-enter-course course-link" data-target="course-details.html?course=sudanese-studies">دخول الكورس <i class="fa-solid fa-arrow-left"></i></button>
                         </div>
                     </div>
 
@@ -200,7 +227,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=databases">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <button class="btn-enter-course course-link" data-target="course-details.html?course=databases">دخول الكورس <i class="fa-solid fa-arrow-left"></i></button>
                         </div>
                     </div>
 
@@ -213,7 +240,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=algebra-geometry">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <button class="btn-enter-course course-link" data-target="course-details.html?course=algebra-geometry">دخول الكورس <i class="fa-solid fa-arrow-left"></i></button>
                         </div>
                     </div>
 
@@ -226,7 +253,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=pc-tech">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <button class="btn-enter-course course-link" data-target="course-details.html?course=pc-tech">دخول الكورس <i class="fa-solid fa-arrow-left"></i></button>
                         </div>
                     </div>
 
@@ -239,7 +266,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=networks-1">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <button class="btn-enter-course course-link" data-target="course-details.html?course=networks-1">دخول الكورس <i class="fa-solid fa-arrow-left"></i></button>
                         </div>
                     </div>
 
@@ -252,7 +279,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.85rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=software-eng">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <button class="btn-enter-course course-link" data-target="course-details.html?course=software-eng">دخول الكورس <i class="fa-solid fa-arrow-left"></i></button>
                         </div>
                     </div>
 
@@ -263,6 +290,17 @@
     </main>
 
     <script>
+        // دالة عرض شاشة التحميل الاحترافية
+        function showLoading(message, callback) {
+            const overlay = document.getElementById('loading-overlay');
+            const msgEl = document.getElementById('loading-message');
+            msgEl.textContent = message;
+            overlay.classList.add('active');
+            setTimeout(() => {
+                callback();
+            }, 600); // مدة نصف ثانية لتجربة مستخدم سلسة واحترافية
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
             const loggedUser = localStorage.getItem('it_logged_user');
             const topAuthBtn = document.getElementById('top-auth-btn');
@@ -272,7 +310,6 @@
             const sidebarAuthLink = document.getElementById('sidebar-auth-link');
 
             if (loggedUser) {
-                // إذا كان المستخدم مسجلاً للدخول
                 if (topAuthBtn) {
                     topAuthBtn.innerHTML = `<i class="fa-solid fa-user-check"></i> ${loggedUser}`;
                     topAuthBtn.href = 'dashboard.html';
@@ -289,22 +326,24 @@
                     });
                 }
             } else {
-                // إذا لم يكن مسجلاً للدخول
                 if (topDashboardBtn) topDashboardBtn.classList.add('hidden-element');
                 if (globalLogoutBtn) globalLogoutBtn.classList.add('hidden-element');
             }
 
-            // التحقق من تسجيل الدخول عند النقر على دخول الكورس
+            // التحقق من حالة تسجيل الدخول عند النقر على دخول الكورس مع شاشة الـ Loading
             const courseLinks = document.querySelectorAll('.course-link');
             courseLinks.forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const targetUrl = link.getAttribute('data-target');
                     if (!loggedUser) {
-                        alert('عذراً، يرجى تسجيل الدخول أولاً للوصول إلى محتوى وشروحات الكورس.');
-                        window.location.href = 'login.html';
+                        showLoading('عذراً، يرجى تسجيل الدخول أولاً...', () => {
+                            window.location.href = 'login.html';
+                        });
                     } else {
-                        window.location.href = targetUrl;
+                        showLoading('جاري تحويلك إلى محتوى الكورس...', () => {
+                            window.location.href = targetUrl;
+                        });
                     }
                 });
             });
@@ -312,16 +351,21 @@
 
         function performLogout() {
             if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
-                localStorage.removeItem('it_logged_user');
-                localStorage.removeItem('it_logged_id');
-                localStorage.removeItem('it_logged_semester');
-                window.location.href = 'login.html';
+                showLoading('جاري تسجيل الخروج وإعادة التوجيه...', () => {
+                    localStorage.removeItem('it_logged_user');
+                    localStorage.removeItem('it_logged_id');
+                    localStorage.removeItem('it_logged_semester');
+                    window.location.href = 'login.html';
+                });
             }
         }
 
         const globalLogoutBtn = document.getElementById('global-logout-btn');
         if (globalLogoutBtn) {
-            globalLogoutBtn.addEventListener('click', performLogout);
+            globalLogoutBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                performLogout();
+            });
         }
 
         // إعدادات الوضع الداكن والفاتح
