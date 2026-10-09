@@ -69,7 +69,6 @@
         .btn-danger-custom { background-color: #fee2e2; color: #dc2626; border-color: #fca5a5; }
         .btn-danger-custom:hover { background-color: #dc2626; color: white !important; }
 
-        /* زر وضع الإدارة المميز */
         .btn-admin-mode {
             background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
             color: white !important; border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
@@ -110,12 +109,6 @@
         }
         .whatsapp-action-btn:hover { background-color: #20ba5a; }
 
-        .btn-quick-service {
-            background: var(--primary); color: white; border: none; padding: 8px 14px; border-radius: 10px; cursor: pointer;
-            font-size: 0.85rem; font-weight: 700; white-space: nowrap; box-shadow: 0 2px 6px rgba(249, 115, 22, 0.2);
-        }
-        .btn-quick-service:hover { opacity: 0.9; }
-
         .footer-copyright {
             margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted);
             font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg);
@@ -133,23 +126,7 @@
         }
         .modal-box h3 { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 12px; }
         .modal-box p { font-size: 0.95rem; color: var(--text-muted); margin-bottom: 25px; line-height: 1.6; }
-        .modal-btns { display: flex; gap: 10px; justify-content: center; }
-        .modal-btn { padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; }
-        .modal-btn-confirm { background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3); }
-        .modal-btn-cancel { background: #e2e8f0; color: #475569; }
-
-        #loading-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(4px); z-index: 99999; display: flex; flex-direction: column; align-items: center;
-            justify-content: center; gap: 15px; opacity: 0; pointer-events: none; transition: opacity 0.3s;
-        }
-        #loading-overlay.active { opacity: 1; pointer-events: auto; }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid rgba(249, 115, 22, 0.2); border-top-color: #f97316;
-            border-radius: 50%; animation: spin 0.8s linear infinite;
-        }
-        @keyframes spin { to { transform: rotate(360deg); } }
-        .loading-text { color: #ffffff; font-size: 1rem; font-weight: 700; }
+        .modal-btn { padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; }
 
         .hidden-element { display: none !important; }
         @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
@@ -157,18 +134,11 @@
 </head>
 <body>
 
-    <div id="loading-overlay">
-        <div class="spinner"></div>
-        <div class="loading-text" id="loading-msg">جاري معالجة طلبك...</div>
-    </div>
-
     <div id="custom-modal">
         <div class="modal-box">
             <h3 id="modal-title">تنبيه النظام</h3>
             <p id="modal-desc">رسالة التنبيه هنا...</p>
-            <div class="modal-btns" id="modal-btns-container">
-                <button class="modal-btn modal-btn-confirm" id="modal-ok-btn">حسناً</button>
-            </div>
+            <button class="modal-btn" onclick="document.getElementById('custom-modal').classList.remove('active')">حسناً</button>
         </div>
     </div>
 
@@ -177,10 +147,8 @@
             <i class="fa-solid fa-graduation-cap fa-lg"></i> جامعة النيل الأبيض
         </div>
         <ul class="sidebar-menu">
-            <li><a href="index.html" data-page="home"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-            <li><a href="dashboard.html" class="active" data-page="schedule"><i class="fa-solid fa-calendar-days"></i> الجدول الدراسي</a></li>
-            <li><a href="dashboard.html" data-page="courses"><i class="fa-solid fa-book-open"></i> المقررات الحالية</a></li>
-            <li><a href="#" onclick="showCustomModal('إشعارات النظام', 'لا توجد إشعارات أكاديمية جديدة في الوقت الحالي.')"><i class="fa-solid fa-bell"></i> الإشعارات والتعاميم</a></li>
+            <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="dashboard.html" class="active"><i class="fa-solid fa-calendar-days"></i> الجدول الدراسي</a></li>
         </ul>
     </aside>
 
@@ -199,140 +167,67 @@
             </div>
 
             <div class="action-buttons-group">
-                <!-- زر وضع الإدارة يظهر فقط للرقم 24-11086250 -->
                 <button class="btn-custom btn-admin-mode hidden-element" id="admin-mode-btn" onclick="toggleAdminMode()">
                     <i class="fa-solid fa-user-shield"></i> <span id="admin-btn-text">وضع الإدارة</span>
                 </button>
-                <a href="index.html" class="btn-custom">
-                    <i class="fa-solid fa-house"></i> الرئيسية
-                </a>
-                <button class="btn-custom btn-danger-custom" id="logout-btn">
-                    <i class="fa-solid fa-right-from-bracket"></i> خروج
-                </button>
-            </div>
-        </div>
-
-        <div class="stats-container">
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-book"></i></div>
-                <div class="stat-data">
-                    <h4>المقررات المسجلة</h4>
-                    <span>6 مقررات</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-award"></i></div>
-                <div class="stat-data">
-                    <h4>الحالة الدراسية</h4>
-                    <span style="color: #10b981;">منتظم (نشط)</span>
-                </div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
-                <div class="stat-data">
-                    <h4>العام الأكاديمي</h4>
-                    <span id="academic-year-display">2023 - 2024</span>
-                </div>
+                <a href="index.html" class="btn-custom"><i class="fa-solid fa-house"></i> الرئيسية</a>
+                <button class="btn-custom btn-danger-custom" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
             </div>
         </div>
 
         <div class="dashboard-grid">
             <div class="card">
-                <div class="card-title">
-                    <i class="fa-solid fa-list-check"></i> الجدول الدراسي والمقررات الـ 6 الحالية
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">مقررات فصل تقانة المعلومات:</p>
+                <div class="card-title"><i class="fa-solid fa-list-check"></i> المقررات الـ 6 الحالية</div>
                 
                 <div class="course-row">
                     <div class="course-info-box">
                         <span class="course-name">الدراسات السودانية</span>
                         <span class="course-instructor-name">د. مرتضى يونس بشير محمد</span>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <a href="course-details.html?course=sudanese-studies" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                        <span class="course-code-badge">GEN</span>
-                    </div>
+                    <a href="course-details.html?course=sudanese-studies" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
                 </div>
-
                 <div class="course-row">
                     <div class="course-info-box">
                         <span class="course-name">مفاهيم قواعد البيانات ب/تقانة ثالث</span>
                         <span class="course-instructor-name">أ. غفار عوض الله محمد احمد</span>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <a href="course-details.html?course=databases" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                        <span class="course-code-badge">IT-301</span>
-                    </div>
+                    <a href="course-details.html?course=databases" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
                 </div>
-
                 <div class="course-row">
                     <div class="course-info-box">
                         <span class="course-name">جبر ومهندسة تحليلية</span>
                         <span class="course-instructor-name">د. بشارة عيسى حمد عبدالله</span>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <a href="course-details.html?course=algebra-geometry" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                        <span class="course-code-badge">IT-302</span>
-                    </div>
+                    <a href="course-details.html?course=algebra-geometry" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
                 </div>
-
                 <div class="course-row">
                     <div class="course-info-box">
                         <span class="course-name">تقانة الحاسب الشخصي</span>
                         <span class="course-instructor-name">أ. ساجدة احمد ادم</span>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <a href="course-details.html?course=pc-tech" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                        <span class="course-code-badge">IT-303</span>
-                    </div>
+                    <a href="course-details.html?course=pc-tech" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
                 </div>
-
                 <div class="course-row">
                     <div class="course-info-box">
                         <span class="course-name">شبكات الحاسوب والاتصال (1)</span>
                         <span class="course-instructor-name">د. محمد الطيب حمادي</span>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <a href="course-details.html?course=networks-1" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                        <span class="course-code-badge">IT-304</span>
-                    </div>
+                    <a href="course-details.html?course=networks-1" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
                 </div>
-
                 <div class="course-row">
                     <div class="course-info-box">
                         <span class="course-name">هندسة برمجيات</span>
                         <span class="course-instructor-name">د. سيف الدين حميدة</span>
                     </div>
-                    <div style="display: flex; gap: 8px; align-items: center;">
-                        <a href="course-details.html?course=software-eng" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
-                        <span class="course-code-badge">IT-305</span>
-                    </div>
+                    <a href="course-details.html?course=software-eng" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
                 </div>
             </div>
 
             <div class="card">
-                <div class="card-title">
-                    <i class="fa-solid fa-headset"></i> الدعم الفني والمساعد الأكاديمي
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">تواصل فوري ومباشر مع الإدارة عبر الواتساب للاستفسارات:</p>
-                
+                <div class="card-title"><i class="fa-solid fa-headset"></i> الدعم الفني</div>
                 <a href="https://wa.me/249900623733" target="_blank" class="whatsapp-action-btn">
                     <i class="fa-brands fa-whatsapp fa-xl"></i> التواصل عبر واتساب الكلية
                 </a>
-
-                <div class="card-title" style="margin-top: 25px;">
-                    <i class="fa-solid fa-bolt"></i> الخدمات الأكاديمية السريعة
-                </div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px;">إرسال الطلبات الإدارية بضغطة زر واحدة:</p>
-
-                <div class="course-row">
-                    <span class="course-name">📄 طلب إفادة قيد</span>
-                    <button class="btn-quick-service" onclick="showCustomModal('إرسال الطلب', 'تم إرسال طلب (إفادة قيد) بنجاح إلى شؤون الطلاب.')">إرسال</button>
-                </div>
-                <div class="course-row">
-                    <span class="course-name">🎓 شهادة قيد للرئاسة</span>
-                    <button class="btn-quick-service" onclick="showCustomModal('إرسال الطلب', 'تم إرسال طلب (شهادة قيد للرئاسة) بنجاح إلى شؤون الطلاب.')">إرسال</button>
-                </div>
             </div>
         </div>
     </main>
@@ -342,36 +237,6 @@
     </footer>
 
     <script>
-        function showLoading(msg, callback) {
-            const overlay = document.getElementById('loading-overlay');
-            document.getElementById('loading-msg').textContent = msg;
-            overlay.classList.add('active');
-            setTimeout(callback, 700);
-        }
-
-        function showCustomModal(title, desc, onConfirm = null) {
-            const modal = document.getElementById('custom-modal');
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-desc').textContent = desc;
-            
-            const btnContainer = document.getElementById('modal-btns-container');
-            if (onConfirm) {
-                btnContainer.innerHTML = `
-                    <button class="modal-btn modal-btn-cancel" id="modal-cancel-btn">إلغاء</button>
-                    <button class="modal-btn modal-btn-confirm" id="modal-ok-btn">تأكيد</button>
-                `;
-                document.getElementById('modal-cancel-btn').onclick = () => modal.classList.remove('active');
-                document.getElementById('modal-ok-btn').onclick = () => {
-                    modal.classList.remove('active');
-                    onConfirm();
-                };
-            } else {
-                btnContainer.innerHTML = `<button class="modal-btn modal-btn-confirm" id="modal-ok-btn">حسناً</button>`;
-                document.getElementById('modal-ok-btn').onclick = () => modal.classList.remove('active');
-            }
-            modal.classList.add('active');
-        }
-
         document.addEventListener('DOMContentLoaded', () => {
             const loggedUser = localStorage.getItem('it_logged_user');
             const loggedId = localStorage.getItem('it_logged_id');
@@ -384,50 +249,35 @@
             document.getElementById('welcome-name').textContent = `مرحباً، ${loggedUser}`;
             document.getElementById('avatar-letter').textContent = loggedUser.trim().charAt(0);
 
-            if (loggedId) {
-                document.getElementById('display-student-id').textContent = loggedId;
-                const academicYearSpan = document.getElementById('academic-year-display');
-                if (loggedId.startsWith('24') || loggedId.includes('-24')) {
-                    academicYearSpan.textContent = '2023 - 2024';
-                }
-
-                // التحقق التلقائي إذا كان المستخدم هو محمود (الرقم 24-11086250)
-                if (loggedId === '24-11086250') {
-                    const adminBtn = document.getElementById('admin-mode-btn');
-                    adminBtn.classList.remove('hidden-element');
-                    
-                    if (localStorage.getItem('it_admin_mode') === 'true') {
-                        adminBtn.classList.add('active-admin');
-                        document.getElementById('admin-btn-text').textContent = 'إيقاف وضع الإدارة';
-                    }
+            if (loggedId === '24-11086250') {
+                const adminBtn = document.getElementById('admin-mode-btn');
+                adminBtn.classList.remove('hidden-element');
+                if (localStorage.getItem('it_admin_mode') === 'true') {
+                    adminBtn.classList.add('active-admin');
+                    document.getElementById('admin-btn-text').textContent = 'إيقاف وضع الإدارة';
                 }
             }
         });
 
         function toggleAdminMode() {
-            showLoading('جاري تبديل وضع الإدارة...', () => {
-                const currentStatus = localStorage.getItem('it_admin_mode') === 'true';
-                if (currentStatus) {
-                    localStorage.setItem('it_admin_mode', 'false');
-                    showCustomModal('وضع الإدارة', 'تم الخروج من وضع الإدارة بنجاح.');
-                } else {
-                    localStorage.setItem('it_admin_mode', 'true');
-                    showCustomModal('وضع الإدارة', 'تم تفعيل وضع الإدارة بنجاح! يمكنك الآن إضافة وتعديل المحتوى والفيديوهات داخل الكورسات.');
-                }
-                location.reload();
-            });
+            const currentStatus = localStorage.getItem('it_admin_mode') === 'true';
+            if (currentStatus) {
+                localStorage.setItem('it_admin_mode', 'false');
+                alert('تم إيقاف وضع الإدارة بنجاح.');
+            } else {
+                localStorage.setItem('it_admin_mode', 'true');
+                alert('تم تفعيل وضع الإدارة بنجاح!');
+            }
+            location.reload();
         }
 
         document.getElementById('logout-btn').addEventListener('click', () => {
-            showCustomModal('تسجيل الخروج', 'هل أنت متأكد من رغبتك في تسجيل الخروج من النظام؟', () => {
-                showLoading('جاري تسجيل الخروج وإعادة التوجيه...', () => {
-                    localStorage.removeItem('it_logged_user');
-                    localStorage.removeItem('it_logged_id');
-                    localStorage.removeItem('it_logged_semester');
-                    localStorage.removeItem('it_admin_mode');
-                    window.location.href = 'login.html';
-                });
-            });
+            if (confirm('هل أنت متأكد من تسجيل الخروج؟')) {
+                localStorage.removeItem('it_logged_user');
+                localStorage.removeItem('it_logged_id');
+                localStorage.removeItem('it_admin_mode');
+                window.location.href = 'login.html';
+            }
         });
     </script>
 </body>
