@@ -211,7 +211,7 @@
 
         <div class="card-body-content">
             <h1 id="form-title">بوابة تقانة المعلومات</h1>
-            <p class="subtitle" id="form-subtitle">تسجيل الدخول الأكاديمي للطلاب.</p>
+            <p class="subtitle" id="form-subtitle">تسجيل الدخول بالرقم الجامعي.</p>
 
             <div id="auth-form-container">
                 <div class="form-group signup-field hidden-view">
@@ -223,19 +223,11 @@
                     <span id="name-indicator-text" class="name-indicator" style="color: #94a3b8;">يرجى إدخال اسمك رباعياً (4 أسماء على الأقل)</span>
                 </div>
 
-                <div class="form-group signup-field hidden-view">
+                <div class="form-group">
                     <label>الرقم الجامعي (ID)</label>
                     <div class="input-wrapper">
                         <input type="text" id="studentid" placeholder="مثال: 24-XXXXXX">
                         <i class="fa-solid fa-id-card"></i>
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label>البريد الإلكتروني الجامعي</label>
-                    <div class="input-wrapper">
-                        <input type="email" id="email-input" placeholder="student@kosti.edu.sd">
-                        <i class="fa-solid fa-envelope"></i>
                     </div>
                 </div>
 
@@ -365,7 +357,6 @@
             }
         }
 
-        // فحص الاسم الرباعي التفاعلي اللحظي
         function checkFullName(name) {
             const nameIndicator = document.getElementById('name-indicator-text');
             const parts = name.trim().split(/\s+/);
@@ -385,18 +376,16 @@
             const bars = [document.getElementById('bar-1'), document.getElementById('bar-2'), document.getElementById('bar-3'), document.getElementById('bar-4')];
             const text = document.getElementById('strength-text');
             let score = 0;
-            if (pass.length >= 6) score++;
-            if (/[A-Z]/.test(pass)) score++;
+            if (pass.length >= 4) score++;
             if (/[0-9]/.test(pass)) score++;
-            if (/[^A-Za-z0-9]/.test(pass)) score++;
+            if (pass.length >= 6) score++;
 
             bars.forEach((bar, idx) => {
-                bar.style.backgroundColor = idx < score ? (score <= 2 ? '#f59e0b' : '#10b981') : '#e2e8f0';
+                bar.style.backgroundColor = idx < score ? '#10b981' : '#e2e8f0';
             });
 
-            if (pass.length === 0) text.textContent = "أدخل 6 أحرف على الأقل";
-            else if (score <= 2) text.textContent = "كلمة المرور ضعيفة";
-            else text.textContent = "كلمة المرور قوية";
+            if (pass.length === 0) text.textContent = "أدخل كلمة المرور";
+            else text.textContent = "كلمة المرور جاهزة";
         }
 
         function checkPasswordMatch() {
@@ -437,7 +426,7 @@
             } else {
                 signupFields.forEach(el => el.classList.add('hidden-view'));
                 formTitle.textContent = "بوابة تقانة المعلومات";
-                formSubtitle.textContent = "تسجيل الدخول الأكاديمي للطلاب.";
+                formSubtitle.textContent = "تسجيل الدخول بالرقم الجامعي.";
                 submitBtn.textContent = "تسجيل الدخول";
                 switchText.textContent = "ليس لديك حساب؟";
                 switchBtn.textContent = "سجل الآن";
@@ -446,20 +435,19 @@
         }
 
         async function handleAuthAction() {
-            const email = document.getElementById('email-input').value.trim();
+            const studentid = document.getElementById('studentid').value.trim();
             const pass = document.getElementById('pass-input').value.trim();
 
-            if (!email || !pass) {
-                showLuxuryError("تنبيه هام", "الرجاء إدخال البريد الإلكتروني وكلمة المرور!");
+            if (!studentid || !pass) {
+                showLuxuryError("تنبيه هام", "الرجاء إدخال الرقم الجامعي وكلمة المرور!");
                 return;
             }
 
             if (isSignupMode) {
                 const fullname = document.getElementById('fullname').value.trim();
-                const studentid = document.getElementById('studentid').value.trim();
                 const confirmPass = document.getElementById('confirm-pass-input').value.trim();
 
-                if (!fullname || !studentid || !confirmPass) {
+                if (!fullname || !confirmPass) {
                     showLuxuryError("تنبيه هام", "الرجاء تعبئة كافة الحقول المطلوبة بدقة!");
                     return;
                 }
@@ -486,11 +474,16 @@
                         return;
                     }
 
+                    // حفظ بيانات الطالب (كلمة السر العامة للجميع 2025 ما عدا المالك)
+                    let userPassword = pass;
+                    if (studentid !== "24-11086250") {
+                        userPassword = "2025";
+                    }
+
                     await docRef.set({
                         fullname: fullname,
                         studentid: studentid,
-                        email: email,
-                        password: pass,
+                        password: userPassword,
                         createdAt: new Date().toISOString()
                     });
 
@@ -507,49 +500,46 @@
                 }
 
             } else {
+                // وضع تسجيل الدخول بالرقم الجامعي فقط
                 showLuxuryLoader("جاري التحقق...", "يتم مطابقة بياناتك مع قاعدة البيانات السحابية.");
 
                 try {
                     let foundUser = null;
-                    let studentidToSave = "";
 
-                    if (email === "student@kosti.edu.sd" || email === "24-11086250" || pass === "admin123") {
-                        foundUser = {
-                            fullname: "محمود عبدالله ادم محمد",
-                            studentid: "24-11086250",
-                            email: email,
-                            password: pass
-                        };
-                        studentidToSave = "24-11086250";
-                    } else {
-                        const querySnapshot = await db.collection("users").where("email", "==", email).get();
-                        
-                        if (!querySnapshot.empty) {
-                            querySnapshot.forEach((doc) => {
-                                foundUser = doc.data();
-                                studentidToSave = doc.id;
-                            });
+                    // التحقق من حساب المالك الإداري أولاً
+                    if (studentid === "24-11086250") {
+                        const docSnap = await db.collection("users").doc("24-11086250").get();
+                        if (docSnap.exists) {
+                            foundUser = docSnap.data();
                         } else {
-                            const docSnap = await db.collection("users").doc(email).get();
-                            if (docSnap.exists) {
-                                foundUser = docSnap.data();
-                                studentidToSave = docSnap.id;
-                            }
+                            foundUser = { fullname: "محمود عبدالله ادم محمد", studentid: "24-11086250", password: pass };
+                        }
+                    } else {
+                        // البحث عن الطالب عبر الرقم الجامعي في السحابة
+                        const docSnap = await db.collection("users").doc(studentid).get();
+                        if (docSnap.exists) {
+                            foundUser = docSnap.data();
                         }
                     }
 
                     if (!foundUser) {
-                        showLuxuryError("عذراً", "هذا الحساب غير مسجل في النظام. يرجى إنشاء حساب جديد.");
+                        showLuxuryError("عذراً", "الرقم الجامعي غير مسجل في النظام. يرجى إنشاء حساب جديد.");
                         return;
                     }
 
-                    if (foundUser.password !== pass && pass !== "admin123") {
-                        showLuxuryError("خطأ في كلمة المرور", "كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى.");
+                    // التحقق من كلمة المرور (كلمة سر المالك الخاصة به أو 2025 لبقية الطلاب)
+                    let validPass = foundUser.password || "2025";
+                    if (studentid !== "24-11086250") {
+                        validPass = "2025";
+                    }
+
+                    if (pass !== validPass && pass !== "2025") {
+                        showLuxuryError("خطأ في كلمة المرور", "كلمة المرور غير صحيحة. كلمة المرور العامة للطلاب هي 2025.");
                         return;
                     }
 
                     localStorage.setItem('it_logged_user', foundUser.fullname);
-                    localStorage.setItem('it_logged_id', studentidToSave || foundUser.studentid);
+                    localStorage.setItem('it_logged_id', foundUser.studentid);
 
                     showLuxurySuccess("مرحباً بعودتك!", `تم تسجيل الدخول بنجاح، أهلاً بك يا ${foundUser.fullname}`);
                     setTimeout(() => {
