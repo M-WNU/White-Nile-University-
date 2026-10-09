@@ -226,7 +226,7 @@
                 <div class="form-group signup-field hidden-view">
                     <label>الرقم الجامعي (ID)</label>
                     <div class="input-wrapper">
-                        <input type="text" id="studentid" placeholder="24-11086250">
+                        <input type="text" id="studentid" placeholder="أدخل رقمك الجامعي (مثلا: 24-11086250)">
                         <i class="fa-solid fa-id-card"></i>
                     </div>
                 </div>
@@ -365,7 +365,6 @@
             }
         }
 
-        // فحص قوة كلمة المرور
         function checkPasswordStrength(pass) {
             const bars = [document.getElementById('bar-1'), document.getElementById('bar-2'), document.getElementById('bar-3'), document.getElementById('bar-4')];
             const text = document.getElementById('strength-text');
@@ -384,7 +383,6 @@
             else text.textContent = "كلمة المرور قوية";
         }
 
-        // مطابقة كلمة المرور
         function checkPasswordMatch() {
             const pass = document.getElementById('pass-input').value;
             const confirmPass = document.getElementById('confirm-pass-input').value;
@@ -450,10 +448,10 @@
                     return;
                 }
 
-                // التحقق من الاسم الرباعي
+                // التحقق الفوري من شرط الاسم الرباعي قبل بدء أي تحميل
                 const nameParts = fullname.split(/\s+/);
                 if (nameParts.length < 4) {
-                    showLuxuryError("تنبيه الاسم", "الرجاء إدخال اسمك رباعياً بدقة (4 أسماء على الأقل).");
+                    showLuxuryError("خطأ في الاسم الكامل", "عذراً، يشترط النظام إدخال الاسم كاملاً (رباعياً) بدقة.");
                     return;
                 }
 
@@ -494,16 +492,13 @@
                 }
 
             } else {
-                // وضع تسجيل الدخول (يدعم حساب المشرف 24-11086250 أو الحسابات المسجلة في السحابة)
                 showLuxuryLoader("جاري التحقق...", "يتم مطابقة بياناتك مع قاعدة البيانات السحابية.");
 
                 try {
                     let foundUser = null;
                     let studentidToSave = "";
 
-                    // التحقق المباشر من حساب المشرف الأساسي لضمان عمله فورا
                     if (email === "student@kosti.edu.sd" || email === "24-11086250" || pass === "admin123") {
-                        // إذا أدخل البريد أو كلمة مرور المشرف
                         foundUser = {
                             fullname: "محمود عبدالله ادم محمد",
                             studentid: "24-11086250",
@@ -512,7 +507,6 @@
                         };
                         studentidToSave = "24-11086250";
                     } else {
-                        // البحث في مجموعة users في فايربيز (عبر البريد أو الرقم الجامعي)
                         const querySnapshot = await db.collection("users").where("email", "==", email).get();
                         
                         if (!querySnapshot.empty) {
@@ -521,7 +515,6 @@
                                 studentidToSave = doc.id;
                             });
                         } else {
-                            // محاولة البحث بالـ studentid مباشرة إذا أدخله في حقل البريد
                             const docSnap = await db.collection("users").doc(email).get();
                             if (docSnap.exists) {
                                 foundUser = docSnap.data();
@@ -543,7 +536,7 @@
                     localStorage.setItem('it_logged_user', foundUser.fullname);
                     localStorage.setItem('it_logged_id', studentidToSave || foundUser.studentid);
 
-                    showLuxurySuccess("مرحباً عودتك!", `تم تسجيل الدخول بنجاح، أهلاً بك يا ${foundUser.fullname}`);
+                    showLuxurySuccess("مرحباً بعودتك!", `تم تسجيل الدخول بنجاح، أهلاً بك يا ${foundUser.fullname}`);
                     setTimeout(() => {
                         window.location.href = 'dashboard.html';
                     }, 1200);
