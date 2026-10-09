@@ -6,6 +6,11 @@
     <title>بوابة تقانة المعلومات - تسجيل الدخول</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ربط مكتبات Firebase الأساسية -->
+    <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary: #f97316;
@@ -32,7 +37,6 @@
             position: relative;
         }
 
-        /* رأس الصفحة بأشكال 3D وحيوية */
         .card-header-3d {
             background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
             padding: 25px 20px;
@@ -57,7 +61,6 @@
             z-index: 10;
         }
 
-        /* عنصر رسومي متحرك 3D تعبيري */
         .illustration-3d {
             width: 110px;
             height: 110px;
@@ -105,32 +108,6 @@
         .eye-icon { cursor: pointer; color: var(--text-muted); padding: 5px; user-select: none; }
         .eye-icon:hover { color: var(--primary); }
 
-        .password-strength-bars { display: flex; gap: 6px; margin-top: 8px; }
-        .strength-bar { flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px; transition: 0.3s; }
-        .password-strength-indicator { font-size: 0.75rem; margin-top: 4px; font-weight: 700; display: block; color: var(--text-muted); }
-        .password-match-indicator { font-size: 0.78rem; margin-top: 5px; font-weight: 700; display: block; }
-
-        /* Google reCAPTCHA Styling الشائع */
-        .recaptcha-box-wrapper {
-            background: #f9f9f9;
-            border: 1px solid #d3d3d3;
-            border-radius: 8px;
-            padding: 12px 15px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 18px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .recaptcha-left { display: flex; align-items: center; gap: 12px; }
-        .recaptcha-checkbox { width: 24px; height: 24px; border: 2px solid #c1c1c1; border-radius: 2px; cursor: pointer; display: flex; align-items: center; justify-content: center; background: #fff; transition: 0.2s; }
-        .recaptcha-checkbox.checked { background: #fff; border-color: #4285f4; }
-        .recaptcha-checkbox.checked::after { content: '✔'; color: #4285f4; font-size: 16px; font-weight: 900; }
-        .recaptcha-text { font-size: 0.9rem; font-weight: 600; color: #333; }
-        .recaptcha-right { text-align: center; }
-        .recaptcha-logo-img { width: 28px; height: 28px; }
-        .recaptcha-brand-text { font-size: 0.65rem; color: #555; font-weight: 600; display: block; }
-
         .btn-submit {
             width: 100%;
             background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
@@ -155,21 +132,75 @@
         .extras-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-top: 8px; margin-bottom: 15px; }
         .extras-row a { color: var(--primary); text-decoration: none; font-weight: 600; cursor: pointer; }
 
-        #toast-container { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); z-index: 99999; display: flex; flex-direction: column; gap: 10px; align-items: center; pointer-events: none; }
-        .toast-message { background: #1e293b; color: #fff; border-right: 5px solid var(--primary); padding: 12px 24px; border-radius: 12px; font-weight: 700; font-size: 0.95rem; box-shadow: 0 10px 25px rgba(0,0,0,0.2); animation: fadeInOut 3s ease forwards; display: flex; align-items: center; gap: 10px; }
-        @keyframes fadeInOut { 0% { opacity: 0; transform: translateY(-20px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-20px); } }
+        /* ===== نافذة الـ Loading والتنبيهات الفاخرة المتحركة ===== */
+        .luxury-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 99999;
+            display: flex; align-items: center; justify-content: center; padding: 20px;
+            opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .luxury-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .luxury-modal-card {
+            background: #ffffff; width: 100%; max-width: 380px; padding: 32px 24px; border-radius: 26px;
+            text-align: center; box-shadow: 0 25px 50px -12px rgba(249, 115, 22, 0.25);
+            border: 1px solid rgba(254, 215, 170, 0.8); transform: scale(0.85) translateY(15px);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden;
+        }
+        .luxury-modal-overlay.active .luxury-modal-card { transform: scale(1) translateY(0); }
+        
+        .luxury-modal-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: linear-gradient(90deg, #f97316, #ea580c, #f59e0b);
+        }
+
+        .loader-orbit {
+            width: 60px; height: 60px; border: 4px solid #ffedd5; border-top: 4px solid var(--primary);
+            border-radius: 50%; animation: orbitSpin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin: 0 auto 18px auto; box-shadow: 0 0 15px rgba(249, 115, 22, 0.2);
+        }
+        @keyframes orbitSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .modal-icon-container {
+            width: 65px; height: 65px; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px auto; font-size: 1.8rem; color: var(--primary); box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+
+        .modal-title-text { font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+        .modal-desc-text { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
+        
+        .luxury-btn {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; border: none;
+            padding: 12px 25px; border-radius: 14px; font-weight: 800; font-size: 0.92rem; cursor: pointer;
+            width: 100%; box-shadow: 0 6px 18px rgba(249, 115, 22, 0.25); transition: 0.2s;
+        }
+        .luxury-btn:hover { opacity: 0.92; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <div id="toast-container"></div>
+    <!-- نافذة الـ Loading والتنبيهات الفاخرة -->
+    <div id="luxury-loader-modal" class="luxury-modal-overlay">
+        <div class="luxury-modal-card">
+            <div id="loader-spinner-elem" class="loader-orbit"></div>
+            <div id="loader-icon-container" class="modal-icon-container" style="display: none;">
+                <i id="loader-icon-elem" class="fa-solid"></i>
+            </div>
+            
+            <h3 id="loader-title-text" class="modal-title-text">جاري معالجة الطلب...</h3>
+            <p id="loader-desc-text" class="modal-desc-text">يرجى الانتظار قليلاً.</p>
+            
+            <button id="loader-action-btn" class="luxury-btn hidden-element" onclick="closeLuxuryModal()">حسناً</button>
+        </div>
+    </div>
 
     <div class="login-card" id="main-container">
         <div class="card-header-3d">
             <select class="lang-select-box" id="lang-select">
                 <option value="ar">العربية</option>
             </select>
-            <!-- أيقونة 3D عصرية متحركة -->
             <div class="illustration-3d">
                 <i class="fa-solid fa-graduation-cap fa-2x" style="color: #f97316;"></i>
             </div>
@@ -181,31 +212,23 @@
 
             <div id="auth-form-container">
                 <div class="form-group signup-field hidden-view">
-                    <label id="lbl-name">الاسم الكامل</label>
+                    <label>الاسم الكامل (رباعي)</label>
                     <div class="input-wrapper">
-                        <input type="text" id="fullname" placeholder="أدخل اسمك ثلاثياً">
+                        <input type="text" id="fullname" placeholder="أدخل اسمك رباعياً بدقة">
                         <i class="fa-solid fa-user"></i>
                     </div>
                 </div>
 
                 <div class="form-group signup-field hidden-view">
-                    <label id="lbl-id">الرقم الجامعي (ID)</label>
+                    <label>الرقم الجامعي (ID)</label>
                     <div class="input-wrapper">
-                        <input type="text" id="studentid" placeholder="IT-2026-XXXX">
+                        <input type="text" id="studentid" placeholder="24-11086250">
                         <i class="fa-solid fa-id-card"></i>
                     </div>
                 </div>
 
-                <div class="form-group signup-field hidden-view">
-                    <label id="lbl-semester">السمستر الحالي</label>
-                    <div class="input-wrapper">
-                        <input type="text" id="semester" placeholder="السمستر الثاني">
-                        <i class="fa-solid fa-book"></i>
-                    </div>
-                </div>
-
                 <div class="form-group">
-                    <label id="lbl-email">البريد الإلكتروني الجامعي</label>
+                    <label>البريد الإلكتروني الجامعي</label>
                     <div class="input-wrapper">
                         <input type="email" id="email-input" placeholder="student@kosti.edu.sd">
                         <i class="fa-solid fa-envelope"></i>
@@ -213,43 +236,18 @@
                 </div>
 
                 <div class="form-group">
-                    <label id="lbl-password">كلمة المرور</label>
+                    <label>كلمة المرور</label>
                     <div class="input-wrapper">
-                        <input type="password" id="pass-input" placeholder="********" oninput="checkPasswordStrength(this.value)">
-                        <i class="fa-solid fa-eye eye-icon" 
-                           onmousedown="showPassword('pass-input')" 
-                           onmouseup="hidePassword('pass-input')" 
-                           ontouchstart="showPassword('pass-input')" 
-                           ontouchend="hidePassword('pass-input')"></i>
+                        <input type="password" id="pass-input" placeholder="********">
+                        <i class="fa-solid fa-eye eye-icon" onclick="togglePasswordVisibility('pass-input', this)"></i>
                     </div>
-                    <div class="password-strength-bars signup-field hidden-view" id="strength-bars-container">
-                        <div class="strength-bar" id="bar-1"></div>
-                        <div class="strength-bar" id="bar-2"></div>
-                        <div class="strength-bar" id="bar-3"></div>
-                        <div class="strength-bar" id="bar-4"></div>
-                    </div>
-                    <span id="strength-text" class="password-strength-indicator" style="color: #94a3b8;">أدخل 6 أحرف على الأقل</span>
-                </div>
-
-                <div class="form-group signup-field hidden-view">
-                    <label>تأكيد كلمة المرور</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="confirm-pass-input" placeholder="********" oninput="checkPasswordMatch()">
-                        <i class="fa-solid fa-eye eye-icon" 
-                           onmousedown="showPassword('confirm-pass-input')" 
-                           onmouseup="hidePassword('confirm-pass-input')" 
-                           ontouchstart="showPassword('confirm-pass-input')" 
-                           ontouchend="hidePassword('confirm-pass-input')"></i>
-                    </div>
-                    <span id="match-text" class="password-match-indicator" style="color: #94a3b8;">أعد إدخال كلمة المرور للتأكيد</span>
                 </div>
 
                 <div class="extras-row" id="login-extras">
-                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox"> <span id="lbl-remember">تذكرني</span></label>
-                    <a id="lnk-forgot" onclick="startForgotPassword()">نسيت كلمة المرور؟</a>
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox"> <span>تذكرني</span></label>
                 </div>
 
-                <button class="btn-submit" id="submit-btn" onclick="handleSubmit()">تسجيل الدخول</button>
+                <button class="btn-submit" id="submit-btn" onclick="handleAuthAction()">تسجيل الدخول</button>
 
                 <div class="switch-mode">
                     <span id="switch-text">ليس لديك حساب؟</span> 
@@ -257,59 +255,222 @@
                 </div>
 
                 <div class="back-footer">
-                    <a href="index.html">← العودة للصفحة الرئيسية</a>
-                </div>
-            </div>
-
-            <!-- واجهة استعادة كلمة المرور مع Google reCAPTCHA الشائع -->
-            <div id="forgot-flow-container" class="hidden-view">
-                <div id="step-captcha">
-                    <p style="font-size: 0.88rem; margin-bottom: 12px; font-weight: 700;">استعادة الأمان - التحقق من الهوية:</p>
-                    
-                    <!-- واجهة كابتشا قوقل الشائعة الحقيقية -->
-                    <div class="recaptcha-box-wrapper">
-                        <div class="recaptcha-left">
-                            <div class="recaptcha-checkbox" id="google-recaptcha-box" onclick="toggleGoogleCaptcha()"></div>
-                            <span class="recaptcha-text">أنا لست روبوت</span>
-                        </div>
-                        <div class="recaptcha-right">
-                            <svg class="recaptcha-logo-img" viewBox="0 0 48 48">
-                                <path fill="#4285F4" d="M44.5 20H24v8.5h11.8C33.7 33.3 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.1 8.1 2.9l6.4-6.4C34.6 5.1 29.6 3 24 3 12.4 3 3 12.4 3 24s9.4 21 21 21c10.5 0 21-7.6 21-21 0-1.3-.1-2.7-.5-4z"/>
-                            </svg>
-                            <span class="recaptcha-brand-text">reCAPTCHA</span>
-                        </div>
-                    </div>
-
-                    <button class="btn-submit" onclick="triggerRealCaptcha()">تحقق والمتابعة</button>
-                </div>
-
-                <div id="step-email" class="hidden-view" style="margin-top: 5px;">
-                    <label style="font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; display:block;">البريد الإلكتروني المسجل:</label>
-                    <input type="email" id="recovery-email-input" placeholder="student@kosti.edu.sd" style="width:100%; padding:13px; border-radius:12px; border:1.5px solid #cbd5e1; background:#f8fafc; margin-bottom:12px; outline:none;">
-                    <button class="btn-submit" onclick="sendVerificationCode()">إرسال رمز التحقق</button>
-                </div>
-
-                <div id="step-otp" class="hidden-view" style="margin-top: 5px;">
-                    <label style="font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; display:block;">أدخل رمز التحقق المرسل (OTP):</label>
-                    <input type="text" id="otp-input" placeholder="1234" maxlength="4" style="width:100%; padding:13px; border-radius:12px; border:1.5px solid #cbd5e1; background:#f8fafc; text-align:center; letter-spacing:5px; margin-bottom:12px; outline:none;">
-                    <button class="btn-submit" onclick="verifyOtpCode()">التحقق من الرمز</button>
-                </div>
-
-                <div id="step-newpass" class="hidden-view" style="margin-top: 5px;">
-                    <label style="font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; display:block;">كلمة المرور الجديدة:</label>
-                    <input type="password" id="new-pass-input" placeholder="********" style="width:100%; padding:13px; border-radius:12px; border:1.5px solid #cbd5e1; background:#f8fafc; margin-bottom:10px; outline:none;">
-                    <label style="font-size: 0.85rem; font-weight: 700; margin-bottom: 5px; display:block;">تأكيد كلمة المرور:</label>
-                    <input type="password" id="confirm-new-pass-input" placeholder="********" style="width:100%; padding:13px; border-radius:12px; border:1.5px solid #cbd5e1; background:#f8fafc; margin-bottom:12px; outline:none;">
-                    <button class="btn-submit" onclick="saveNewPassword()">حفظ وتحديث كلمة المرور</button>
-                </div>
-
-                <div class="switch-mode" style="margin-top: 15px;">
-                    <a onclick="backToLogin()">← العودة لصفحة تسجيل الدخول</a>
+                    <a onclick="navigateWithAnimation('index.html')">← العودة للصفحة الرئيسية</a>
                 </div>
             </div>
         </div>
     </div>
 
-    <script type="module" src="lab.js"></script>
+    <script>
+        // إعدادات Firebase الخاصة بالمشروع
+        const firebaseConfig = {
+            apiKey: "AIzaSyBjaaE-C8LzunKLjlULujL--0c_Cd1fA94",
+            authDomain: "kosti-university-it.firebaseapp.com",
+            databaseURL: "https://kosti-university-it-default-rtdb.firebaseio.com",
+            projectId: "kosti-university-it",
+            storageBucket: "kosti-university-it.firebasestorage.app",
+            messagingSenderId: "364361272352",
+            appId: "1:364361272352:web:56953086b49cb2e0a6c045"
+        };
+
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
+
+        let isSignupMode = false;
+        let shouldReloadAfterModal = false;
+
+        function showLuxuryLoader(title, desc) {
+            const modal = document.getElementById('luxury-loader-modal');
+            document.getElementById('loader-spinner-elem').style.display = 'block';
+            document.getElementById('loader-icon-container').style.display = 'none';
+            document.getElementById('loader-action-btn').classList.add('hidden-element');
+            document.getElementById('loader-title-text').textContent = title;
+            document.getElementById('loader-desc-text').textContent = desc;
+            modal.classList.add('active');
+        }
+
+        function showLuxurySuccess(title, desc, reload = false) {
+            shouldReloadAfterModal = reload;
+            document.getElementById('loader-spinner-elem').style.display = 'none';
+            const iconContainer = document.getElementById('loader-icon-container');
+            const iconElem = document.getElementById('loader-icon-elem');
+            iconContainer.style.display = 'flex';
+            iconContainer.style.background = '#fff7ed';
+            iconContainer.style.color = '#10b981';
+            iconElem.className = "fa-solid fa-circle-check";
+            
+            document.getElementById('loader-title-text').textContent = title;
+            document.getElementById('loader-desc-text').textContent = desc;
+            document.getElementById('loader-action-btn').classList.remove('hidden-element');
+        }
+
+        function showLuxuryError(title, desc) {
+            shouldReloadAfterModal = false;
+            document.getElementById('loader-spinner-elem').style.display = 'none';
+            const iconContainer = document.getElementById('loader-icon-container');
+            const iconElem = document.getElementById('loader-icon-elem');
+            iconContainer.style.display = 'flex';
+            iconContainer.style.background = '#fef2f2';
+            iconContainer.style.color = '#dc2626';
+            iconElem.className = "fa-solid fa-circle-xmark";
+            
+            document.getElementById('loader-title-text').textContent = title;
+            document.getElementById('loader-desc-text').textContent = desc;
+            document.getElementById('loader-action-btn').classList.remove('hidden-element');
+        }
+
+        function closeLuxuryModal() {
+            document.getElementById('luxury-loader-modal').classList.remove('active');
+            if (shouldReloadAfterModal) {
+                location.reload();
+            }
+        }
+
+        // انميشن الانتقال السلس للصفحات (مثل العودة للرئيسية أو الدخول للوحة التحكم)
+        function navigateWithAnimation(url) {
+            showLuxuryLoader("جاري الانتقال...", "يرجى الانتظار بينما يتم تحويلك بسلاسة.");
+            setTimeout(() => {
+                window.location.href = url;
+            }, 700);
+        }
+
+        function togglePasswordVisibility(fieldId, iconElem) {
+            const field = document.getElementById(fieldId);
+            if (field.type === 'password') {
+                field.type = 'text';
+                iconElem.className = "fa-solid fa-eye-slash eye-icon";
+            } else {
+                field.type = 'password';
+                iconElem.className = "fa-solid fa-eye eye-icon";
+            }
+        }
+
+        function toggleMode() {
+            isSignupMode = !isSignupMode;
+            const signupFields = document.querySelectorAll('.signup-field');
+            const formTitle = document.getElementById('form-title');
+            const formSubtitle = document.getElementById('form-subtitle');
+            const submitBtn = document.getElementById('submit-btn');
+            const switchText = document.getElementById('switch-text');
+            const switchBtn = document.getElementById('switch-btn');
+            const loginExtras = document.getElementById('login-extras');
+
+            if (isSignupMode) {
+                signupFields.forEach(el => el.classList.remove('hidden-view'));
+                formTitle.textContent = "إنشاء حساب جامعي جديد";
+                formSubtitle.textContent = "قم بتعبئة بياناتك الرباعية للانضمام للمنصة.";
+                submitBtn.textContent = "إنشاء الحساب والتسجيل";
+                switchText.textContent = "لديك حساب بالفعل؟";
+                switchBtn.textContent = "تسجيل الدخول";
+                loginExtras.classList.add('hidden-view');
+            } else {
+                signupFields.forEach(el => el.classList.add('hidden-view'));
+                formTitle.textContent = "بوابة تقانة المعلومات";
+                formSubtitle.textContent = "تسجيل الدخول الأكاديمي للطلاب.";
+                submitBtn.textContent = "تسجيل الدخول";
+                switchText.textContent = "ليس لديك حساب؟";
+                switchBtn.textContent = "سجل الآن";
+                loginExtras.classList.remove('hidden-view');
+            }
+        }
+
+        async function handleAuthAction() {
+            const email = document.getElementById('email-input').value.trim();
+            const pass = document.getElementById('pass-input').value.trim();
+
+            if (!email || !pass) {
+                showLuxuryError("تنبيه هام", "الرجاء إدخال البريد الإلكتروني وكلمة المرور!");
+                return;
+            }
+
+            if (isSignupMode) {
+                const fullname = document.getElementById('fullname').value.trim();
+                const studentid = document.getElementById('studentid').value.trim();
+
+                if (!fullname || !studentid) {
+                    showLuxuryError("تنبيه هام", "الرجاء تعبئة كافة الحقول المطلوبة!");
+                    return;
+                }
+
+                // التحقق من أن الاسم رباعي (يتكون من 4 كلمات على الأقل)
+                const nameParts = fullname.split(/\s+/);
+                if (nameParts.length < 4) {
+                    showLuxuryError("تنبيه الاسم", "الرجاء إدخال الاسم كاملاً (رباعياً) بدقة.");
+                    return;
+                }
+
+                showLuxuryLoader("جاري إنشاء الحساب...", "يتم حفظ بياناتك الجامعية في السحابة بأمان.");
+
+                try {
+                    // التحقق مما إذا كان الرقم الجامعي مسجلاً مسبقاً
+                    const docRef = db.collection("users").doc(studentid);
+                    const docSnap = await docRef.get();
+
+                    if (docSnap.exists) {
+                        showLuxuryError("خطأ في التسجيل", "الرقم الجامعي مسجل مسبقاً في النظام!");
+                        return;
+                    }
+
+                    // حفظ بيانات الطالب الجديدة في قاعدة البيانات
+                    await docRef.set({
+                        fullname: fullname,
+                        studentid: studentid,
+                        email: email,
+                        password: pass,
+                        createdAt: new Date().toISOString()
+                    });
+
+                    localStorage.setItem('it_logged_user', fullname);
+                    localStorage.setItem('it_logged_id', studentid);
+
+                    showLuxurySuccess("مرحباً بك!", "تم إنشاء الحساب الجامعي وتسجيل الدخول بنجاح.");
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1200);
+
+                } catch (err) {
+                    showLuxuryError("خطأ في الاتصال", "فشل الاتصال بقاعدة البيانات: " + err.message);
+                }
+
+            } else {
+                // وضع تسجيل الدخول
+                showLuxuryLoader("جاري التحقق...", "يتم مطابقة بياناتك مع قاعدة البيانات السحابية.");
+
+                try {
+                    // البحث عن الطالب في قاعدة البيانات عبر البريد أو الرقم الجامعي
+                    const querySnapshot = await db.collection("users").where("email", "==", email).get();
+
+                    if (querySnapshot.empty) {
+                        showLuxuryError("عذراً", "البريد الإلكتروني غير مسجل في النظام. يرجى إنشاء حساب جديد.");
+                        return;
+                    }
+
+                    let userData = null;
+                    querySnapshot.forEach((doc) => {
+                        userData = doc.data();
+                    });
+
+                    if (userData.password !== pass) {
+                        showLuxuryError("خطأ في كلمة المرور", "كلمة المرور غير صحيحة، يرجى المحاولة مرة أخرى.");
+                        return;
+                    }
+
+                    // تسجيل الدخول بنجاح
+                    localStorage.setItem('it_logged_user', userData.fullname);
+                    localStorage.setItem('it_logged_id', userData.studentid);
+
+                    showLuxurySuccess("معداً عودتك!", `تم تسجيل الدخول بنجاح، أهلاً بك يا ${userData.fullname}`);
+                    setTimeout(() => {
+                        window.location.href = 'dashboard.html';
+                    }, 1200);
+
+                } catch (err) {
+                    showLuxuryError("خطأ في النظام", "تعذر التحقق من البيانات: " + err.message);
+                }
+            }
+        }
+    </script>
 </body>
 </html>
