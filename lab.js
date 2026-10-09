@@ -115,7 +115,6 @@ window.checkPasswordMatch = function() {
     }
 }
 
-// تفاعل كابتشا قوقل الشائعة
 window.toggleGoogleCaptcha = function() {
     const box = document.getElementById('google-recaptcha-box');
     if (box) {
