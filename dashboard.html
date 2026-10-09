@@ -306,15 +306,27 @@
             border: 1px solid var(--border-color);
             border-radius: 10px;
             margin-bottom: 10px;
+            gap: 10px;
         }
 
         .dark-mode .course-row {
             background: rgba(255,255,255,0.01);
         }
 
+        .course-info-box {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
         .course-name {
             font-weight: 700;
             font-size: 0.95rem;
+        }
+
+        .course-instructor-name {
+            font-size: 0.8rem;
+            color: var(--text-muted);
         }
 
         .course-code-badge {
@@ -324,6 +336,25 @@
             border-radius: 6px;
             font-size: 0.75rem;
             font-weight: bold;
+            white-space: nowrap;
+        }
+
+        .btn-enter-course-dash {
+            background: var(--primary-gradient);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            white-space: nowrap;
+        }
+
+        .btn-enter-course-dash:hover {
+            opacity: 0.9;
         }
 
         .whatsapp-action-btn {
@@ -356,6 +387,7 @@
             font-size: 0.85rem;
             font-weight: 700;
             transition: background 0.2s;
+            white-space: nowrap;
         }
 
         .btn-quick-service:hover {
@@ -381,9 +413,9 @@
             <i class="fa-solid fa-graduation-cap fa-lg"></i> متجر كوستي التقني
         </div>
         <ul class="sidebar-menu" id="sidebar-menu">
-            <li><a href="#" class="active" data-page="home"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-            <li><a href="#" data-page="schedule"><i class="fa-solid fa-calendar-days"></i> الجدول الدراسي</a></li>
-            <li><a href="#" data-page="courses"><i class="fa-solid fa-book-open"></i> المقررات الحالية</a></li>
+            <li><a href="index.html" data-page="home"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="dashboard.html" class="active" data-page="schedule"><i class="fa-solid fa-calendar-days"></i> الجدول الدراسي</a></li>
+            <li><a href="dashboard.html" data-page="courses"><i class="fa-solid fa-book-open"></i> المقررات الحالية</a></li>
             <li><a href="#" data-page="records"><i class="fa-solid fa-chart-pie"></i> السجل الأكاديمي</a></li>
             <li><a href="#" data-page="notifications"><i class="fa-solid fa-bell"></i> الإشعارات والتعاميم</a></li>
             <li><a href="#" data-page="settings"><i class="fa-solid fa-user-gear"></i> إعدادات الحساب</a></li>
@@ -411,7 +443,7 @@
                 <button class="btn-control" id="theme-toggle">
                     <i class="fa-solid fa-moon" id="theme-icon"></i> <span id="theme-text">الوضع الداكن</span>
                 </button>
-                <a href="#" class="btn-control" id="home-btn">
+                <a href="index.html" class="btn-control" id="home-btn">
                     <i class="fa-solid fa-house"></i> الرئيسية
                 </a>
                 <button class="btn-control btn-danger-custom" id="logout-btn">
@@ -426,7 +458,7 @@
                 <div class="stat-icon"><i class="fa-solid fa-book"></i></div>
                 <div class="stat-data">
                     <h4>المقررات المسجلة</h4>
-                    <span>4 مقررات</span>
+                    <span>6 مقررات</span>
                 </div>
             </div>
             <div class="stat-card">
@@ -447,28 +479,77 @@
 
         <!-- شبكة المحتوى -->
         <div class="dashboard-grid">
-            <!-- الجدول الدراسي والمقررات الحالية -->
+            <!-- الجدول الدراسي والمقررات الحالية (الـ 6 مقررات المطابقة للمنصة مع دخول الشروحات والـ PDF) -->
             <div class="card">
                 <div class="card-title">
                     <i class="fa-solid fa-list-check"></i> الجدول الدراسي والمقررات الحالية
                 </div>
-                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">مقررات فصل تقانة المعلومات:</p>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 15px;">مقررات فصل تقانة المعلومات (انقر لدخول المحاضرات والـ PDF):</p>
                 
                 <div class="course-row">
-                    <span class="course-name">هياكل البيانات والخوارزميات المتقدمة</span>
-                    <span class="course-code-badge">IT-301</span>
+                    <div class="course-info-box">
+                        <span class="course-name">الدراسات السودانية</span>
+                        <span class="course-instructor-name">د. مرتضى يونس بشير محمد</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="course-details.html?course=sudanese-studies" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
+                        <span class="course-code-badge">GEN</span>
+                    </div>
                 </div>
+
                 <div class="course-row">
-                    <span class="course-name">شبكات الحاسوب وتوجيه البيانات</span>
-                    <span class="course-code-badge">IT-302</span>
+                    <div class="course-info-box">
+                        <span class="course-name">مفاهيم قواعد البيانات ب/تقانة ثالث</span>
+                        <span class="course-instructor-name">أ. غفار عوض الله محمد احمد</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="course-details.html?course=databases" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
+                        <span class="course-code-badge">IT-301</span>
+                    </div>
                 </div>
+
                 <div class="course-row">
-                    <span class="course-name">تطوير واجهات الويب (Frontend)</span>
-                    <span class="course-code-badge">IT-303</span>
+                    <div class="course-info-box">
+                        <span class="course-name">جبر ومهندسة تحليلية</span>
+                        <span class="course-instructor-name">د. بشارة عيسى حمد عبدالله</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="course-details.html?course=algebra-geometry" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
+                        <span class="course-code-badge">IT-302</span>
+                    </div>
                 </div>
+
                 <div class="course-row">
-                    <span class="course-name">أنظمة قواعد البيانات المتقدمة</span>
-                    <span class="course-code-badge">IT-304</span>
+                    <div class="course-info-box">
+                        <span class="course-name">تقانة الحاسب الشخصي</span>
+                        <span class="course-instructor-name">أ. ساجدة احمد ادم</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="course-details.html?course=pc-tech" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
+                        <span class="course-code-badge">IT-303</span>
+                    </div>
+                </div>
+
+                <div class="course-row">
+                    <div class="course-info-box">
+                        <span class="course-name">شبكات الحاسوب والاتصال (1)</span>
+                        <span class="course-instructor-name">د. محمد الطيب حمادي</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="course-details.html?course=networks-1" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
+                        <span class="course-code-badge">IT-304</span>
+                    </div>
+                </div>
+
+                <div class="course-row">
+                    <div class="course-info-box">
+                        <span class="course-name">هندسة برمجيات</span>
+                        <span class="course-instructor-name">د. سيف الدين حميدة</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <a href="course-details.html?course=software-eng" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a>
+                        <span class="course-code-badge">IT-305</span>
+                    </div>
                 </div>
             </div>
 
@@ -551,7 +632,7 @@
         if (homeBtn) {
             homeBtn.addEventListener('click', (e) => {
                 e.preventDefault();
-                window.location.href = 'index.html'; // غيرها باسم صفحة رئيسيتك إذا كانت مختلفة
+                window.location.href = 'index.html';
             });
         }
 
@@ -576,9 +657,13 @@
         const sidebarLinks = document.querySelectorAll('.sidebar-menu a');
         sidebarLinks.forEach(link => {
             link.addEventListener('click', function(e) {
-                e.preventDefault();
-                sidebarLinks.forEach(item => item.classList.remove('active'));
-                this.classList.add('active');
+                const page = this.getAttribute('data-page');
+                if (page === 'home') {
+                    e.preventDefault();
+                    window.location.href = 'index.html';
+                } else if (page && page !== 'schedule' && page !== 'courses') {
+                    // السماح بالتنقل العادي أو البقاء
+                }
             });
         });
 
