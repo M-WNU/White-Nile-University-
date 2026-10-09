@@ -79,7 +79,7 @@
         .course-instructor { font-size: 0.9rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; margin-bottom: 15px; }
         .course-footer { display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border-color); padding-top: 12px; margin-top: 10px; }
         .course-badge { background: rgba(20, 184, 166, 0.1); color: var(--primary-color); padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; }
-        .btn-enter-course { background: var(--primary-gradient); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; }
+        .btn-enter-course { background: var(--primary-gradient); color: #fff; padding: 6px 14px; border-radius: 8px; font-size: 0.85rem; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
         .btn-enter-course:hover { opacity: 0.9; transform: scale(1.03); }
 
         .hidden-element { display: none !important; }
@@ -161,7 +161,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="course-details.html?course=sudanese-studies" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=sudanese-studies">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
                         </div>
                     </div>
 
@@ -174,7 +174,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="course-details.html?course=databases" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=databases">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
                         </div>
                     </div>
 
@@ -187,7 +187,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="course-details.html?course=algebra-geometry" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=algebra-geometry">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
                         </div>
                     </div>
 
@@ -200,7 +200,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="course-details.html?course=pc-tech" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=pc-tech">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
                         </div>
                     </div>
 
@@ -213,7 +213,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="course-details.html?course=networks-1" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=networks-1">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
                         </div>
                     </div>
 
@@ -226,7 +226,7 @@
                         </div>
                         <div class="course-footer">
                             <span style="font-size: 0.8rem; color: var(--text-muted);"><i class="fa-solid fa-file-pdf"></i> محاضرات وPDF</span>
-                            <a href="course-details.html?course=software-eng" class="btn-enter-course">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
+                            <a href="#" class="btn-enter-course course-link" data-target="course-details.html?course=software-eng">دخول الكورس <i class="fa-solid fa-arrow-left"></i></a>
                         </div>
                     </div>
 
@@ -265,6 +265,21 @@
                 if (dashboardNavBtn) dashboardNavBtn.style.display = 'none';
                 if (globalLogoutBtn) globalLogoutBtn.classList.add('hidden-element');
             }
+
+            // التحقق من حالة تسجيل الدخول عند النقر على زر دخول الكورس
+            const courseLinks = document.querySelectorAll('.course-link');
+            courseLinks.forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const targetUrl = link.getAttribute('data-target');
+                    if (!loggedUser) {
+                        alert('عذراً، يجب تسجيل الدخول أولاً لتتمكن من الوصول إلى محتوى الكورس.');
+                        window.location.href = 'login.html';
+                    } else {
+                        window.location.href = targetUrl;
+                    }
+                });
+            });
         });
 
         function performLogout() {
