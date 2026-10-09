@@ -427,11 +427,11 @@
         <!-- رأس الهوية الأكاديمية -->
         <div class="student-hero-card">
             <div class="profile-main-info">
-                <div class="avatar-box">م</div>
+                <div class="avatar-box" id="avatar-letter">م</div>
                 <div class="text-info">
-                    <h1>مرحباً، محمود عبدالله ادم محمد</h1>
+                    <h1 id="welcome-name">مرحباً، محمود عبدالله ادم محمد</h1>
                     <div class="academic-badges">
-                        <span class="badge-tag"><i class="fa-solid fa-id-card"></i> الرقم الجامعي: 11086250-24</span>
+                        <span class="badge-tag"><i class="fa-solid fa-id-card"></i> الرقم الجامعي: <span id="display-student-id">11086250-24</span></span>
                         <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> السمستر الثاني</span>
                         <span class="badge-tag"><i class="fa-solid fa-laptop-code"></i> تقانة المعلومات</span>
                     </div>
@@ -472,7 +472,7 @@
                 <div class="stat-icon"><i class="fa-solid fa-clock-rotate-left"></i></div>
                 <div class="stat-data">
                     <h4>العام الأكاديمي</h4>
-                    <span>2025 - 2026</span>
+                    <span id="academic-year-display">2025 - 2026</span>
                 </div>
             </div>
         </div>
@@ -584,9 +584,11 @@
 
     <!-- الأكواد البرمجية التفاعلية المربوطة بنظام المنصة الحقيقي -->
     <script>
-        // 1. التحقق من حالة تسجيل الدخول وحماية الصفحة
+        // 1. التحقق من حالة تسجيل الدخول وتحديد السنة الدراسية بناءً على الرقم الجامعي
         document.addEventListener('DOMContentLoaded', () => {
             const loggedUser = localStorage.getItem('it_logged_user');
+            const loggedId = localStorage.getItem('it_logged_id');
+
             if (!loggedUser) {
                 // إذا لم يتم تسجيل الدخول، يتم تحويله لصفحة الـ login تلقائياً
                 window.location.href = 'login.html';
@@ -594,9 +596,31 @@
             }
 
             // عرض اسم الطالب الحقيقي المسجل في النظام
-            const userNameElement = document.querySelector('.text-info h1');
+            const userNameElement = document.getElementById('welcome-name');
             if (userNameElement && loggedUser) {
                 userNameElement.textContent = `مرحباً، ${loggedUser}`;
+                // تحديث حرف الأفاتار بأول حرف من اسم الطالب
+                const avatarBox = document.getElementById('avatar-letter');
+                if (avatarBox) {
+                    avatarBox.textContent = loggedUser.trim().charAt(0);
+                }
+            }
+
+            // عرض الرقم الجامعي إذا وجد
+            if (loggedId) {
+                const idDisplay = document.getElementById('display-student-id');
+                if (idDisplay) idDisplay.textContent = loggedId;
+
+                // تحديث سنة ودراسة العام الأكاديمي بناءً على بداية الرقم الجامعي
+                const academicYearSpan = document.getElementById('academic-year-display');
+                if (academicYearSpan) {
+                    // التحقق مما إذا كان الرقم يبدأ بـ 24 أو يحتوي عليها
+                    if (loggedId.startsWith('24') || loggedId.includes('-24')) {
+                        academicYearSpan.textContent = '2023 - 2024';
+                    } else if (loggedId.startsWith('25') || loggedId.includes('-25')) {
+                        academicYearSpan.textContent = '2025 - 2026';
+                    }
+                }
             }
         });
 
@@ -661,8 +685,6 @@
                 if (page === 'home') {
                     e.preventDefault();
                     window.location.href = 'index.html';
-                } else if (page && page !== 'schedule' && page !== 'courses') {
-                    // السماح بالتنقل العادي أو البقاء
                 }
             });
         });
