@@ -3,9 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم الطالب - بوابة تقانة المعلومات</title>
+    <title>لوحة التحكم - بوابة تقانة المعلومات</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ربط مكتبات Firebase الأساسية -->
+    <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary: #f97316;
@@ -36,103 +41,111 @@
         .sidebar-menu li { margin-bottom: 10px; }
         .sidebar-menu a {
             display: flex; align-items: center; gap: 15px; padding: 12px 18px; color: var(--text);
-            text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem; cursor: pointer;
+            text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 0.95rem;
         }
         .sidebar-menu a:hover, .sidebar-menu a.active { background-color: var(--primary-light); color: var(--primary); }
 
         main { flex-grow: 1; margin-right: 280px; padding: 35px; max-width: 1300px; width: calc(100% - 280px); }
 
-        .student-hero-card {
-            background: var(--card-bg); border-radius: 24px; padding: 30px; box-shadow: var(--shadow);
-            border: 1px solid var(--border); margin-bottom: 25px; display: flex; justify-content: space-between;
-            align-items: center; flex-wrap: wrap; gap: 20px; position: relative; overflow: hidden;
+        .welcome-card {
+            background: var(--card-bg); border-radius: 24px; padding: 30px; box-shadow: var(--shadow); border: 1px solid var(--border);
+            margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; position: relative; overflow: hidden;
         }
-        .student-hero-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .welcome-card::before { content: ''; position: absolute; top: 0; right: 0; width: 6px; height: 100%; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); }
+        .welcome-info h1 { font-size: 1.6rem; font-weight: 900; color: var(--text); margin-bottom: 6px; }
+        .welcome-info p { color: var(--text-muted); font-size: 0.95rem; }
 
-        .profile-main-info { display: flex; align-items: center; gap: 20px; }
-        .avatar-box {
-            width: 75px; height: 75px; border-radius: 20px; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-            color: white; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; font-weight: 900;
-            box-shadow: 0 8px 20px rgba(249, 115, 22, 0.25);
+        .admin-toggle-box {
+            background: #fff7ed; border: 1.5px dashed var(--primary); padding: 15px 22px; border-radius: 16px;
+            display: flex; align-items: center; gap: 15px; cursor: pointer;
         }
-        .text-info h1 { font-size: 1.4rem; font-weight: 800; color: var(--text); margin-bottom: 8px; }
-        .academic-badges { display: flex; gap: 10px; flex-wrap: wrap; }
-        .badge-tag { background: var(--primary-light); color: var(--primary); padding: 6px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+        .admin-toggle-box:hover { background: #ffedd5; }
 
-        .action-buttons-group { display: flex; gap: 12px; flex-wrap: wrap; }
-        .btn-custom {
-            padding: 10px 18px; border-radius: 12px; font-size: 0.9rem; font-weight: 700; cursor: pointer;
-            display: flex; align-items: center; gap: 8px; border: 1.5px solid var(--border); text-decoration: none;
-            background: #fff; color: var(--text); box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+        .courses-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 22px; }
+        .course-card {
+            background: var(--card-bg); border-radius: 20px; padding: 24px; box-shadow: var(--shadow); border: 1px solid var(--border);
+            display: flex; flex-direction: column; justify-content: space-between; gap: 15px; position: relative; overflow: hidden;
         }
-        .btn-custom:hover { border-color: var(--primary); color: var(--primary); transform: translateY(-1px); }
-        .btn-danger-custom { background-color: #fee2e2; color: #dc2626; border-color: #fca5a5; }
-        .btn-danger-custom:hover { background-color: #dc2626; color: white !important; }
-
-        .btn-admin-mode {
-            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
-            color: white !important; border: none; box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+        .course-card h3 { font-size: 1.1rem; font-weight: 900; color: var(--text); }
+        .course-card p { font-size: 0.88rem; color: var(--text-muted); display: flex; align-items: center; gap: 8px; }
+        
+        .btn-course-link {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: #fff; padding: 10px 18px; border-radius: 12px;
+            font-size: 0.9rem; font-weight: 800; text-decoration: none; text-align: center; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
         }
-        .btn-admin-mode.active-admin {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
-            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        .btn-course-link:hover { opacity: 0.9; }
+
+        /* ===== تصميم الإشعارات والـ Loading الفاخر المحدث (للتحكم) ===== */
+        .luxury-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); z-index: 99999;
+            display: flex; align-items: center; justify-content: center; padding: 16px;
+            opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
-
-        .dashboard-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 25px; }
-        .card { background-color: var(--card-bg); border-radius: 20px; padding: 25px; box-shadow: var(--shadow); border: 1px solid var(--border); }
-        .card-title { font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; border-bottom: 2px solid var(--border); padding-bottom: 12px; }
-
-        .course-row {
-            display: flex; justify-content: space-between; align-items: center; padding: 15px; background: #fffaf5;
-            border: 1px solid var(--border); border-radius: 14px; margin-bottom: 12px; gap: 10px;
+        .luxury-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .luxury-modal-card {
+            background: #ffffff; width: 100%; max-width: 380px; padding: 32px 24px; border-radius: 26px;
+            text-align: center; box-shadow: 0 25px 60px -15px rgba(249, 115, 22, 0.3);
+            border: 1px solid rgba(254, 215, 170, 0.8); transform: scale(0.8) translateY(20px);
+            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); position: relative; overflow: hidden;
         }
-        .course-info-box { display: flex; flex-direction: column; gap: 4px; }
-        .course-name { font-weight: 700; font-size: 0.95rem; }
-        .course-instructor-name { font-size: 0.8rem; color: var(--text-muted); }
-
-        .btn-enter-course-dash {
-            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; padding: 8px 14px; border-radius: 10px; font-size: 0.85rem; font-weight: 700;
-            text-decoration: none; display: inline-flex; align-items: center; gap: 6px; white-space: nowrap; box-shadow: 0 4px 12px rgba(249, 115, 22, 0.25);
-        }
-        .btn-enter-course-dash:hover { opacity: 0.9; }
-
-        .whatsapp-action-btn {
-            display: flex; align-items: center; justify-content: center; gap: 10px; background-color: #25d366; color: white;
-            text-decoration: none; padding: 15px; border-radius: 14px; font-weight: 800; margin-top: 15px; box-shadow: 0 4px 12px rgba(37, 211, 102, 0.25);
-        }
-        .whatsapp-action-btn:hover { background-color: #20ba5a; }
-
-        .footer-copyright {
-            margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted);
-            font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg);
+        .luxury-modal-overlay.active .luxury-modal-card { transform: scale(1) translateY(0); }
+        
+        .luxury-modal-card::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 6px;
+            background: linear-gradient(90deg, #f97316, #ea580c, #f59e0b);
         }
 
-        /* نافذة رسائل النظام الأنيقة البديلة لـ alert */
-        #custom-modal {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(4px); z-index: 9999; display: flex; align-items: center; justify-content: center;
-            opacity: 0; pointer-events: none; transition: opacity 0.3s;
+        .loader-orbit {
+            width: 65px; height: 65px; border: 4px solid #ffedd5; border-top: 4px solid var(--primary);
+            border-radius: 50%; animation: orbitSpin 0.9s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            margin: 0 auto 18px auto; box-shadow: 0 0 20px rgba(249, 115, 22, 0.2);
         }
-        #custom-modal.active { opacity: 1; pointer-events: auto; }
-        .modal-box {
-            background: var(--card-bg); width: 90%; max-width: 380px; padding: 30px; border-radius: 20px;
-            border: 1px solid var(--border); box-shadow: 0 20px 25px rgba(0, 0, 0, 0.2); text-align: center;
-        }
-        .modal-box h3 { font-size: 1.2rem; font-weight: 800; color: var(--text); margin-bottom: 10px; }
-        .modal-box p { font-size: 0.92rem; color: var(--text-muted); margin-bottom: 20px; line-height: 1.6; }
-        .modal-btn { padding: 10px 20px; border-radius: 10px; font-weight: 700; font-size: 0.9rem; cursor: pointer; border: none; background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; width: 100%; }
+        @keyframes orbitSpin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
+        .modal-icon-container {
+            width: 70px; height: 70px; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            margin: 0 auto 16px auto; font-size: 2rem; color: var(--primary); box-shadow: 0 10px 20px rgba(249, 115, 22, 0.15);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
+        }
+        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
+
+        .modal-title-text { font-size: 1.2rem; font-weight: 900; color: var(--text); margin-bottom: 8px; }
+        .modal-desc-text { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 24px; line-height: 1.6; }
+        
+        .luxury-btn {
+            background: linear-gradient(135deg, #f97316 0%, #ea580c 100%); color: white; border: none;
+            padding: 12px 28px; border-radius: 14px; font-weight: 800; font-size: 0.95rem; cursor: pointer;
+            width: 100%; box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3); transition: 0.2s;
+        }
+        .luxury-btn:hover { opacity: 0.92; transform: translateY(-2px); }
+
+        .footer-copyright { margin-right: 280px; text-align: center; padding: 25px; color: var(--text-muted); font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg); }
         .hidden-element { display: none !important; }
-        @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
+
+        @media (max-width: 1024px) {
+            .courses-grid { grid-template-columns: 1fr; }
+            aside { display: none; }
+            main { margin-right: 0; padding: 15px; width: 100%; }
+            .footer-copyright { margin-right: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <div id="custom-modal">
-        <div class="modal-box">
-            <h3 id="modal-title">تنبيه النظام</h3>
-            <p id="modal-desc">رسالة...</p>
-            <button class="modal-btn" onclick="closeModal()">حسناً</button>
+    <!-- نافذة الإشعارات الفاخرة المحدثة -->
+    <div id="luxury-loader-modal" class="luxury-modal-overlay">
+        <div class="luxury-modal-card">
+            <div id="loader-spinner-elem" class="loader-orbit" style="display: none;"></div>
+            <div id="loader-icon-container" class="modal-icon-container">
+                <i id="loader-icon-elem" class="fa-solid fa-circle-check"></i>
+            </div>
+            
+            <h3 id="loader-title-text" class="modal-title-text">تنبيه النظام</h3>
+            <p id="loader-desc-text" class="modal-desc-text">رسالة النظام...</p>
+            
+            <button id="loader-action-btn" class="luxury-btn" onclick="closeLuxuryModal()">حسناً</button>
         </div>
     </div>
 
@@ -141,51 +154,79 @@
             <i class="fa-solid fa-graduation-cap fa-lg"></i> جامعة النيل الأبيض
         </div>
         <ul class="sidebar-menu">
-            <li><a href="index.html"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
-            <li><a href="dashboard.html" class="active"><i class="fa-solid fa-calendar-days"></i> الجدول الدراسي</a></li>
+            <li><a href="index.html" class="active"><i class="fa-solid fa-house"></i> الرئيسية</a></li>
+            <li><a href="dashboard.html"><i class="fa-solid fa-gauge"></i> لوحة التحكم</a></li>
         </ul>
     </aside>
 
     <main>
-        <div class="student-hero-card">
-            <div class="profile-main-info">
-                <div class="avatar-box" id="avatar-letter">م</div>
-                <div class="text-info">
-                    <h1 id="welcome-name">مرحباً، محمود عبدالله ادم محمد</h1>
-                    <div class="academic-badges">
-                        <span class="badge-tag"><i class="fa-solid fa-id-card"></i> الرقم: <span id="display-student-id">24-11086250</span></span>
-                        <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> السمستر الثالث</span>
-                        <span class="badge-tag"><i class="fa-solid fa-laptop-code"></i> تقانة المعلومات</span>
-                    </div>
-                </div>
+        <div class="welcome-card">
+            <div class="welcome-info">
+                <h1 id="user-welcome-name">مرحباً بك</h1>
+                <p><i class="fa-solid fa-id-card"></i> الرقم الجامعي: <span id="user-id-display">--</span></p>
             </div>
-
-            <div class="action-buttons-group">
-                <button class="btn-custom btn-admin-mode hidden-element" id="admin-mode-btn" onclick="toggleAdminMode()">
-                    <i class="fa-solid fa-user-shield"></i> <span id="admin-btn-text">وضع الإدارة</span>
-                </button>
-                <a href="index.html" class="btn-custom"><i class="fa-solid fa-house"></i> الرئيسية</a>
-                <button class="btn-custom btn-danger-custom" id="logout-btn"><i class="fa-solid fa-right-from-bracket"></i> خروج</button>
+            <div class="admin-toggle-box" id="admin-toggle-btn" onclick="toggleAdminMode()">
+                <i class="fa-solid fa-user-shield fa-xl" style="color: var(--primary);"></i>
+                <div>
+                    <strong style="display: block; font-size: 0.9rem;" id="admin-status-text">وضع المشرف: معطل</strong>
+                    <span style="font-size: 0.75rem; color: var(--text-muted);">انقر للتبديل والتفعيل</span>
+                </div>
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            <div class="card">
-                <div class="card-title"><i class="fa-solid fa-list-check"></i> المقررات الـ 6 الحالية</div>
-                
-                <div class="course-row"><div class="course-info-box"><span class="course-name">الدراسات السودانية</span><span class="course-instructor-name">د. مرتضى يونس بشير محمد</span></div><a href="course-details.html?course=sudanese-studies" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">مفاهيم قواعد البيانات</span><span class="course-instructor-name">أ. غفار عوض الله محمد احمد</span></div><a href="course-details.html?course=databases" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">جبر ومهندسة تحليلية</span><span class="course-instructor-name">د. بشارة عيسى حمد عبدالله</span></div><a href="course-details.html?course=algebra-geometry" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">تقانة الحاسب الشخصي</span><span class="course-instructor-name">أ. ساجدة احمد ادم</span></div><a href="course-details.html?course=pc-tech" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">شبكات الحاسوب والاتصال (1)</span><span class="course-instructor-name">د. محمد الطيب حمادي</span></div><a href="course-details.html?course=networks-1" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">هندسة برمجيات</span><span class="course-instructor-name">د. سيف الدين حميدة</span></div><a href="course-details.html?course=software-eng" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
+        <div class="card" style="margin-bottom: 25px; border-radius: 20px; padding: 22px; border: 1px solid var(--border); box-shadow: var(--shadow);">
+            <div class="card-title" style="font-size: 1.15rem; font-weight: 800; color: var(--primary); margin-bottom: 0; display: flex; align-items: center; gap: 10px;">
+                <i class="fa-solid fa-book-open"></i> المقررات الدراسية المتاحة (قسم تقانة المعلومات)
+            </div>
+        </div>
+
+        <div class="courses-grid">
+            <div class="course-card">
+                <div>
+                    <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-landmark" style="color: var(--primary);"></i> مادة الدراسات السودانية</h3>
+                    <p style="margin-bottom: 12px;"><i class="fa-solid fa-chalkboard-user"></i> د. مرتضى يونس بشير محمد</p>
+                </div>
+                <a href="course-details.html?course=sudanese-studies" class="btn-course-link"><i class="fa-solid fa-folder-open"></i> استعراض المقرر والمحاضرات</a>
             </div>
 
-            <div class="card">
-                <div class="card-title"><i class="fa-solid fa-headset"></i> الدعم الفني</div>
-                <a href="https://wa.me/249900623733" target="_blank" class="whatsapp-action-btn">
-                    <i class="fa-brands fa-whatsapp fa-xl"></i> التواصل عبر واتساب الكلية
-                </a>
+            <div class="course-card">
+                <div>
+                    <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-database" style="color: var(--primary);"></i> مفاهيم قواعد البيانات ب/تقانة ثالث</h3>
+                    <p style="margin-bottom: 12px;"><i class="fa-solid fa-chalkboard-user"></i> أ. غفار عوض الله محمد احمد</p>
+                </div>
+                <a href="course-details.html?course=databases" class="btn-course-link"><i class="fa-solid fa-folder-open"></i> استعراض المقرر والمحاضرات</a>
+            </div>
+
+            <div class="course-card">
+                <div>
+                    <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-square-root-variable" style="color: var(--primary);"></i> جبر ومهندسة تحليلية</h3>
+                    <p style="margin-bottom: 12px;"><i class="fa-solid fa-chalkboard-user"></i> د. بشارة عيسى حمد عبدالله</p>
+                </div>
+                <a href="course-details.html?course=algebra-geometry" class="btn-course-link"><i class="fa-solid fa-folder-open"></i> استعراض المقرر والمحاضرات</a>
+            </div>
+
+            <div class="course-card">
+                <div>
+                    <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-microchip" style="color: var(--primary);"></i> تقانة الحاسب الشخصي</h3>
+                    <p style="margin-bottom: 12px;"><i class="fa-solid fa-chalkboard-user"></i> أ. ساجدة احمد ادم</p>
+                </div>
+                <a href="course-details.html?course=pc-tech" class="btn-course-link"><i class="fa-solid fa-folder-open"></i> استعراض المقرر والمحاضرات</a>
+            </div>
+
+            <div class="course-card">
+                <div>
+                    <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-network-wired" style="color: var(--primary);"></i> شبكات الحاسوب والاتصال (1)</h3>
+                    <p style="margin-bottom: 12px;"><i class="fa-solid fa-chalkboard-user"></i> د. محمد الطيب حمادي</p>
+                </div>
+                <a href="course-details.html?course=networks-1" class="btn-course-link"><i class="fa-solid fa-folder-open"></i> استعراض المقرر والمحاضرات</a>
+            </div>
+
+            <div class="course-card">
+                <div>
+                    <h3 style="margin-bottom: 8px;"><i class="fa-solid fa-code" style="color: var(--primary);"></i> هندسة برمجيات</h3>
+                    <p style="margin-bottom: 12px;"><i class="fa-solid fa-chalkboard-user"></i> د. سيف الدين حميدة</p>
+                </div>
+                <a href="course-details.html?course=software-eng" class="btn-course-link"><i class="fa-solid fa-folder-open"></i> استعراض المقرر والمحاضرات</a>
             </div>
         </div>
     </main>
@@ -195,13 +236,35 @@
     </footer>
 
     <script>
-        function showModal(title, desc) {
-            document.getElementById('modal-title').textContent = title;
-            document.getElementById('modal-desc').textContent = desc;
-            document.getElementById('custom-modal').classList.add('active');
+        const studentId = "24-11086250";
+        const studentName = "محمود عبدالله آدم محمد";
+
+        // دوال الإشعارات والـ Loading الفاخرة في لوحة التحكم
+        function showLuxuryAlert(title, desc, isSuccess = true) {
+            const modal = document.getElementById('luxury-loader-modal');
+            document.getElementById('loader-spinner-elem').style.display = 'none';
+            const iconContainer = document.getElementById('loader-icon-container');
+            const iconElem = document.getElementById('loader-icon-elem');
+            
+            iconContainer.style.display = 'flex';
+            if(isSuccess) {
+                iconContainer.style.background = '#fff7ed';
+                iconContainer.style.color = '#10b981';
+                iconElem.className = "fa-solid fa-circle-check";
+            } else {
+                iconContainer.style.background = '#fef2f2';
+                iconContainer.style.color = '#dc2626';
+                iconElem.className = "fa-solid fa-circle-xmark";
+            }
+
+            document.getElementById('loader-title-text').textContent = title;
+            document.getElementById('loader-desc-text').textContent = desc;
+            modal.classList.add('active');
         }
-        function closeModal() {
-            document.getElementById('custom-modal').classList.remove('active');
+
+        function closeLuxuryModal() {
+            document.getElementById('luxury-loader-modal').classList.remove('active');
+            location.reload();
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -213,37 +276,41 @@
                 return;
             }
 
-            document.getElementById('welcome-name').textContent = `مرحباً، ${loggedUser}`;
-            document.getElementById('avatar-letter').textContent = loggedUser.trim().charAt(0);
+            document.getElementById('user-welcome-name').textContent = `مرحباً، ${loggedUser}`;
+            document.getElementById('user-id-display').textContent = loggedId;
 
-            if (loggedId === '24-11086250') {
-                const adminBtn = document.getElementById('admin-mode-btn');
-                adminBtn.classList.remove('hidden-element');
-                if (localStorage.getItem('it_admin_mode') === 'true') {
-                    adminBtn.classList.add('active-admin');
-                    document.getElementById('admin-btn-text').textContent = 'إيقاف وضع الإدارة';
-                }
-            }
+            updateAdminUI();
         });
 
-        function toggleAdminMode() {
-            const currentStatus = localStorage.getItem('it_admin_mode') === 'true';
-            if (currentStatus) {
-                localStorage.setItem('it_admin_mode', 'false');
-                showModal('وضع الإدارة', 'تم إيقاف وضع الإدارة بنجاح.');
+        function updateAdminUI() {
+            const adminMode = localStorage.getItem('it_admin_mode') === 'true';
+            const statusText = document.getElementById('admin-status-text');
+            if (adminMode) {
+                statusText.textContent = "وضع المشرف: مفعل";
+                statusText.style.color = "#10b981";
             } else {
-                localStorage.setItem('it_admin_mode', 'true');
-                showModal('وضع الإدارة', 'تم تفعيل وضع الإدارة بنجاح! يمكنك الآن إضافة وتعديل الملفات.');
+                statusText.textContent = "وضع المشرف: معطل";
+                statusText.style.color = "var(--text-muted)";
             }
-            setTimeout(() => location.reload(), 1200);
         }
 
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            localStorage.removeItem('it_logged_user');
-            localStorage.removeItem('it_logged_id');
-            localStorage.removeItem('it_admin_mode');
-            window.location.href = 'login.html';
-        });
+        function toggleAdminMode() {
+            const loggedId = localStorage.getItem('it_logged_id');
+            if (loggedId !== studentId) {
+                showLuxuryAlert("عذراً", "هذا الحساب ليس لديه صلاحيات المشرف.", false);
+                return;
+            }
+
+            let currentMode = localStorage.getItem('it_admin_mode') === 'true';
+            let newMode = !currentMode;
+            localStorage.setItem('it_admin_mode', newMode);
+
+            if (newMode) {
+                showLuxuryAlert("وضع الإدارة", "تم تفعيل وضع الإدارة بنجاح! يمكنك الآن إضافة وتعديل وحذف المحاضرات.");
+            } else {
+                showLuxuryAlert("وضع الإدارة", "تم تعطيل وضع الإدارة بنجاح.", false);
+            }
+        }
     </script>
 </body>
 </html>
