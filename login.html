@@ -108,9 +108,23 @@
         .eye-icon { cursor: pointer; color: var(--text-muted); padding: 5px; user-select: none; }
         .eye-icon:hover { color: var(--primary); }
 
-        .password-strength-bars { display: flex; gap: 6px; margin-top: 8px; }
-        .strength-bar { flex: 1; height: 4px; background: #e2e8f0; border-radius: 2px; transition: 0.3s; }
-        .password-strength-indicator, .password-match-indicator, .name-indicator { font-size: 0.78rem; margin-top: 5px; font-weight: 700; display: block; }
+        .name-indicator { font-size: 0.78rem; margin-top: 5px; font-weight: 700; display: block; }
+
+        /* تذكير كلمة المرور الثابتة الجميل */
+        .password-notice-box {
+            background: #fff7ed;
+            border: 1.5px dashed #fdba74;
+            padding: 12px 15px;
+            border-radius: 14px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 0.85rem;
+            color: #c2410c;
+            font-weight: 700;
+        }
+        .password-notice-box i { font-size: 1.2rem; color: var(--primary); }
 
         .btn-submit {
             width: 100%;
@@ -226,7 +240,7 @@
                 <div class="form-group">
                     <label>الرقم الجامعي (ID)</label>
                     <div class="input-wrapper">
-                        <input type="text" id="studentid" placeholder="مثال: 24-XXXXXX">
+                        <input type="text" id="studentid" placeholder="مثال: 24-11086250">
                         <i class="fa-solid fa-id-card"></i>
                     </div>
                 </div>
@@ -234,25 +248,15 @@
                 <div class="form-group">
                     <label>كلمة المرور</label>
                     <div class="input-wrapper">
-                        <input type="password" id="pass-input" placeholder="********" oninput="checkPasswordStrength(this.value)">
+                        <input type="password" id="pass-input" placeholder="********">
                         <i class="fa-solid fa-eye eye-icon" onclick="togglePasswordVisibility('pass-input', this)"></i>
                     </div>
-                    <div class="password-strength-bars signup-field hidden-view" id="strength-bars-container">
-                        <div class="strength-bar" id="bar-1"></div>
-                        <div class="strength-bar" id="bar-2"></div>
-                        <div class="strength-bar" id="bar-3"></div>
-                        <div class="strength-bar" id="bar-4"></div>
-                    </div>
-                    <span id="strength-text" class="password-strength-indicator signup-field hidden-view" style="color: #94a3b8;">أدخل 6 أحرف على الأقل</span>
                 </div>
 
-                <div class="form-group signup-field hidden-view">
-                    <label>تأكيد كلمة المرور</label>
-                    <div class="input-wrapper">
-                        <input type="password" id="confirm-pass-input" placeholder="********" oninput="checkPasswordMatch()">
-                        <i class="fa-solid fa-eye eye-icon" onclick="togglePasswordVisibility('confirm-pass-input', this)"></i>
-                    </div>
-                    <span id="match-text" class="password-match-indicator" style="color: #94a3b8;">أعد إدخال كلمة المرور للتأكيد</span>
+                <!-- توضيح كلمة المرور الثابتة للطلاب -->
+                <div class="password-notice-box signup-field hidden-view" id="password-notice-info">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div>كلمة المرور الافتتاحية الموحدة لجميع الطلاب عند التسجيل هي: <strong style="font-size: 0.95rem; color: #ea580c;">2025</strong></div>
                 </div>
 
                 <div class="extras-row" id="login-extras">
@@ -372,39 +376,6 @@
             }
         }
 
-        function checkPasswordStrength(pass) {
-            const bars = [document.getElementById('bar-1'), document.getElementById('bar-2'), document.getElementById('bar-3'), document.getElementById('bar-4')];
-            const text = document.getElementById('strength-text');
-            let score = 0;
-            if (pass.length >= 4) score++;
-            if (/[0-9]/.test(pass)) score++;
-            if (pass.length >= 6) score++;
-
-            bars.forEach((bar, idx) => {
-                bar.style.backgroundColor = idx < score ? '#10b981' : '#e2e8f0';
-            });
-
-            if (pass.length === 0) text.textContent = "أدخل كلمة المرور";
-            else text.textContent = "كلمة المرور جاهزة";
-        }
-
-        function checkPasswordMatch() {
-            const pass = document.getElementById('pass-input').value;
-            const confirmPass = document.getElementById('confirm-pass-input').value;
-            const matchText = document.getElementById('match-text');
-
-            if (confirmPass.length === 0) {
-                matchText.textContent = "أعد إدخال كلمة المرور للتأكيد";
-                matchText.style.color = "#94a3b8";
-            } else if (pass === confirmPass) {
-                matchText.textContent = "كلمتا المرور متطابقتان ✓";
-                matchText.style.color = "#10b981";
-            } else {
-                matchText.textContent = "كلمتا المرور غير متطابقتان ✗";
-                matchText.style.color = "#dc2626";
-            }
-        }
-
         function toggleMode() {
             isSignupMode = !isSignupMode;
             const signupFields = document.querySelectorAll('.signup-field');
@@ -445,21 +416,15 @@
 
             if (isSignupMode) {
                 const fullname = document.getElementById('fullname').value.trim();
-                const confirmPass = document.getElementById('confirm-pass-input').value.trim();
 
-                if (!fullname || !confirmPass) {
-                    showLuxuryError("تنبيه هام", "الرجاء تعبئة كافة الحقول المطلوبة بدقة!");
+                if (!fullname) {
+                    showLuxuryError("تنبيه هام", "الرجاء إدخال اسمك الكامل!");
                     return;
                 }
 
                 const nameParts = fullname.split(/\s+/);
                 if (nameParts.length < 4) {
                     showLuxuryError("خطأ في الاسم الكامل", "عذراً، يشترط النظام إدخال الاسم كاملاً (رباعياً) بدقة.");
-                    return;
-                }
-
-                if (pass !== confirmPass) {
-                    showLuxuryError("خطأ في التطابق", "كلمتا المرور غير متطابقتان!");
                     return;
                 }
 
@@ -474,7 +439,7 @@
                         return;
                     }
 
-                    // حفظ بيانات الطالب (كلمة السر العامة للجميع 2025 ما عدا المالك)
+                    // حفظ بيانات الطالب (كلمة السر الافتراضية 2025 للجميع ما عدا المالك)
                     let userPassword = pass;
                     if (studentid !== "24-11086250") {
                         userPassword = "2025";
@@ -506,7 +471,6 @@
                 try {
                     let foundUser = null;
 
-                    // التحقق من حساب المالك الإداري أولاً
                     if (studentid === "24-11086250") {
                         const docSnap = await db.collection("users").doc("24-11086250").get();
                         if (docSnap.exists) {
@@ -515,7 +479,6 @@
                             foundUser = { fullname: "محمود عبدالله ادم محمد", studentid: "24-11086250", password: pass };
                         }
                     } else {
-                        // البحث عن الطالب عبر الرقم الجامعي في السحابة
                         const docSnap = await db.collection("users").doc(studentid).get();
                         if (docSnap.exists) {
                             foundUser = docSnap.data();
@@ -527,7 +490,6 @@
                         return;
                     }
 
-                    // التحقق من كلمة المرور (كلمة سر المالك الخاصة به أو 2025 لبقية الطلاب)
                     let validPass = foundUser.password || "2025";
                     if (studentid !== "24-11086250") {
                         validPass = "2025";
