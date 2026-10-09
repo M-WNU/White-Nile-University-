@@ -244,7 +244,6 @@
                     </div>
                 </div>
 
-                <!-- حقل كلمة المرور يظهر فقط في وضع تسجيل الدخول -->
                 <div class="form-group" id="login-pass-group">
                     <label>كلمة المرور</label>
                     <div class="input-wrapper">
@@ -253,7 +252,6 @@
                     </div>
                 </div>
 
-                <!-- توضيح كلمة المرور الثابتة يظهر فقط في وضع إنشاء الحساب -->
                 <div class="password-notice-box signup-field hidden-view" id="password-notice-info">
                     <i class="fa-solid fa-circle-info"></i>
                     <div>كلمة المرور الافتتاحية الموحدة لجميع الطلاب عند التسجيل هي: <strong style="font-size: 0.95rem; color: #ea580c;">2025</strong></div>
@@ -389,7 +387,7 @@
 
             if (isSignupMode) {
                 signupFields.forEach(el => el.classList.remove('hidden-view'));
-                loginPassGroup.classList.add('hidden-view'); // إخفاء خانة كلمة المرور عند التسجيل
+                loginPassGroup.classList.add('hidden-view');
                 formTitle.textContent = "إنشاء حساب جامعي جديد";
                 formSubtitle.textContent = "قم بتعبئة بياناتك الرباعية للانضمام للمنصة.";
                 submitBtn.textContent = "إنشاء الحساب والتسجيل";
@@ -398,7 +396,7 @@
                 loginExtras.classList.add('hidden-view');
             } else {
                 signupFields.forEach(el => el.classList.add('hidden-view'));
-                loginPassGroup.classList.remove('hidden-view'); // إظهار خانة كلمة المرور عند تسجيل الدخول
+                loginPassGroup.classList.remove('hidden-view');
                 formTitle.textContent = "بوابة تقانة المعلومات";
                 formSubtitle.textContent = "تسجيل الدخول بالرقم الجامعي.";
                 submitBtn.textContent = "تسجيل الدخول";
@@ -441,7 +439,6 @@
                         return;
                     }
 
-                    // كلمة السر الافتتاحية الموحدة للطلاب 2025
                     await docRef.set({
                         fullname: fullname,
                         studentid: studentid,
@@ -462,14 +459,14 @@
                 }
 
             } else {
-                // وضع تسجيل الدخول بالرقم الجامعي وكلمة المرور (2025 للطلاب)
                 const pass = document.getElementById('pass-input').value.trim();
                 if (!pass) {
                     showLuxuryError("تنبيه هام", "الرجاء إدخال كلمة المرور!");
                     return;
                 }
 
-                showLuxuryLoader("جاري التحقق...", "يتم مطابقة بياناتك مع قاعدة البيانات السحابية.");
+                // تفعيل أنيميشن التحميل الفاخر عند تسجيل الدخول
+                showLuxuryLoader("جاري تسجيل الدخول...", "يتم التحقق من بياناتك والانتقال للوحة التحكم.");
 
                 try {
                     let foundUser = null;
@@ -506,10 +503,12 @@
                     localStorage.setItem('it_logged_user', foundUser.fullname);
                     localStorage.setItem('it_logged_id', foundUser.studentid);
 
-                    showLuxurySuccess("مرحباً بعودتك!", `تم تسجيل الدخول بنجاح، أهلاً بك يا ${foundUser.fullname}`);
                     setTimeout(() => {
-                        window.location.href = 'dashboard.html';
-                    }, 1200);
+                        showLuxurySuccess("مرحباً بعودتك!", `تم تسجيل الدخول بنجاح، أهلاً بك يا ${foundUser.fullname}`);
+                        setTimeout(() => {
+                            window.location.href = 'dashboard.html';
+                        }, 1000);
+                    }, 800);
 
                 } catch (err) {
                     showLuxuryError("خطأ في النظام", "تعذر التحقق من البيانات: " + err.message);
