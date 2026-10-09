@@ -69,7 +69,6 @@
         .btn-danger-custom { background-color: #fee2e2; color: #dc2626; border-color: #fca5a5; }
         .btn-danger-custom:hover { background-color: #dc2626; color: white !important; }
 
-        /* ===== تصميم زر وضع الإدارة الاحترافي الجديد ===== */
         .btn-admin-mode {
             background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
             color: white !important; border: none; box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
@@ -110,7 +109,6 @@
             font-size: 0.88rem; font-weight: 700; border-top: 1px solid var(--border); background: var(--card-bg);
         }
 
-        /* ===== تصميم نافذة الـ Loading والتنبيهات الاحترافية الفاخرة والمتجاوبة ===== */
         #luxury-loader-modal {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 99999;
@@ -162,7 +160,6 @@
 </head>
 <body>
 
-    <!-- نافذة الـ Loading والتنبيهات الفاخرة المتحركة -->
     <div id="luxury-loader-modal" class="luxury-modal-overlay">
         <div class="luxury-modal-card">
             <div id="loader-spinner-elem" class="loader-orbit"></div>
@@ -212,14 +209,12 @@
 
         <div class="dashboard-grid">
             <div class="card">
-                <div class="card-title"><i class="fa-solid fa-list-check"></i> المقررات الـ 6 الحالية</div>
+                <div class="card-title"><i class="fa-solid fa-list-check"></i> المقررات الدراسية (مباشرة من قاعدة البيانات)</div>
                 
-                <div class="course-row"><div class="course-info-box"><span class="course-name">الدراسات السودانية</span><span class="course-instructor-name">د. مرتضى يونس بشير محمد</span></div><a href="course-details.html?course=sudanese-studies" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">مفاهيم قواعد البيانات</span><span class="course-instructor-name">أ. غفار عوض الله محمد احمد</span></div><a href="course-details.html?course=databases" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">جبر ومهندسة تحليلية</span><span class="course-instructor-name">د. بشارة عيسى حمد عبدالله</span></div><a href="course-details.html?course=algebra-geometry" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">تقانة الحاسب الشخصي</span><span class="course-instructor-name">أ. ساجدة احمد ادم</span></div><a href="course-details.html?course=pc-tech" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">شبكات الحاسوب والاتصال (1)</span><span class="course-instructor-name">د. محمد الطيب حمادي</span></div><a href="course-details.html?course=networks-1" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
-                <div class="course-row"><div class="course-info-box"><span class="course-name">هندسة برمجيات</span><span class="course-instructor-name">د. سيف الدين حميدة</span></div><a href="course-details.html?course=software-eng" class="btn-enter-course-dash"><i class="fa-solid fa-book-open"></i> المحتوى</a></div>
+                <!-- حاوية عرض المقررات القادمة من Firebase Firestore -->
+                <div id="courses-container">
+                    <p style="text-align: center; color: var(--text-muted); padding: 20px;">جاري تحميل المقررات...</p>
+                </div>
             </div>
 
             <div class="card">
@@ -235,8 +230,66 @@
         © 2026 جميع الحقوق محفوظة لدى محمود عبدالله
     </footer>
 
+    <!-- سكربت جلب البيانات من Firebase وتحديث واجهة المستخدم -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase.app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase.firestore.js";
+
+        // إعدادات الاتصال بـ Firebase الخاصة بمشروعك
+        const firebaseConfig = {
+          apiKey: "YOUR_API_KEY",
+          authDomain: "kosti-university-it.firebaseapp.com",
+          projectId: "kosti-university-it",
+          storageBucket: "kosti-university-it.appspot.com",
+          messagingSenderId: "364361272352",
+          appId: "YOUR_APP_ID"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        async function fetchAndDisplayCourses() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "courses"));
+                const container = document.getElementById("courses-container");
+                
+                if (!container) return;
+                
+                if (querySnapshot.empty) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 15px;">لا توجد مقررات مضافة حالياً.</p>';
+                    return;
+                }
+
+                container.innerHTML = "";
+
+                querySnapshot.forEach((doc) => {
+                    const course = doc.data();
+                    const courseCard = `
+                        <div class="course-row">
+                            <div class="course-info-box">
+                                <span class="course-name">${course.title || 'مقرر بدون عنوان'}</span>
+                                <span class="course-instructor-name">الأستاذ: ${course.instructor || '-'} | الرمز: ${course.code || '-'}</span>
+                            </div>
+                            <a href="course-details.html?course=${doc.id}" class="btn-enter-course-dash">
+                                <i class="fa-solid fa-book-open"></i> المحتوى
+                            </a>
+                        </div>
+                    `;
+                    container.innerHTML += courseCard;
+                });
+            } catch (error) {
+                console.error("خطأ في جلب المقررات: ", error);
+                const container = document.getElementById("courses-container");
+                if(container) {
+                    container.innerHTML = '<p style="text-align: center; color: #dc2626; padding: 15px;">حدث خطأ أثناء جلب المقررات.</p>';
+                }
+            }
+        }
+
+        document.addEventListener("DOMContentLoaded", fetchAndDisplayCourses);
+    </script>
+
     <script>
-        // دوال عرض الـ Loading والرسائل الفاخرة
         function showLuxuryLoader(title, desc) {
             const modal = document.getElementById('luxury-loader-modal');
             document.getElementById('loader-spinner-elem').style.display = 'block';
