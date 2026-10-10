@@ -260,30 +260,28 @@
             try {
                 const querySnapshot = await db.collection("courses").get();
                 
-                let coursesList = [];
-                querySnapshot.forEach((doc) => {
-                    coursesList.push({ id: doc.id, ...doc.data() });
-                });
-
-                // التأكد من وجود مقرر "تقانة الحاسوب الشخصي" وإضافته تلقائياً إن لم يكن موجوداً بالكلاود
-                const hasPersonalTech = coursesList.some(c => c.title && c.title.includes("تقانة الحاسوب الشخصي"));
-                if (!hasPersonalTech) {
-                    coursesList.push({
-                        id: "personal-computer",
-                        title: "تقانة الحاسوب الشخصي",
-                        code: "",
-                        category: "عناد حاسوبي",
-                        instructor: "أ. ساجدة أحمد آدم"
-                    });
-                }
-
-                if (coursesList.length === 0) {
+                if (querySnapshot.empty) {
                     container.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1 / -1; padding: 20px;">لا توجد مقررات مضافة حالياً.</p>';
                     return;
                 }
 
                 container.innerHTML = "";
-                coursesList.forEach((course) => {
+                
+                // مصفوفة لتتبع عناوين المواد المعروضة لمنع تكرار أي مادة
+                let displayedTitles = new Set();
+
+                querySnapshot.forEach((doc) => {
+                    const course = doc.data();
+                    const title = (course.title || course.name || '').trim();
+                    
+                    // استبعاد البطاقات الفارغة، أو عنوان "المقرر الدراسي" الفارغ، أو المواد المكررة
+                    if (!title || title === "المقرر الدراسي" || displayedTitles.has(title)) {
+                        return;
+                    }
+
+                    // إضافة العنوان للمجموع لتجنب أي تكرار مستقبلي
+                    displayedTitles.add(title);
+
                     const courseCard = `
                         <div class="course-card-item">
                             <div>
@@ -291,10 +289,10 @@
                                     <span class="course-category-tag">${course.category || 'مقرر دراسي'}</span>
                                     <span class="course-code-tag">${course.code || ''}</span>
                                 </div>
-                                <h3 class="course-name-title">${course.title || course.name || 'مقرر بدون عنوان'}</h3>
-                                <p class="course-instructor-info"><i class="fa-solid fa-chalkboard-user"></i> الأستاذ: ${course.instructor || '-'}</p>
+                                <h3 class="course-name-title">${title}</h3>
+                                <p class="course-instructor-info"><i class="fa-solid fa-chalkboard-user"></i> الأستاذ: ${course.instructor || 'غير متوفر'}</p>
                             </div>
-                            <a href="course-details.html?course=${course.id}" class="btn-enter-course">
+                            <a href="course-details.html?course=${doc.id}" class="btn-enter-course">
                                 <i class="fa-solid fa-book-open"></i> دخول المقرر
                             </a>
                         </div>
