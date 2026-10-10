@@ -260,14 +260,30 @@
             try {
                 const querySnapshot = await db.collection("courses").get();
                 
-                if (querySnapshot.empty) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1 / -1; padding: 20px;">لا توجد مقررات مضافة حالياً في قاعدة البيانات.</p>';
+                let coursesList = [];
+                querySnapshot.forEach((doc) => {
+                    coursesList.push({ id: doc.id, ...doc.data() });
+                });
+
+                // التأكد من وجود مقرر "تقانة الحاسوب الشخصي" وإضافته تلقائياً إن لم يكن موجوداً بالكلاود
+                const hasPersonalTech = coursesList.some(c => c.title && c.title.includes("تقانة الحاسوب الشخصي"));
+                if (!hasPersonalTech) {
+                    coursesList.push({
+                        id: "personal-computer",
+                        title: "تقانة الحاسوب الشخصي",
+                        code: "",
+                        category: "عناد حاسوبي",
+                        instructor: "أ. ساجدة أحمد آدم"
+                    });
+                }
+
+                if (coursesList.length === 0) {
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); grid-column: 1 / -1; padding: 20px;">لا توجد مقررات مضافة حالياً.</p>';
                     return;
                 }
 
                 container.innerHTML = "";
-                querySnapshot.forEach((doc) => {
-                    const course = doc.data();
+                coursesList.forEach((course) => {
                     const courseCard = `
                         <div class="course-card-item">
                             <div>
@@ -278,7 +294,7 @@
                                 <h3 class="course-name-title">${course.title || course.name || 'مقرر بدون عنوان'}</h3>
                                 <p class="course-instructor-info"><i class="fa-solid fa-chalkboard-user"></i> الأستاذ: ${course.instructor || '-'}</p>
                             </div>
-                            <a href="course-details.html?course=${doc.id}" class="btn-enter-course">
+                            <a href="course-details.html?course=${course.id}" class="btn-enter-course">
                                 <i class="fa-solid fa-book-open"></i> دخول المقرر
                             </a>
                         </div>
