@@ -110,20 +110,18 @@
 
         .name-indicator { font-size: 0.78rem; margin-top: 5px; font-weight: 700; display: block; }
 
-        .password-notice-box {
-            background: #fff7ed;
-            border: 1.5px dashed #fdba74;
-            padding: 12px 15px;
-            border-radius: 14px;
-            margin-bottom: 18px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 0.85rem;
-            color: #c2410c;
+        .security-warning-box {
+            background: #fef2f2;
+            border: 1.5px solid #fecaca;
+            padding: 10px 14px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            font-size: 0.82rem;
+            color: #dc2626;
             font-weight: 700;
+            text-align: center;
+            display: none;
         }
-        .password-notice-box i { font-size: 1.2rem; color: var(--primary); }
 
         .btn-submit {
             width: 100%;
@@ -139,7 +137,8 @@
             box-shadow: 0 8px 20px rgba(249, 115, 22, 0.3);
             transition: 0.3s;
         }
-        .btn-submit:hover { background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); transform: translateY(-1px); }
+        .btn-submit:hover:not(:disabled) { background: linear-gradient(135deg, #ea580c 0%, #c2410c 100%); transform: translateY(-1px); }
+        .btn-submit:disabled { background: #cbd5e1; box-shadow: none; cursor: not-allowed; transform: none; }
 
         .switch-mode, .back-footer { text-align: center; margin-top: 18px; font-size: 0.88rem; color: var(--text-muted); }
         .switch-mode a, .back-footer a { color: var(--primary); font-weight: 700; text-decoration: none; cursor: pointer; }
@@ -148,7 +147,7 @@
         .hidden-view { display: none !important; }
         .extras-row { display: flex; justify-content: space-between; align-items: center; font-size: 0.85rem; margin-top: 8px; margin-bottom: 15px; }
 
-        /* ===== نافذة الـ Loading والتنبيهات الفاخرة المتحركة ===== */
+        /* نافذة الـ Loading والتنبيهات الفاخرة */
         .luxury-modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(15, 23, 42, 0.75); backdrop-filter: blur(8px); z-index: 99999;
@@ -180,10 +179,7 @@
         .modal-icon-container {
             width: 65px; height: 65px; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             margin: 0 auto 16px auto; font-size: 1.8rem; color: var(--primary); box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
-        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
-
         .modal-title-text { font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 8px; }
         .modal-desc-text { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
         
@@ -192,12 +188,10 @@
             padding: 12px 25px; border-radius: 14px; font-weight: 800; font-size: 0.92rem; cursor: pointer;
             width: 100%; box-shadow: 0 6px 18px rgba(249, 115, 22, 0.25); transition: 0.2s;
         }
-        .luxury-btn:hover { opacity: 0.92; transform: translateY(-1px); }
     </style>
 </head>
 <body>
 
-    <!-- نافذة الـ Loading والتنبيهات الفاخرة -->
     <div id="luxury-loader-modal" class="luxury-modal-overlay">
         <div class="luxury-modal-card">
             <div id="loader-spinner-elem" class="loader-orbit"></div>
@@ -208,7 +202,7 @@
             <h3 id="loader-title-text" class="modal-title-text">جاري معالجة الطلب...</h3>
             <p id="loader-desc-text" class="modal-desc-text">يرجى الانتظار قليلاً.</p>
             
-            <button id="loader-action-btn" class="luxury-btn hidden-element" onclick="closeLuxuryModal()">حسناً</button>
+            <button id="loader-action-btn" class="luxury-btn hidden-view" onclick="closeLuxuryModal()">حسناً</button>
         </div>
     </div>
 
@@ -252,10 +246,8 @@
                     </div>
                 </div>
 
-                <div class="password-notice-box signup-field hidden-view" id="password-notice-info">
-                    <i class="fa-solid fa-circle-info"></i>
-                    <div>كلمة المرور الافتتاحية الموحدة لجميع الطلاب عند التسجيل هي: <strong style="font-size: 0.95rem; color: #ea580c;">2025</strong></div>
-                </div>
+                <!-- صندوق التحذير الأمني للمحاولات الخاطئة -->
+                <div id="security-warning" class="security-warning-box"></div>
 
                 <div class="extras-row" id="login-extras">
                     <label style="cursor: pointer; display: flex; align-items: center; gap: 6px;"><input type="checkbox"> <span>تذكرني</span></label>
@@ -294,11 +286,58 @@
         let isSignupMode = false;
         let shouldReloadAfterModal = false;
 
+        // متغيرات نظام حماية التخمين (Rate Limiting)
+        let failedAttempts = parseInt(localStorage.getItem('it_login_fails') || '0');
+        let lockoutUntil = parseInt(localStorage.getItem('it_lockout_time') || '0');
+
+        window.onload = function() {
+            checkLockoutState();
+        };
+
+        function checkLockoutState() {
+            const now = new Date().getTime();
+            const submitBtn = document.getElementById('submit-btn');
+            const warningBox = document.getElementById('security-warning');
+
+            if (lockoutUntil > now) {
+                const remainingSeconds = Math.ceil((lockoutUntil - now) / 1000);
+                submitBtn.disabled = true;
+                warningBox.style.display = 'block';
+                warningBox.textContent = `تم تجاوز محاولات الدخول. يجمد الحساب مؤقتاً. يرجى الانتظار (${remainingSeconds} ثانية)`;
+                
+                setTimeout(checkLockoutState, 1000);
+            } else {
+                if (lockoutUntil !== 0) {
+                    localStorage.removeItem('it_lockout_time');
+                    localStorage.setItem('it_login_fails', '0');
+                    failedAttempts = 0;
+                    lockoutUntil = 0;
+                }
+                submitBtn.disabled = false;
+                if (failedAttempts > 0 && failedAttempts < 3) {
+                    warningBox.style.display = 'block';
+                    warningBox.textContent = `تنبيه: كلمة المرور خاطئة. متبقي لك (${3 - failedAttempts}) محاولات قبل القفل المؤقت.`;
+                } else {
+                    warningBox.style.display = 'none';
+                }
+            }
+        }
+
+        function recordFailedAttempt() {
+            failedAttempts++;
+            localStorage.setItem('it_login_fails', failedAttempts);
+            if (failedAttempts >= 3) {
+                lockoutUntil = new Date().getTime() + 60000; // قفل لمدة 60 ثانية
+                localStorage.setItem('it_lockout_time', lockoutUntil);
+            }
+            checkLockoutState();
+        }
+
         function showLuxuryLoader(title, desc) {
             const modal = document.getElementById('luxury-loader-modal');
             document.getElementById('loader-spinner-elem').style.display = 'block';
             document.getElementById('loader-icon-container').style.display = 'none';
-            document.getElementById('loader-action-btn').classList.add('hidden-element');
+            document.getElementById('loader-action-btn').classList.add('hidden-view');
             document.getElementById('loader-title-text').textContent = title;
             document.getElementById('loader-desc-text').textContent = desc;
             modal.classList.add('active');
@@ -316,7 +355,7 @@
             
             document.getElementById('loader-title-text').textContent = title;
             document.getElementById('loader-desc-text').textContent = desc;
-            document.getElementById('loader-action-btn').classList.remove('hidden-element');
+            document.getElementById('loader-action-btn').classList.remove('hidden-view');
         }
 
         function showLuxuryError(title, desc) {
@@ -331,7 +370,7 @@
             
             document.getElementById('loader-title-text').textContent = title;
             document.getElementById('loader-desc-text').textContent = desc;
-            document.getElementById('loader-action-btn').classList.remove('hidden-element');
+            document.getElementById('loader-action-btn').classList.remove('hidden-view');
         }
 
         function closeLuxuryModal() {
@@ -384,6 +423,7 @@
             const switchText = document.getElementById('switch-text');
             const switchBtn = document.getElementById('switch-btn');
             const loginExtras = document.getElementById('login-extras');
+            document.getElementById('security-warning').style.display = 'none';
 
             if (isSignupMode) {
                 signupFields.forEach(el => el.classList.remove('hidden-view'));
@@ -485,7 +525,8 @@
                     }
 
                     if (!foundUser) {
-                        showLuxuryError("عذراً", "الرقم الجامعي غير مسجل في النظام. يرجى إنشاء حساب جديد.");
+                        recordFailedAttempt();
+                        showLuxuryError("عذراً", "الرقم الجامعي غير مسجل في النظام. يرجى التأكد من الرقم أو إنشاء حساب جديد.");
                         return;
                     }
 
@@ -495,9 +536,14 @@
                     }
 
                     if (pass !== validPass) {
-                        showLuxuryError("خطأ في كلمة المرور", "كلمة المرور غير صحيحة. كلمة المرور الافتتاحية للطلاب هي 2025.");
+                        recordFailedAttempt();
+                        showLuxuryError("خطأ في كلمة المرور", "كلمة المرور غير صحيحة. يرجى مراجعة إدارة المنصة للحصول على كلمة المرور الصحيحة.");
                         return;
                     }
+
+                    // نجاح الدخول تصفير العدادات الأمنية
+                    localStorage.setItem('it_login_fails', '0');
+                    localStorage.removeItem('it_lockout_time');
 
                     localStorage.setItem('it_logged_user', foundUser.fullname);
                     localStorage.setItem('it_logged_id', foundUser.studentid);
