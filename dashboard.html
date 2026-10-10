@@ -6,6 +6,11 @@
     <title>لوحة تحكم الطالب - بوابة تقانة المعلومات</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- ربط مكتبات Firebase الأساسية الموحدة -->
+    <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore-compat.js"></script>
+
     <style>
         :root {
             --primary: #f97316;
@@ -140,9 +145,7 @@
         .modal-icon-container {
             width: 65px; height: 65px; background: #fff7ed; border-radius: 50%; display: flex; align-items: center; justify-content: center;
             margin: 0 auto 16px auto; font-size: 1.8rem; color: var(--primary); box-shadow: 0 8px 20px rgba(249, 115, 22, 0.15);
-            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) both;
         }
-        @keyframes popIn { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.15); } 100% { transform: scale(1); opacity: 1; } }
 
         .modal-title-text { font-size: 1.15rem; font-weight: 900; color: var(--text); margin-bottom: 8px; }
         .modal-desc-text { font-size: 0.88rem; color: var(--text-muted); margin-bottom: 22px; line-height: 1.6; }
@@ -152,7 +155,6 @@
             padding: 12px 25px; border-radius: 14px; font-weight: 800; font-size: 0.92rem; cursor: pointer;
             width: 100%; box-shadow: 0 6px 18px rgba(249, 115, 22, 0.25); transition: 0.2s;
         }
-        .luxury-btn:hover { opacity: 0.92; transform: translateY(-1px); }
 
         .hidden-element { display: none !important; }
         @media (max-width: 992px) { aside { display: none; } main { margin-right: 0; padding: 15px; width: 100%; } .footer-copyright { margin-right: 0; } }
@@ -189,9 +191,9 @@
             <div class="profile-main-info">
                 <div class="avatar-box" id="avatar-letter">م</div>
                 <div class="text-info">
-                    <h1 id="welcome-name">مرحباً، محمود عبدالله ادم محمد</h1>
+                    <h1 id="welcome-name">مرحباً، طالب IT</h1>
                     <div class="academic-badges">
-                        <span class="badge-tag"><i class="fa-solid fa-id-card"></i> الرقم: <span id="display-student-id">24-11086250</span></span>
+                        <span class="badge-tag"><i class="fa-solid fa-id-card"></i> الرقم: <span id="display-student-id">...</span></span>
                         <span class="badge-tag"><i class="fa-solid fa-layer-group"></i> السمستر الثالث</span>
                         <span class="badge-tag"><i class="fa-solid fa-laptop-code"></i> تقانة المعلومات</span>
                     </div>
@@ -210,8 +212,6 @@
         <div class="dashboard-grid">
             <div class="card">
                 <div class="card-title"><i class="fa-solid fa-list-check"></i> المقررات الدراسية (مباشرة من قاعدة البيانات)</div>
-                
-                <!-- حاوية عرض المقررات القادمة من Firebase Firestore -->
                 <div id="courses-container">
                     <p style="text-align: center; color: var(--text-muted); padding: 20px;">جاري تحميل المقررات...</p>
                 </div>
@@ -230,44 +230,41 @@
         © 2026 جميع الحقوق محفوظة لدى محمود عبدالله
     </footer>
 
-    <!-- سكربت جلب البيانات من Firebase وتحديث واجهة المستخدم -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase.app.js";
-        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.0/firebase.firestore.js";
-
-        // إعدادات الاتصال بـ Firebase الخاصة بمشروعك
+    <script>
+        // إعدادات Firebase الحقيقية الخاصة بمشروعك
         const firebaseConfig = {
-          apiKey: "YOUR_API_KEY",
-          authDomain: "kosti-university-it.firebaseapp.com",
-          projectId: "kosti-university-it",
-          storageBucket: "kosti-university-it.appspot.com",
-          messagingSenderId: "364361272352",
-          appId: "YOUR_APP_ID"
+            apiKey: "AIzaSyBjaaE-C8LzunKLjlULujL--0c_Cd1fA94",
+            authDomain: "kosti-university-it.firebaseapp.com",
+            databaseURL: "https://kosti-university-it-default-rtdb.firebaseio.com",
+            projectId: "kosti-university-it",
+            storageBucket: "kosti-university-it.firebasestorage.app",
+            messagingSenderId: "364361272352",
+            appId: "1:364361272352:web:56953086b49cb2e0a6c045"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        if (!firebase.apps.length) {
+            firebase.initializeApp(firebaseConfig);
+        }
+        const db = firebase.firestore();
 
+        // جلب وتنسيق المقررات الدراسية
         async function fetchAndDisplayCourses() {
+            const container = document.getElementById("courses-container");
             try {
-                const querySnapshot = await getDocs(collection(db, "courses"));
-                const container = document.getElementById("courses-container");
-                
-                if (!container) return;
+                const querySnapshot = await db.collection("courses").get();
                 
                 if (querySnapshot.empty) {
-                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 15px;">لا توجد مقررات مضافة حالياً.</p>';
+                    container.innerHTML = '<p style="text-align: center; color: var(--text-muted); padding: 15px;">لا توجد مقررات مضافة حالياً في قاعدة البيانات.</p>';
                     return;
                 }
 
                 container.innerHTML = "";
-
                 querySnapshot.forEach((doc) => {
                     const course = doc.data();
                     const courseCard = `
                         <div class="course-row">
                             <div class="course-info-box">
-                                <span class="course-name">${course.title || 'مقرر بدون عنوان'}</span>
+                                <span class="course-name">${course.title || course.name || 'مقرر بدون عنوان'}</span>
                                 <span class="course-instructor-name">الأستاذ: ${course.instructor || '-'} | الرمز: ${course.code || '-'}</span>
                             </div>
                             <a href="course-details.html?course=${doc.id}" class="btn-enter-course-dash">
@@ -279,17 +276,37 @@
                 });
             } catch (error) {
                 console.error("خطأ في جلب المقررات: ", error);
-                const container = document.getElementById("courses-container");
-                if(container) {
-                    container.innerHTML = '<p style="text-align: center; color: #dc2626; padding: 15px;">حدث خطأ أثناء جلب المقررات.</p>';
+                if (container) {
+                    container.innerHTML = '<p style="text-align: center; color: #dc2626; padding: 15px;">حدث خطأ أثناء الاتصال بقاعدة البيانات.</p>';
                 }
             }
         }
 
-        document.addEventListener("DOMContentLoaded", fetchAndDisplayCourses);
-    </script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loggedUser = localStorage.getItem('it_logged_user');
+            const loggedId = localStorage.getItem('it_logged_id');
 
-    <script>
+            if (!loggedUser) {
+                window.location.href = 'login.html';
+                return;
+            }
+
+            document.getElementById('welcome-name').textContent = `مرحباً، ${loggedUser}`;
+            document.getElementById('display-student-id').textContent = loggedId || '---';
+            document.getElementById('avatar-letter').textContent = loggedUser.trim().charAt(0);
+
+            if (loggedId === '24-11086250') {
+                const adminBtn = document.getElementById('admin-mode-btn');
+                adminBtn.classList.remove('hidden-element');
+                if (localStorage.getItem('it_admin_mode') === 'true') {
+                    adminBtn.classList.add('active-admin');
+                    document.getElementById('admin-btn-text').textContent = 'إيقاف وضع الإدارة';
+                }
+            }
+
+            fetchAndDisplayCourses();
+        });
+
         function showLuxuryLoader(title, desc) {
             const modal = document.getElementById('luxury-loader-modal');
             document.getElementById('loader-spinner-elem').style.display = 'block';
@@ -319,31 +336,8 @@
             location.reload();
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            const loggedUser = localStorage.getItem('it_logged_user');
-            const loggedId = localStorage.getItem('it_logged_id');
-
-            if (!loggedUser) {
-                window.location.href = 'login.html';
-                return;
-            }
-
-            document.getElementById('welcome-name').textContent = `مرحباً، ${loggedUser}`;
-            document.getElementById('avatar-letter').textContent = loggedUser.trim().charAt(0);
-
-            if (loggedId === '24-11086250') {
-                const adminBtn = document.getElementById('admin-mode-btn');
-                adminBtn.classList.remove('hidden-element');
-                if (localStorage.getItem('it_admin_mode') === 'true') {
-                    adminBtn.classList.add('active-admin');
-                    document.getElementById('admin-btn-text').textContent = 'إيقاف وضع الإدارة';
-                }
-            }
-        });
-
         function toggleAdminMode() {
             const currentStatus = localStorage.getItem('it_admin_mode') === 'true';
-            
             showLuxuryLoader("جاري التحقق...", "يتم تحديث صلاحيات النظام وتفعيل وضع الإدارة.");
 
             setTimeout(() => {
